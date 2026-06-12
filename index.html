@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KNIGHT — Fiche de Chevalier</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/tabs.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════ -->
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">K</div>
+    <span class="logo-text">KNIGHT</span>
+  </div>
+  <div class="header-center">
+    <span class="header-char-name" id="header-char-name">Nouveau Chevalier</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-load" id="btn-load">⬆ Charger</button>
+    <button class="btn btn-save" id="btn-save">⬇ Sauvegarder</button>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════
+     TABS NAV
+════════════════════════════════════════════════ -->
+<nav class="tabs-bar">
+  <div class="tab" id="tab-carac">
+    <span class="tab-icon">⚔</span> Caractéristiques
+  </div>
+  <div class="tab" id="tab-combat">
+    <span class="tab-icon">🛡</span> Combat
+  </div>
+  <div class="tab" id="tab-arsenal">
+    <span class="tab-icon">🔧</span> Arsenal
+  </div>
+  <div class="tab" id="tab-reste">
+    <span class="tab-icon">📋</span> Divers
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════
+     ONGLET 1 : CARACTÉRISTIQUES
+════════════════════════════════════════════════ -->
+<div class="tab-page" id="page-carac">
+
+  <!-- Identité -->
+  <div class="card section-gap">
+    <div class="card-title">Identité du Chevalier</div>
+    <div class="grid-3">
+      <div class="field"><label>Nom du chevalier</label><input type="text" id="nom" placeholder="…"></div>
+      <div class="field"><label>Archétype</label><input type="text" id="archetype" placeholder="Soldat, Rebut, Citoyen…"></div>
+      <div class="field"><label>Section</label><input type="text" id="section" placeholder="…"></div>
+      <div class="field"><label>Blason</label><input type="text" id="blason" placeholder="…"></div>
+      <div class="field"><label>Vœu</label><input type="text" id="voeu" placeholder="…"></div>
+      <div class="field"><label>Points de Gloire</label><input type="number" id="pg" value="0" min="0"></div>
+    </div>
+  </div>
+
+  <!-- Aspects — grille injectée par ui/aspects.js -->
+  <div class="grid-2 section-gap" id="aspects-grid"
+       style="grid-template-columns: 1fr 1fr;">
+    <!-- Injecté dynamiquement -->
+  </div>
+
+  <!-- Avantages / Inconvénients -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title accent-green">Avantages</div>
+      <textarea id="avantages" placeholder="Liste des avantages…"></textarea>
+    </div>
+    <div class="card">
+      <div class="card-title accent-red">Inconvénients</div>
+      <textarea id="inconvenients" placeholder="Liste des inconvénients…"></textarea>
+    </div>
+  </div>
+
+</div><!-- /page-carac -->
+
+
+<!-- ════════════════════════════════════════════════
+     ONGLET 2 : COMBAT
+════════════════════════════════════════════════ -->
+<div class="tab-page" id="page-combat">
+
+  <!-- Jauges -->
+  <div class="grid-2 section-gap">
+
+    <!-- PS -->
+    <div class="card">
+      <div class="card-title accent-red">Points de Santé</div>
+      <div class="gauge-wrap gauge-ps">
+        <div class="gauge-header">
+          <span class="gauge-label">PS</span>
+          <div class="gauge-values">
+            <input type="number" class="gauge-current" id="ps-current" value="10" min="0">
+            <span class="gauge-sep">/</span>
+            <input type="number" class="gauge-max" id="ps-max" value="46" min="0">
+          </div>
+        </div>
+        <div class="gauge-track" id="gauge-ps-track">
+          <div class="gauge-fill" id="gauge-ps-fill" style="width:22%"></div>
+        </div>
+      </div>
+      <p class="gauge-hint">= 10 + 6 × (plus haute cara Chair sans OD)</p>
+    </div>
+
+    <!-- PES -->
+    <div class="card">
+      <div class="card-title accent-blue">Points d'Espoir</div>
+      <div class="gauge-wrap gauge-pes">
+        <div class="gauge-header">
+          <span class="gauge-label">PES</span>
+          <div class="gauge-values">
+            <input type="number" class="gauge-current" id="pes-current" value="50" min="0">
+            <span class="gauge-sep">/</span>
+            <input type="number" class="gauge-max" id="pes-max" value="50" min="0">
+          </div>
+        </div>
+        <div class="gauge-track" id="gauge-pes-track">
+          <div class="gauge-fill" id="gauge-pes-fill" style="width:100%"></div>
+        </div>
+      </div>
+      <p class="gauge-hint">= 50 + bonus (plus haute cara Dame sans OD)</p>
+    </div>
+
+    <!-- PA -->
+    <div class="card">
+      <div class="card-title accent-gold">Points d'Armure</div>
+      <div class="gauge-wrap gauge-pa">
+        <div class="gauge-header">
+          <span class="gauge-label">PA</span>
+          <div class="gauge-values">
+            <input type="number" class="gauge-current" id="pa-current" value="100" min="0">
+            <span class="gauge-sep">/</span>
+            <input type="number" class="gauge-max" id="pa-max" value="100" min="0">
+          </div>
+        </div>
+        <div class="gauge-track" id="gauge-pa-track">
+          <div class="gauge-fill" id="gauge-pa-fill" style="width:100%"></div>
+        </div>
+      </div>
+      <p class="gauge-hint">Warrior : 100 PA de base</p>
+    </div>
+
+    <!-- CDF + PE -->
+    <div class="card">
+      <div class="card-title accent-green">Champ de Force & Énergie</div>
+      <div class="gauge-wrap gauge-cdf">
+        <div class="gauge-header">
+          <span class="gauge-label">CDF</span>
+          <div class="gauge-values">
+            <input type="number" class="gauge-current" id="cdf-current" value="8" min="0">
+            <span class="gauge-sep">/</span>
+            <input type="number" class="gauge-max" id="cdf-max" value="8" min="0">
+          </div>
+        </div>
+        <div class="gauge-track" id="gauge-cdf-track">
+          <div class="gauge-fill" id="gauge-cdf-fill" style="width:100%"></div>
+        </div>
+      </div>
+      <div class="gauge-wrap gauge-pe" style="margin-top:14px;">
+        <div class="gauge-header">
+          <span class="gauge-label">PE</span>
+          <div class="gauge-values">
+            <input type="number" class="gauge-current" id="pe-current" value="40" min="0">
+            <span class="gauge-sep">/</span>
+            <input type="number" class="gauge-max" id="pe-max" value="40" min="0">
+          </div>
+        </div>
+        <div class="gauge-track" id="gauge-pe-track">
+          <div class="gauge-fill" id="gauge-pe-fill" style="width:100%"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid-2 jauges -->
+
+  <!-- Valeurs dérivées -->
+  <div class="card section-gap">
+    <div class="card-title accent-blue">Valeurs Dérivées</div>
+    <div class="grid-4">
+      <div class="stat-box">
+        <div class="stat-box-label">Défense</div>
+        <input type="number" id="defense" value="0" min="0">
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Réaction</div>
+        <input type="number" id="reaction" value="0" min="0">
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Initiative</div>
+        <input type="number" id="initiative" value="0" min="0">
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">Points XP</div>
+        <input type="number" id="px" value="0" min="0">
+      </div>
+    </div>
+    <p class="derived-hint">
+      Défense = plus haute cara Bête (OD compris) &nbsp;·&nbsp;
+      Réaction = plus haute cara Machine (OD compris) &nbsp;·&nbsp;
+      Initiative = 3D6 + plus haute cara Masque (OD compris)
+    </p>
+  </div>
+
+  <!-- Héroïsme -->
+  <div class="card section-gap">
+    <div class="card-title accent-gold">Points d'Héroïsme <span style="font-size:10px;color:var(--text-faint);font-family:var(--font-body);font-weight:400;letter-spacing:0;text-transform:none;">— max 6</span></div>
+    <div class="heroism-dots">
+      <div class="heroism-dot" id="h1" title="1 pt : Ignorer agonie / Dernier PES / Relancer / Max dégâts / +1 cara combo">1</div>
+      <div class="heroism-dot" id="h2">2</div>
+      <div class="heroism-dot" id="h3" title="3 pts : Tirer une carte du Destin">3</div>
+      <div class="heroism-dot" id="h4">4</div>
+      <div class="heroism-dot" id="h5">5</div>
+      <div class="heroism-dot active" id="h6" title="6 pts : Activer le Mode Héroïque">6</div>
+    </div>
+    <div class="heroism-memo">
+      <div class="heroism-memo-item"><strong>1 pt</strong>Ignorer agonie · Ignorer dernier PES · Relancer 1 jet · Max dégâts · +1 cara en combo</div>
+      <div class="heroism-memo-item"><strong>3 pts</strong>Tirer une carte du Destin</div>
+      <div class="heroism-memo-item"><strong>6 pts</strong>Activer le Mode Héroïque</div>
+    </div>
+  </div>
+
+  <!-- Styles de combat -->
+  <div class="card">
+    <div class="card-title">Styles de Combat</div>
+    <table class="style-table">
+      <thead><tr><th>Style</th><th>Bonus</th><th>Malus</th></tr></thead>
+      <tbody>
+        <tr><td>Standard</td>  <td>Aucun</td><td>Aucun</td></tr>
+        <tr><td>Défensif</td>  <td>+2 Défense · +2 Réaction</td><td>−3D à l'attaque</td></tr>
+        <tr><td>Agressif</td>  <td>+3D à l'attaque</td><td>−2 Défense · −2 Réaction</td></tr>
+        <tr><td>À couvert</td> <td>+2 Réaction (si abri)</td><td>−3D si l'abri est dans la ligne de tir</td></tr>
+        <tr><td>Précis</td>    <td>Max dégâts (arme contact 2 mains)</td><td>−1 Initiative</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div><!-- /page-combat -->
+
+
+<!-- ════════════════════════════════════════════════
+     ONGLET 3 : ARSENAL
+════════════════════════════════════════════════ -->
+<div class="tab-page" id="page-arsenal">
+
+  <div class="sub-tabs">
+    <div class="sub-tab active" id="subtab-armure">Méta-armure</div>
+    <div class="sub-tab" id="subtab-armes">Armes</div>
+    <div class="sub-tab" id="subtab-modules">Modules</div>
+    <div class="sub-tab" id="subtab-ia">IA</div>
+  </div>
+
+  <!-- ── SUB : ARMURE ── -->
+  <div id="sub-armure">
+    <div class="grid-2 section-gap">
+
+      <div class="card">
+        <div class="card-title accent-red">Identité Warrior</div>
+        <div class="field"><label>Nom personnalisé</label><input type="text" id="armure-nom" placeholder="ex. Fenrir"></div>
+        <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération"></div>
+        <div class="field"><label>Capacité spéciale</label>
+          <textarea id="armure-capacite" placeholder="Types interchangeables (Hunter, Soldier, Scout…)&#10;Chaque type = OD dans les 3 caras de l'aspect lié"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Stats de base Warrior</div>
+        <div class="grid-3" style="gap:8px;margin-bottom:16px;">
+          <div class="stat-box"><div class="stat-box-label">PA Max</div><input type="number" id="w-pa-max" value="100"></div>
+          <div class="stat-box"><div class="stat-box-label">PE Max</div><input type="number" id="w-pe-max" value="40"></div>
+          <div class="stat-box"><div class="stat-box-label">CdF Max</div><input type="number" id="w-cdf-max" value="8"></div>
+        </div>
+        <div class="card-title" style="margin-bottom:10px;">Types Warrior actifs</div>
+        <div class="type-grid" id="warrior-types">
+          <div class="type-badge">Hunter (Bête)</div>
+          <div class="type-badge">Soldier (Chair)</div>
+          <div class="type-badge">Scout (Machine)</div>
+          <div class="type-badge">Leader (Dame)</div>
+          <div class="type-badge">Shadow (Masque)</div>
+        </div>
+        <div class="field" style="margin-top:10px;">
+          <label>Types supplémentaires / Notes</label>
+          <textarea id="warrior-types-notes" placeholder="Types achetés, overdrives actifs…"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Slots par zone -->
+    <div class="card">
+      <div class="card-title">Slots méta-armure Warrior</div>
+      <div class="armor-zones">
+
+        <div class="armor-zone">
+          <div class="armor-zone-header">
+            <span class="armor-zone-name">Tête</span>
+            <div class="slot-dots" id="slots-tete"></div>
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Max slots</label>
+            <input type="number" id="slots-tete-max" value="2" min="0" max="10" style="width:60px;">
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Modules installés</label>
+            <textarea id="slot-notes-tete" placeholder="Modules sur la tête…" style="min-height:44px;"></textarea>
+          </div>
+        </div>
+
+        <div class="armor-zone">
+          <div class="armor-zone-header">
+            <span class="armor-zone-name">Tronc</span>
+            <div class="slot-dots" id="slots-tronc"></div>
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Max slots</label>
+            <input type="number" id="slots-tronc-max" value="4" min="0" max="10" style="width:60px;">
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Modules installés</label>
+            <textarea id="slot-notes-tronc" placeholder="Modules sur le tronc…" style="min-height:44px;"></textarea>
+          </div>
+        </div>
+
+        <div class="armor-zone">
+          <div class="armor-zone-header">
+            <span class="armor-zone-name">Bras</span>
+            <div class="slot-dots" id="slots-bras"></div>
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Max slots</label>
+            <input type="number" id="slots-bras-max" value="2" min="0" max="10" style="width:60px;">
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Modules installés</label>
+            <textarea id="slot-notes-bras" placeholder="Modules sur les bras…" style="min-height:44px;"></textarea>
+          </div>
+        </div>
+
+        <div class="armor-zone">
+          <div class="armor-zone-header">
+            <span class="armor-zone-name">Jambes</span>
+            <div class="slot-dots" id="slots-jambes"></div>
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Max slots</label>
+            <input type="number" id="slots-jambes-max" value="2" min="0" max="10" style="width:60px;">
+          </div>
+          <div class="field" style="margin-top:8px;margin-bottom:0;">
+            <label>Modules installés</label>
+            <textarea id="slot-notes-jambes" placeholder="Modules sur les jambes…" style="min-height:44px;"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /sub-armure -->
+
+  <!-- ── SUB : ARMES ── -->
+  <div id="sub-armes" style="display:none;">
+    <div class="card">
+      <div class="card-title">Rack d'armes <span style="font-size:10px;color:var(--text-faint);font-family:var(--font-body);font-weight:400;letter-spacing:0;text-transform:none;">— Rack 5 de série (module fold)</span></div>
+      <table class="weapon-table" id="weapons-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Dégâts</th>
+            <th>Violence</th>
+            <th>Portée</th>
+            <th>Énergie</th>
+            <th>Effets / Tags</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="weapons-body"></tbody>
+      </table>
+      <button class="btn btn-add" id="btn-add-weapon" style="margin-top:12px;">+ Ajouter une arme</button>
+    </div>
+  </div><!-- /sub-armes -->
+
+  <!-- ── SUB : MODULES ── -->
+  <div id="sub-modules" style="display:none;">
+    <div class="card">
+      <div class="card-title">Modules installés</div>
+      <div class="module-grid" id="modules-grid"></div>
+      <button class="btn btn-add" id="btn-add-module" style="margin-top:12px;">+ Ajouter un module</button>
+    </div>
+  </div><!-- /sub-modules -->
+
+  <!-- ── SUB : IA ── -->
+  <div id="sub-ia" style="display:none;">
+    <div class="ia-card">
+      <div class="card-title accent-blue">Intelligence Artificielle</div>
+      <div class="grid-2">
+        <div class="field"><label>Modèle</label><input type="text" id="ia-modele" placeholder="Modèle d'IA…"></div>
+        <div class="field"><label>Surnom</label><input type="text" id="ia-surnom" placeholder="Nom donné par le chevalier…"></div>
+        <div class="field"><label>Personnalité</label><input type="text" id="ia-perso" placeholder="Description…"></div>
+        <div class="field"><label>Spécialité</label><input type="text" id="ia-spe" placeholder="Combat, Technique, Renseignement…"></div>
+      </div>
+      <div class="field"><label>Capacités & Notes</label>
+        <textarea id="ia-notes" placeholder="Capacités spéciales, historique, relation avec le chevalier…" style="min-height:100px;"></textarea>
+      </div>
+    </div>
+  </div><!-- /sub-ia -->
+
+</div><!-- /page-arsenal -->
+
+
+<!-- ════════════════════════════════════════════════
+     ONGLET 4 : DIVERS
+════════════════════════════════════════════════ -->
+<div class="tab-page" id="page-reste">
+
+  <!-- Ledgers PES + PG côte à côte -->
+  <div class="grid-2 section-gap">
+
+    <!-- Journal PES -->
+    <div class="card">
+      <div class="card-title accent-blue">Journal — Points d'Espoir</div>
+
+      <div class="ledger-summary">
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Solde</div>
+          <div class="ledger-stat-value neutral" id="pes-solde">50</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Gains</div>
+          <div class="ledger-stat-value positive" id="pes-gains">+0</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Dépenses</div>
+          <div class="ledger-stat-value negative" id="pes-depenses">−0</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:10px;">
+        <label>PES de base</label>
+        <input type="number" id="pes-base" value="50" min="0" style="width:80px;">
+      </div>
+
+      <div class="ledger-add-row">
+        <div class="field" style="margin:0;"><label>Description</label>
+          <input type="text" id="pes-add-desc" placeholder="Ex : Rechargé en mission…">
+        </div>
+        <div class="field" style="margin:0;"><label>Montant</label>
+          <input type="number" id="pes-add-amount" placeholder="5" min="1">
+        </div>
+        <input type="hidden" id="pes-add-type" value="debit">
+        <button class="btn btn-credit btn-sm" id="pes-btn-credit" title="Ajouter un gain">+ Gain</button>
+        <button class="btn btn-debit btn-sm" id="pes-btn-debit" title="Enregistrer une dépense">− Dép.</button>
+      </div>
+
+      <div class="ledger-entries" id="pes-entries">
+        <div class="ledger-empty">Aucune entrée pour l'instant</div>
+      </div>
+    </div>
+
+    <!-- Journal PG -->
+    <div class="card">
+      <div class="card-title accent-gold">Journal — Points de Gloire</div>
+
+      <div class="ledger-summary">
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Solde</div>
+          <div class="ledger-stat-value neutral" id="pg-solde">0</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Gains</div>
+          <div class="ledger-stat-value positive" id="pg-gains">+0</div>
+        </div>
+        <div class="ledger-stat">
+          <div class="ledger-stat-label">Dépenses</div>
+          <div class="ledger-stat-value negative" id="pg-depenses">−0</div>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:10px;">
+        <label>PG de base</label>
+        <input type="number" id="pg-base" value="0" min="0" style="width:80px;">
+      </div>
+
+      <div class="ledger-add-row">
+        <div class="field" style="margin:0;"><label>Description</label>
+          <input type="text" id="pg-add-desc" placeholder="Ex : Récompense Table Ronde…">
+        </div>
+        <div class="field" style="margin:0;"><label>Montant</label>
+          <input type="number" id="pg-add-amount" placeholder="3" min="1">
+        </div>
+        <input type="hidden" id="pg-add-type" value="debit">
+        <button class="btn btn-credit btn-sm" id="pg-btn-credit" title="Ajouter un gain">+ Gain</button>
+        <button class="btn btn-debit btn-sm" id="pg-btn-debit" title="Enregistrer une dépense">− Dép.</button>
+      </div>
+
+      <div class="ledger-entries" id="pg-entries">
+        <div class="ledger-empty">Aucune entrée pour l'instant</div>
+      </div>
+    </div>
+
+  </div><!-- /grid-2 ledgers -->
+
+  <!-- Motivations -->
+  <div class="card section-gap">
+    <div class="card-title">Motivations</div>
+    <div id="motivations-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-danger btn-sm" id="btn-add-major">+ Majeure</button>
+      <button class="btn btn-sm" id="btn-add-minor">+ Mineure</button>
+    </div>
+  </div>
+
+  <!-- Contacts -->
+  <div class="card section-gap">
+    <div class="card-title">Contacts</div>
+    <div id="contacts-list"></div>
+    <button class="btn btn-sm btn-add" id="btn-add-contact" style="margin-top:10px;">+ Ajouter un contact</button>
+  </div>
+
+  <!-- Liste rapide de session -->
+  <div class="card section-gap">
+    <div class="card-title accent-purple">Liste rapide de session</div>
+    <ul class="quicklist" id="quicklist"></ul>
+    <div class="quicklist-add-row">
+      <div class="field" style="margin:0;"><label>Nouvelle entrée</label>
+        <input type="text" id="ql-add-text" placeholder="PNJ, info, objectif, todo…">
+      </div>
+      <div class="field" style="margin:0;"><label>Tag</label>
+        <select id="ql-add-tag">
+          <option value="info">Info</option>
+          <option value="todo">Todo</option>
+          <option value="warning">Warning</option>
+          <option value="npc">PNJ</option>
+        </select>
+      </div>
+      <button class="btn btn-add btn-sm" id="btn-add-ql" style="align-self:flex-end;">+ Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Ressources & Points -->
+  <div class="grid-2 section-gap">
+    <div class="card">
+      <div class="card-title accent-gold">Ressources</div>
+      <div class="grid-2" style="gap:8px;">
+        <div class="stat-box"><div class="stat-box-label">Points de Gloire</div><input type="number" id="pg-armure" value="60"></div>
+        <div class="stat-box"><div class="stat-box-label">PX Dépensés</div><input type="number" id="px-depenses" value="0"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Équipement hors armure</div>
+      <textarea id="equipement" placeholder="Équipement Guardian, véhicule, objets divers…" style="min-height:80px;"></textarea>
+    </div>
+  </div>
+
+  <!-- Histoire & Notes -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Histoire & Background</div>
+      <textarea id="histoire" placeholder="Histoire du personnage, passé, moments clés…" style="min-height:160px;"></textarea>
+    </div>
+    <div class="card">
+      <div class="card-title">Notes de session</div>
+      <textarea id="notes" placeholder="Notes diverses, informations collectées…" style="min-height:160px;"></textarea>
+    </div>
+  </div>
+
+</div><!-- /page-reste -->
+
+
+<!-- ════════════════════════════════════════════════
+     MODAL CHARGEMENT
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="load-modal">
+  <div class="modal">
+    <div class="modal-title">⬆ Charger une sauvegarde</div>
+    <p class="modal-sub">Colle le contenu de ton fichier .txt ci-dessous :</p>
+    <textarea id="load-textarea" placeholder="Colle ici le contenu de ton fichier de sauvegarde…"></textarea>
+    <div class="modal-actions">
+      <button class="btn" id="btn-load-cancel">Annuler</button>
+      <button class="btn btn-load" id="btn-load-confirm">Charger</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     NOTIFICATION
+════════════════════════════════════════════════ -->
+<div class="notif" id="notif">
+  <span class="notif-icon" id="notif-icon">✓</span>
+  <span id="notif-text">Sauvegardé</span>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SCRIPTS — ordre important : modèles puis UI puis app
+════════════════════════════════════════════════ -->
+<script src="js/models/Aspect.js"></script>
+<script src="js/models/ArsenalItem.js"></script>
+<script src="js/models/Ledger.js"></script>
+<script src="js/models/Character.js"></script>
+<script src="js/ui/tabs.js"></script>
+<script src="js/ui/gauges.js"></script>
+<script src="js/ui/aspects.js"></script>
+<script src="js/ui/arsenal.js"></script>
+<script src="js/ui/ledger.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
