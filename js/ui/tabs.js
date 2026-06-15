@@ -49,7 +49,7 @@ KNIGHT.ui.tabs = (function () {
 
   function init() {
     // Onglets principaux
-    ['carac', 'combat', 'arsenal', 'reste'].forEach(function (id) {
+    ['carac', 'combat', 'arsenal', 'armure', 'reste'].forEach(function (id) {
       var tab = document.getElementById('tab-' + id);
       if (tab) {
         tab.addEventListener('click', function () { _switchTab(id); });

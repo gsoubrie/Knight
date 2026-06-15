@@ -40,6 +40,9 @@
   <div class="tab" id="tab-arsenal">
     <span class="tab-icon">🔧</span> Arsenal
   </div>
+  <div class="tab" id="tab-armure">
+    <span class="tab-icon">🤖</span> Armure
+  </div>
   <div class="tab" id="tab-reste">
     <span class="tab-icon">📋</span> Divers
   </div>
@@ -415,7 +418,54 @@
 
 
 <!-- ════════════════════════════════════════════════
-     ONGLET 4 : DIVERS
+     ONGLET 4 : ARMURE
+════════════════════════════════════════════════ -->
+<div class="tab-page" id="page-armure">
+
+  <div class="armor-layout">
+
+    <!-- Silhouette SVG + légende -->
+    <div class="armor-svg-wrap">
+      <div id="armor-svg-container"></div>
+      <div id="armor-legend-container"></div>
+    </div>
+
+    <!-- Panneau détail zone sélectionnée -->
+    <div>
+      <div class="card section-gap">
+        <div class="card-title accent-red">Warrior — Répartition des modules</div>
+        <p style="font-size:11px;color:var(--text-faint);margin-bottom:12px;">
+          Clique sur une zone de la silhouette pour voir et éditer ses slots.
+        </p>
+        <div id="armor-detail-panel" class="armor-detail-panel">
+          <div class="armor-detail-placeholder">Clique sur une zone pour voir les détails</div>
+        </div>
+      </div>
+
+      <!-- Stats globales armure -->
+      <div class="card">
+        <div class="card-title">Stats Warrior</div>
+        <div class="grid-3" style="gap:8px;">
+          <div class="stat-box"><div class="stat-box-label">PA Max</div><input type="number" id="w-pa-max" value="100"></div>
+          <div class="stat-box"><div class="stat-box-label">PE Max</div><input type="number" id="w-pe-max" value="40"></div>
+          <div class="stat-box"><div class="stat-box-label">CdF Max</div><input type="number" id="w-cdf-max" value="8"></div>
+        </div>
+        <div style="margin-top:12px;" class="grid-2" style="gap:8px;">
+          <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" placeholder="ex. Fenrir"></div>
+          <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération"></div>
+        </div>
+        <div class="field" style="margin-top:8px;"><label>Capacité spéciale / Notes</label>
+          <textarea id="armure-capacite" placeholder="Overdrives Warrior : Combat, Déplacement, Déreiste, Tir…" style="min-height:60px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /page-armure -->
+
+
+<!-- ════════════════════════════════════════════════
+     ONGLET 5 : DIVERS
 ════════════════════════════════════════════════ -->
 <div class="tab-page" id="page-reste">
 
@@ -609,6 +659,7 @@
 <script src="js/ui/aspects.js"></script>
 <script src="js/ui/arsenal.js"></script>
 <script src="js/ui/ledger.js"></script>
+<script src="js/ui/armor.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 

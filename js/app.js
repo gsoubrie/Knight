@@ -328,6 +328,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.gauges.render(_char);
     KNIGHT.ui.arsenal.render(_char);
     KNIGHT.ui.ledger.render(_char);
+    KNIGHT.ui.armor.render(_char);
     _renderHeroisme();
     _renderMotivations();
     _renderContacts();
@@ -363,6 +364,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.gauges.init(_char);
     KNIGHT.ui.arsenal.init(_char);
     KNIGHT.ui.ledger.init(_char);
+    KNIGHT.ui.armor.init(_char);
 
     // App-level
     _initHeroisme();
