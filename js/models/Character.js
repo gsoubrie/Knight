@@ -56,10 +56,12 @@ KNIGHT.models.Character = function () {
     activeTypes:    [],
     typesNotes:     '',
     slots: {
-      tete:   { max: 2, used: 0, notes: '' },
-      tronc:  { max: 4, used: 0, notes: '' },
-      bras:   { max: 2, used: 0, notes: '' },
-      jambes: { max: 2, used: 0, notes: '' }
+      tete:    { max: 7,  modules: [] },
+      torse:   { max: 12, modules: [] },
+      'bras-g': { max: 10, modules: [] },
+      'bras-d': { max: 10, modules: [] },
+      'jambe-g':{ max: 7,  modules: [] },
+      'jambe-d':{ max: 7,  modules: [] }
     }
   };
 
@@ -230,9 +232,19 @@ KNIGHT.models.Character.prototype = {
 
     // Warrior
     if (data.warrior) {
+      var slotsBak = self.warrior.slots;
       Object.keys(data.warrior).forEach(function (k) {
-        if (self.warrior[k] !== undefined) self.warrior[k] = data.warrior[k];
+        if (k !== 'slots' && self.warrior[k] !== undefined) self.warrior[k] = data.warrior[k];
       });
+      if (data.warrior.slots) {
+        Object.keys(data.warrior.slots).forEach(function (z) {
+          if (slotsBak[z]) {
+            slotsBak[z].max     = data.warrior.slots[z].max     !== undefined ? data.warrior.slots[z].max     : slotsBak[z].max;
+            slotsBak[z].modules = data.warrior.slots[z].modules || [];
+          }
+        });
+      }
+      self.warrior.slots = slotsBak;
     }
 
     // Arsenal

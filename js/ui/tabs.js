@@ -33,7 +33,7 @@ KNIGHT.ui.tabs = (function () {
 
   // ── Sous-onglets Arsenal ──
 
-  var _subIds = ['armure', 'armes', 'modules', 'ia'];
+  var _subIds = ['armes', 'modules', 'ia'];
 
   function _switchSubTab(id) {
     _subIds.forEach(function (s) {
