@@ -33,37 +33,56 @@ KNIGHT.models.ArsenalItem.prototype = {
 /* ── Weapon ── */
 KNIGHT.models.Weapon = function () {
   KNIGHT.models.ArsenalItem.call(this, 'weapon');
-  this.degats   = '';
-  this.violence = '';
-  this.portee   = '';
-  this.energie  = '';
-  this.effets   = '';
-  this.image    = '';   // base64
+  this.pgCout  = 0;    // coût en Points de Gloire
+  this.image   = '';   // base64
+  this.contact = { degats: '', violence: '', portee: 'Contact', energie: '', effets: '' };
+  this.tir     = { degats: '', violence: '', portee: '',        energie: '', effets: '' };
 };
 
 KNIGHT.models.Weapon.prototype = Object.create(KNIGHT.models.ArsenalItem.prototype);
 KNIGHT.models.Weapon.prototype.constructor = KNIGHT.models.Weapon;
 
 KNIGHT.models.Weapon.prototype.serialize = function () {
-  var base = KNIGHT.models.ArsenalItem.prototype.serialize.call(this);
-  base.degats   = this.degats;
-  base.violence = this.violence;
-  base.portee   = this.portee;
-  base.energie  = this.energie;
-  base.effets   = this.effets;
-  base.image    = this.image;
+  var base    = KNIGHT.models.ArsenalItem.prototype.serialize.call(this);
+  base.pgCout  = this.pgCout;
+  base.image   = this.image;
+  base.contact = JSON.parse(JSON.stringify(this.contact));
+  base.tir     = JSON.parse(JSON.stringify(this.tir));
   return base;
 };
 
 KNIGHT.models.Weapon.prototype.deserialize = function (data) {
   if (!data) return;
   KNIGHT.models.ArsenalItem.prototype.deserialize.call(this, data);
-  this.degats   = data.degats   || '';
-  this.violence = data.violence || '';
-  this.portee   = data.portee   || '';
-  this.energie  = data.energie  || '';
-  this.effets   = data.effets   || '';
-  this.image    = data.image    || '';
+  this.pgCout  = data.pgCout  || 0;
+  this.image   = data.image   || '';
+  // Compat ancienne version (champs plats)
+  if (data.contact) {
+    this.contact = {
+      degats:   data.contact.degats   || '',
+      violence: data.contact.violence || '',
+      portee:   data.contact.portee   || 'Contact',
+      energie:  data.contact.energie  || '',
+      effets:   data.contact.effets   || ''
+    };
+  } else {
+    this.contact = {
+      degats: data.degats || '', violence: data.violence || '',
+      portee: 'Contact',         energie: data.energie  || '',
+      effets: data.effets  || ''
+    };
+  }
+  if (data.tir) {
+    this.tir = {
+      degats:   data.tir.degats   || '',
+      violence: data.tir.violence || '',
+      portee:   data.tir.portee   || '',
+      energie:  data.tir.energie  || '',
+      effets:   data.tir.effets   || ''
+    };
+  } else {
+    this.tir = { degats: '', violence: '', portee: '', energie: '', effets: '' };
+  }
 };
 
 KNIGHT.models.Weapon.fromData = function (data) {

@@ -39,9 +39,9 @@ KNIGHT.ui.arsenal = (function () {
 
   function _buildWeaponCard(w) {
     var card = document.createElement('div');
-    card.className = 'arsenal-card';
+    card.className = 'arsenal-card weapon-card';
 
-    // Image
+    // ── Image ──
     var imgWrap = document.createElement('div');
     imgWrap.className = 'arsenal-img-wrap';
 
@@ -51,61 +51,68 @@ KNIGHT.ui.arsenal = (function () {
     img.style.display = w.image ? 'block' : 'none';
     img.alt = w.nom || 'Arme';
 
-    var imgPlaceholder = document.createElement('div');
-    imgPlaceholder.className = 'arsenal-img-placeholder';
-    imgPlaceholder.textContent = '⚔';
-    imgPlaceholder.style.display = w.image ? 'none' : 'flex';
+    var ph = document.createElement('div');
+    ph.className = 'arsenal-img-placeholder';
+    ph.textContent = '⚔';
+    ph.style.display = w.image ? 'none' : 'flex';
 
     var imgInput = document.createElement('input');
-    imgInput.type = 'file';
-    imgInput.accept = 'image/*';
-    imgInput.style.display = 'none';
-    imgInput.addEventListener('change', (function (weapon, imgEl, ph) {
-      return function (e) {
-        var file = e.target.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (ev) {
-          weapon.image = ev.target.result;
-          imgEl.src = weapon.image;
-          imgEl.style.display = 'block';
-          ph.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      };
-    }(w, img, imgPlaceholder)));
+    imgInput.type = 'file'; imgInput.accept = 'image/*'; imgInput.style.display = 'none';
+    imgInput.addEventListener('change', _makeImageLoader(w, img, ph));
 
     var imgBtn = document.createElement('button');
-    imgBtn.className = 'arsenal-img-btn';
-    imgBtn.title = 'Changer l\'image';
-    imgBtn.textContent = '📷';
+    imgBtn.className = 'arsenal-img-btn'; imgBtn.title = 'Changer l\'image'; imgBtn.textContent = '📷';
     imgBtn.addEventListener('click', function () { imgInput.click(); });
 
-    imgWrap.appendChild(img);
-    imgWrap.appendChild(imgPlaceholder);
-    imgWrap.appendChild(imgBtn);
-    imgWrap.appendChild(imgInput);
+    imgWrap.appendChild(img); imgWrap.appendChild(ph); imgWrap.appendChild(imgBtn); imgWrap.appendChild(imgInput);
 
-    // Champs
+    // ── Champs ──
     var fields = document.createElement('div');
     fields.className = 'arsenal-fields';
 
+    // Nom + PG
     fields.appendChild(_makeRow([
-      _makeField('Nom',      _makeInp('text',   w.nom,      function(v){ w.nom = v; }, 'ex. Épée longue')),
-      _makeField('Dégâts',   _makeInp('text',   w.degats,   function(v){ w.degats = v; }, '4D6')),
-      _makeField('Violence', _makeInp('text',   w.violence, function(v){ w.violence = v; }, '2'))
+      _makeField('Nom de l\'arme', _makeInp('text', w.nom, function (v) { w.nom = v; }, 'ex. Pistolet de service')),
+      _makeField('Coût PG', _makeInp('number', w.pgCout, function (v) { w.pgCout = parseInt(v) || 0; }, '0'))
     ]));
-    fields.appendChild(_makeRow([
-      _makeField('Portée',   _makeInp('text',   w.portee,   function(v){ w.portee = v; }, 'Contact')),
-      _makeField('Énergie',  _makeInp('text',   w.energie,  function(v){ w.energie = v; }, '—')),
-    ]));
-    fields.appendChild(_makeField('Effets / Tags', _makeTextarea(w.effets, function(v){ w.effets = v; }, 'Effets, tags…', 48)));
 
-    // Bouton supprimer
+    // Section Contact
+    var contactTitle = document.createElement('div');
+    contactTitle.className = 'weapon-mode-title';
+    contactTitle.textContent = 'CONTACT';
+    fields.appendChild(contactTitle);
+
+    fields.appendChild(_makeRow([
+      _makeField('Dégâts',   _makeInp('text', w.contact.degats,   function (v) { w.contact.degats   = v; }, '1D6 (3) + Force')),
+      _makeField('Violence', _makeInp('text', w.contact.violence, function (v) { w.contact.violence = v; }, '1')),
+      _makeField('Portée',   _makeInp('text', w.contact.portee,   function (v) { w.contact.portee   = v; }, 'Contact')),
+      _makeField('Énergie',  _makeInp('text', w.contact.energie,  function (v) { w.contact.energie  = v; }, '—'))
+    ]));
+    fields.appendChild(_makeField('Effets (contact)',
+      _makeInp('text', w.contact.effets, function (v) { w.contact.effets = v; }, 'Silencieux, Perce armure…')
+    ));
+
+    // Section Tir
+    var tirTitle = document.createElement('div');
+    tirTitle.className = 'weapon-mode-title weapon-mode-tir';
+    tirTitle.textContent = 'TIR';
+    fields.appendChild(tirTitle);
+
+    fields.appendChild(_makeRow([
+      _makeField('Dégâts',   _makeInp('text', w.tir.degats,   function (v) { w.tir.degats   = v; }, '2D6 (6) + 6')),
+      _makeField('Violence', _makeInp('text', w.tir.violence, function (v) { w.tir.violence = v; }, '1D6 (3)')),
+      _makeField('Portée',   _makeInp('text', w.tir.portee,   function (v) { w.tir.portee   = v; }, 'Moyenne')),
+      _makeField('Énergie',  _makeInp('text', w.tir.energie,  function (v) { w.tir.energie  = v; }, '—'))
+    ]));
+    fields.appendChild(_makeField('Effets (tir)',
+      _makeInp('text', w.tir.effets, function (v) { w.tir.effets = v; }, 'Continus 3, Dispersion…')
+    ));
+
+    // Supprimer
     var del = document.createElement('button');
     del.className = 'btn btn-danger btn-sm';
-    del.style.marginTop = '8px';
-    del.textContent = 'Supprimer';
+    del.style.marginTop = '10px';
+    del.textContent = 'Supprimer l\'arme';
     del.addEventListener('click', (function (id) {
       return function () { _char.removeWeapon(id); _renderWeapons(); };
     }(w.id)));
@@ -114,6 +121,21 @@ KNIGHT.ui.arsenal = (function () {
     card.appendChild(imgWrap);
     card.appendChild(fields);
     return card;
+  }
+
+  function _makeImageLoader(item, imgEl, ph) {
+    return function (e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function (ev) {
+        item.image = ev.target.result;
+        imgEl.src = item.image;
+        imgEl.style.display = 'block';
+        ph.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    };
   }
 
   function addWeapon() {

@@ -403,13 +403,27 @@
 
 <!-- MODAL CHARGEMENT -->
 <div class="modal-overlay" id="load-modal">
-  <div class="modal">
-    <div class="modal-title">⬆ Charger une sauvegarde</div>
-    <p class="modal-sub">Colle le contenu de ton fichier .txt ci-dessous :</p>
-    <textarea id="load-textarea" placeholder="Colle ici le contenu de ton fichier de sauvegarde…"></textarea>
-    <div class="modal-actions">
-      <button class="btn" id="btn-load-cancel">Annuler</button>
-      <button class="btn btn-load" id="btn-load-confirm">Charger</button>
+  <div class="modal" style="width:560px;">
+    <div class="modal-title">⬆ Charger un personnage</div>
+
+    <!-- Liste des personnages -->
+    <div id="load-char-list" class="load-char-list">
+      <div class="load-list-loading">Chargement…</div>
+    </div>
+
+    <!-- Chargement manuel (fallback) -->
+    <div id="load-manual-section" style="display:none;margin-top:16px;">
+      <div style="font-size:10px;font-family:var(--font-display);letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin-bottom:8px;">
+        Chargement manuel (JSON)
+      </div>
+      <textarea id="load-textarea" placeholder="Colle ici le contenu d'un fichier JSON…"></textarea>
+      <div class="modal-actions" style="margin-top:10px;">
+        <button class="btn btn-load btn-sm" id="btn-load-confirm">Charger le JSON</button>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn" id="btn-load-cancel">Fermer</button>
     </div>
   </div>
 </div>

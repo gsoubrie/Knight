@@ -300,8 +300,63 @@ KNIGHT.app = (function () {
   function _openLoadModal() {
     var modal = document.getElementById('load-modal');
     if (modal) modal.classList.add('open');
-    var ta = document.getElementById('load-textarea');
-    if (ta) ta.value = '';
+
+    // Vider et afficher un spinner
+    var list = document.getElementById('load-char-list');
+    if (list) {
+      list.innerHTML = '<div class="load-list-loading">Chargement…</div>';
+    }
+    var manual = document.getElementById('load-manual-section');
+    if (manual) manual.style.display = 'none';
+
+    // Récupérer l'index
+    KNIGHT.storage.fetchIndex(function (err, entries) {
+      if (!list) return;
+      if (err || entries.length === 0) {
+        list.innerHTML = '<div class="load-list-empty">Aucun personnage trouvé dans <code>saves/index.json</code>.<br>Utilise le chargement manuel ci-dessous.</div>';
+        if (manual) manual.style.display = 'block';
+        return;
+      }
+      list.innerHTML = '';
+      entries.forEach(function (entry) {
+        var item = document.createElement('div');
+        item.className = 'load-char-item';
+
+        var nameEl = document.createElement('span');
+        nameEl.className = 'load-char-name';
+        nameEl.textContent = entry.name;
+
+        var fileEl = document.createElement('span');
+        fileEl.className = 'load-char-file';
+        fileEl.textContent = entry.file;
+
+        var btn = document.createElement('button');
+        btn.className = 'btn btn-load btn-sm';
+        btn.textContent = 'Charger';
+        btn.addEventListener('click', function () {
+          btn.textContent = '…';
+          btn.disabled = true;
+          KNIGHT.storage.fetchCharacter(entry.file, _char, function (err) {
+            if (err) {
+              _showNotif('⚠', 'Erreur : ' + err.message);
+              btn.textContent = 'Charger';
+              btn.disabled = false;
+              return;
+            }
+            _renderAll();
+            _closeLoadModal();
+            _showNotif('✓', entry.name + ' chargé');
+          });
+        });
+
+        item.appendChild(nameEl);
+        item.appendChild(fileEl);
+        item.appendChild(btn);
+        list.appendChild(item);
+      });
+
+      if (manual) manual.style.display = 'block';
+    });
   }
 
   function _closeLoadModal() {
@@ -397,12 +452,28 @@ KNIGHT.app = (function () {
   return {
     init:      init,
     save:      _save,
-    showNotif: _showNotif
+    showNotif: _showNotif,
+    getChar:   function () { return _char; },
+    renderAll: _renderAll
   };
 
 }());
 
 /* ── Bootstrap ── */
 document.addEventListener('DOMContentLoaded', function () {
+  // Init UI d'abord
   KNIGHT.app.init();
+
+  // Puis tentative de chargement automatique depuis save.json
+  KNIGHT.storage.autoLoad(
+    KNIGHT.app.getChar(),
+    function () {
+      // Succès : re-render tout
+      KNIGHT.app.renderAll();
+      KNIGHT.app.showNotif('✓', 'Personnage chargé');
+    },
+    function () {
+      // Pas de save.json : nouveau personnage, rien à faire
+    }
+  );
 });

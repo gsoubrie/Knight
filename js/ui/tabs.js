@@ -12,7 +12,7 @@ KNIGHT.ui = KNIGHT.ui || {};
 KNIGHT.ui.tabs = (function () {
 
   var _currentTab    = 'carac';
-  var _currentSubTab = 'armure';
+  var _currentSubTab = 'armes';
 
   // ── Onglets principaux ──
 
@@ -66,7 +66,7 @@ KNIGHT.ui.tabs = (function () {
 
     // État initial
     _switchTab('carac');
-    _switchSubTab('armure');
+    _switchSubTab('armes');
   }
 
   return {
