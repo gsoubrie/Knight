@@ -26,6 +26,8 @@ KNIGHT.app = (function () {
     _isEditMode = enabled;
     _applyEditMode();
     _updateModeButton();
+    // Ajouter/supprimer la classe mode-play sur le body pour le CSS
+    document.body.classList.toggle('mode-play', !enabled);
   }
 
   function _toggleEditMode() {

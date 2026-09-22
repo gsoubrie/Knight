@@ -1358,3 +1358,22 @@ textarea:read-only {
   background: var(--purple) !important;
   color: var(--bg-deep) !important;
 }
+
+/* ── MODE JEU : Masquer les éléments non activés ── */
+/* Masquer les niveaux non cochés */
+.mode-play .nv-row:not(.checked) {
+  display: none !important;
+}
+/* Masquer les champs de score et OD ( garden space) */
+.mode-play .cara-score-row input,
+.mode-play .cara-od-label {
+  display: none !important;
+}
+/* Masquer le score des aspects */
+.mode-play .aspect-score-wrap {
+  display: none !important;
+}
+/* Ajuster la marge des labels de niveau */
+.mode-play .nv-label {
+  margin-left: 24px;
+}
