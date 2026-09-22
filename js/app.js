@@ -14,6 +14,51 @@ KNIGHT.app = (function () {
   /* ── Personnage courant ── */
   var _char = new KNIGHT.models.Character();
 
+  /* ── Mode édition/jeu ── */
+  var _isEditMode = true;
+
+  function _getUrlParam(name) {
+    var params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  function _setEditMode(enabled) {
+    _isEditMode = enabled;
+    _applyEditMode();
+    _updateModeButton();
+  }
+
+  function _toggleEditMode() {
+    var newMode = !_isEditMode;
+    _setEditMode(newMode);
+    // Mettre à jour l'URL sans recharger
+    var urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('mode', newMode ? 'edit' : 'play');
+    window.history.replaceState({}, '', '?' + urlParams.toString());
+    // Notification
+    _showNotif('✓', newMode ? 'Mode Édition activé' : 'Mode Jeu activé');
+  }
+
+  function _applyEditMode() {
+    var fields = document.querySelectorAll('input, textarea, select');
+    fields.forEach(function (field) {
+      field.readOnly = !_isEditMode;
+    });
+    // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
+    var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
+    editButtons.forEach(function (btn) {
+      btn.style.display = _isEditMode ? '' : 'none';
+    });
+  }
+
+  function _updateModeButton() {
+    var modeBtn = document.getElementById('btn-toggle-mode');
+    if (modeBtn) {
+      modeBtn.textContent = _isEditMode ? '🎮 Mode Jeu' : '✏️ Mode Édition';
+      modeBtn.title = _isEditMode ? 'Passer en mode jeu (lecture seule)' : 'Passer en mode édition';
+    }
+  }
+
   /* ════════════════════════════════════════
      HÉROÏSME
   ════════════════════════════════════════ */
@@ -447,6 +492,12 @@ KNIGHT.app = (function () {
     if (modal) modal.addEventListener('click', function (e) {
       if (e.target === modal) _closeLoadModal();
     });
+
+    // Bouton bascule mode édition/jeu
+    var btnToggleMode = document.getElementById('btn-toggle-mode');
+    if (btnToggleMode) {
+      btnToggleMode.addEventListener('click', _toggleEditMode);
+    }
   }
 
   return {
@@ -454,7 +505,8 @@ KNIGHT.app = (function () {
     save:      _save,
     showNotif: _showNotif,
     getChar:   function () { return _char; },
-    renderAll: _renderAll
+    renderAll: _renderAll,
+    _setEditMode: _setEditMode
   };
 
 }());
@@ -464,16 +516,46 @@ document.addEventListener('DOMContentLoaded', function () {
   // Init UI d'abord
   KNIGHT.app.init();
 
-  // Puis tentative de chargement automatique depuis save.json
-  KNIGHT.storage.autoLoad(
-    KNIGHT.app.getChar(),
-    function () {
-      // Succès : re-render tout
-      KNIGHT.app.renderAll();
-      KNIGHT.app.showNotif('✓', 'Personnage chargé');
-    },
-    function () {
-      // Pas de save.json : nouveau personnage, rien à faire
-    }
-  );
+  // Détecter le mode dans l'URL (edit ou play)
+  var urlParams = new URLSearchParams(window.location.search);
+  var modeParam = urlParams.get('mode');
+  if (modeParam === 'play') {
+    KNIGHT.app._setEditMode(false);
+  } else {
+    // Par défaut : mode édition
+    KNIGHT.app._setEditMode(true);
+  }
+
+  // Vérifier si un id est présent dans l'URL (ex: ?id=gregoire)
+  var idParam = urlParams.get('id');
+  if (idParam) {
+    KNIGHT.storage.loadFromUrlParam(
+      idParam,
+      KNIGHT.app.getChar(),
+      function (err) {
+        if (err) {
+          KNIGHT.app.showNotif('⚠', 'Erreur : ' + err.message);
+          return;
+        }
+        // Succès : re-render tout
+        KNIGHT.app.renderAll();
+        KNIGHT.app.showNotif('✓', 'Personnage chargé depuis l\'URL');
+      }
+    );
+    return; // On a tenté le chargement par URL, on sort
+  }
+
+  // Puis tentative de chargement automatique depuis save.json (ancien comportement)
+  if (typeof KNIGHT.storage.autoLoad === 'function') {
+    KNIGHT.storage.autoLoad(
+      KNIGHT.app.getChar(),
+      function () {
+        KNIGHT.app.renderAll();
+        KNIGHT.app.showNotif('✓', 'Personnage chargé');
+      },
+      function () {
+        // Pas de save.json : nouveau personnage, rien à faire
+      }
+    );
+  }
 });

@@ -11,8 +11,17 @@ var KNIGHT = KNIGHT || {};
 
 KNIGHT.storage = (function () {
 
-  var SAVES_DIR   = 'saves/';
-  var INDEX_FILE  = 'saves/index.json';
+  // Calculer le chemin de base depuis l'URL courante
+  // Ex: /Knight/ si index.html est dans /Knight/
+  var _getBasePath = function () {
+    var pathname = window.location.pathname;
+    var lastSlash = pathname.lastIndexOf('/');
+    return pathname.substring(0, lastSlash + 1);
+  };
+
+  var BASE_PATH = _getBasePath();
+  var SAVES_DIR   = BASE_PATH + 'saves/';
+  var INDEX_FILE  = BASE_PATH + 'saves/index.json';
 
   /* ════════════════════════════════════════
      SAVE — télécharge saves/<nom>.json
@@ -95,11 +104,26 @@ KNIGHT.storage = (function () {
       .catch(function (e) { callback(e); });
   }
 
+  /* ════════════════════════════════════════
+     LOAD FROM URL PARAMETER — charge saves/<id>.json
+     callback(err)
+  ════════════════════════════════════════ */
+
+  function loadFromUrlParam(id, char, callback) {
+    if (!id) {
+      callback(new Error('Pas de paramètre id dans l\'URL'));
+      return;
+    }
+    var file = id.replace(/\.json$/i, '') + '.json';
+    fetchCharacter(file, char, callback);
+  }
+
   return {
     save:           save,
     load:           load,
     fetchIndex:     fetchIndex,
-    fetchCharacter: fetchCharacter
+    fetchCharacter: fetchCharacter,
+    loadFromUrlParam: loadFromUrlParam
   };
 
 }());

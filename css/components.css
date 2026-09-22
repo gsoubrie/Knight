@@ -1339,3 +1339,22 @@ select option { background: var(--bg-card); }
 .weapon-mode-tir::after {
   background: linear-gradient(90deg, var(--blue-dim), transparent);
 }
+
+/* ── MODE JEU (lecture seule) ── */
+input:read-only,
+textarea:read-only {
+  background: var(--bg-input) !important;
+  color: var(--text-dim) !important;
+  cursor: default !important;
+  border-color: var(--border) !important;
+}
+
+.btn-toggle {
+  background: var(--purple-dim) !important;
+  border-color: var(--purple) !important;
+  color: var(--purple) !important;
+}
+.btn-toggle:hover {
+  background: var(--purple) !important;
+  color: var(--bg-deep) !important;
+}

@@ -1,0 +1,380 @@
+{
+  "nom": "Jonas",
+  "archetype": "",
+  "section": "",
+  "blason": "",
+  "voeu": "",
+  "aspects": [
+    {
+      "id": "chair",
+      "score": 2,
+      "caras": [
+        {
+          "name": "Déplacement",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Force",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Endurance",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bete",
+      "score": 2,
+      "caras": [
+        {
+          "name": "Hargne",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Combat",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Instinct",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "id": "machine",
+      "score": 2,
+      "caras": [
+        {
+          "name": "Tir",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Savoir",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Technique",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dame",
+      "score": 2,
+      "caras": [
+        {
+          "name": "Aura",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Parole",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Sang-Froid",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "id": "masque",
+      "score": 2,
+      "caras": [
+        {
+          "name": "Discrétion",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Dextérité",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "name": "Perception",
+          "score": 1,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    }
+  ],
+  "gauges": {
+    "ps": {
+      "current": 10,
+      "max": 46
+    },
+    "pes": {
+      "current": 50,
+      "max": 50
+    },
+    "pa": {
+      "current": 100,
+      "max": 100
+    },
+    "cdf": {
+      "current": 8,
+      "max": 8
+    },
+    "pe": {
+      "current": 40,
+      "max": 40
+    }
+  },
+  "derived": {
+    "defense": 0,
+    "reaction": 0,
+    "initiative": 0
+  },
+  "heroisme": 6,
+  "pg": 0,
+  "px": 0,
+  "pgArmure": 60,
+  "pxDepenses": 0,
+  "warrior": {
+    "nomArmure": "",
+    "generation": "1ère génération",
+    "capacite": "",
+    "paMax": 100,
+    "peMax": 40,
+    "cdfMax": 8,
+    "activeTypes": [],
+    "typesNotes": "",
+    "slots": {
+      "tete": {
+        "max": 7,
+        "modules": []
+      },
+      "torse": {
+        "max": 12,
+        "modules": []
+      },
+      "bras-g": {
+        "max": 10,
+        "modules": []
+      },
+      "bras-d": {
+        "max": 10,
+        "modules": []
+      },
+      "jambe-g": {
+        "max": 7,
+        "modules": []
+      },
+      "jambe-d": {
+        "max": 7,
+        "modules": []
+      }
+    }
+  },
+  "weapons": [
+    {
+      "type": "weapon",
+      "id": "item_1790073527021_2919",
+      "nom": "",
+      "image": "",
+      "pgCout": 0,
+      "contact": {
+        "degats": "",
+        "violence": "",
+        "portee": "Contact",
+        "energie": "",
+        "effets": ""
+      },
+      "tir": {
+        "degats": "",
+        "violence": "",
+        "portee": "",
+        "energie": "",
+        "effets": ""
+      }
+    },
+    {
+      "type": "weapon",
+      "id": "item_1790073527021_2765",
+      "nom": "",
+      "image": "",
+      "pgCout": 0,
+      "contact": {
+        "degats": "",
+        "violence": "",
+        "portee": "Contact",
+        "energie": "",
+        "effets": ""
+      },
+      "tir": {
+        "degats": "",
+        "violence": "",
+        "portee": "",
+        "energie": "",
+        "effets": ""
+      }
+    },
+    {
+      "type": "weapon",
+      "id": "item_1790073527022_4265",
+      "nom": "",
+      "image": "",
+      "pgCout": 0,
+      "contact": {
+        "degats": "",
+        "violence": "",
+        "portee": "Contact",
+        "energie": "",
+        "effets": ""
+      },
+      "tir": {
+        "degats": "",
+        "violence": "",
+        "portee": "",
+        "energie": "",
+        "effets": ""
+      }
+    }
+  ],
+  "modules": [],
+  "ia": {
+    "modele": "",
+    "surnom": "",
+    "personnalite": "",
+    "specialite": "",
+    "notes": ""
+  },
+  "ledgerPes": {
+    "id": "pes",
+    "label": "Points d'Espoir",
+    "base": 50,
+    "entries": []
+  },
+  "ledgerPg": {
+    "id": "pg",
+    "label": "Points de Gloire",
+    "base": 0,
+    "entries": []
+  },
+  "motivations": [],
+  "contacts": [],
+  "equipement": "",
+  "histoire": "",
+  "notes": "",
+  "quicklist": [],
+  "avantages": "",
+  "inconvenients": ""
+}
