@@ -45,6 +45,21 @@ KNIGHT.ui.tabs = (function () {
     _currentSubTab = id;
   }
 
+  // ── Visibilité onglet Armure ──
+
+  function _setArmureTabVisible(visible) {
+    var tab = document.getElementById('tab-armure');
+    var page = document.getElementById('page-armure');
+    if (tab) tab.style.display = visible ? '' : 'none';
+    if (page) page.style.display = visible ? '' : 'none';
+    
+    // Si l'onglet Armure est masqué et qu'il est actuellement sélectionné,
+    // basculer vers un autre onglet
+    if (!visible && _currentTab === 'armure') {
+      _switchTab('carac');
+    }
+  }
+
   // ── Init ──
 
   function init() {
@@ -67,6 +82,9 @@ KNIGHT.ui.tabs = (function () {
     // État initial
     _switchTab('carac');
     _switchSubTab('armes');
+    
+    // Masquer l'onglet Armure par défaut (sera affiché si armure sélectionnée)
+    _setArmureTabVisible(false);
   }
 
   return {
@@ -74,7 +92,8 @@ KNIGHT.ui.tabs = (function () {
     switchTab:     _switchTab,
     switchSubTab:  _switchSubTab,
     currentTab:    function () { return _currentTab; },
-    currentSubTab: function () { return _currentSubTab; }
+    currentSubTab: function () { return _currentSubTab; },
+    setArmureTabVisible: _setArmureTabVisible
   };
 
 }());

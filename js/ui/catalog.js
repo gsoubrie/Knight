@@ -100,9 +100,17 @@ KNIGHT.ui.catalog = (function () {
     });
     _initSelects(); // Re-remplir au cas où les catalogues ont changé
     
-    // Si une armure est déjà sélectionnée, appliquer ses données
+    // Si une armure est déjà sélectionnée
     var armureValue = _getField(char, 'warrior.nomArmure');
-    if (armureValue && KNIGHT.data && KNIGHT.data.armorData) {
+    var hasArmure = armureValue && armureValue.trim() !== '';
+    
+    // Afficher/masquer l'onglet Armure
+    if (KNIGHT.ui.tabs && KNIGHT.ui.tabs.setArmureTabVisible) {
+      KNIGHT.ui.tabs.setArmureTabVisible(hasArmure);
+    }
+    
+    // Appliquer les données de l'armure si sélectionnée
+    if (hasArmure && KNIGHT.data && KNIGHT.data.armorData) {
       KNIGHT.data.armorData.applyToCharacter(char, armureValue);
     }
   }
@@ -167,9 +175,18 @@ KNIGHT.ui.catalog = (function () {
           if (_char) {
             _setField(_char, mapping.field, this.value);
             
-            // Si c'est le sélecteur d'armure, appliquer les données de l'armure
-            if (selectId === 'armure' && this.value && KNIGHT.data && KNIGHT.data.armorData) {
-              KNIGHT.data.armorData.applyToCharacter(_char, this.value);
+            // Si c'est le sélecteur d'armure
+            if (selectId === 'armure') {
+              // Afficher/masquer l'onglet Armure
+              var hasArmure = this.value && this.value.trim() !== '';
+              if (KNIGHT.ui.tabs && KNIGHT.ui.tabs.setArmureTabVisible) {
+                KNIGHT.ui.tabs.setArmureTabVisible(hasArmure);
+              }
+              
+              // Appliquer les données de l'armure si sélectionnée
+              if (hasArmure && KNIGHT.data && KNIGHT.data.armorData) {
+                KNIGHT.data.armorData.applyToCharacter(_char, this.value);
+              }
             }
           }
         });
