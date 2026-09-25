@@ -11,15 +11,15 @@ KNIGHT.data = KNIGHT.data || {};
 
 KNIGHT.data.armorData = {
   // Livre de Base
+  // Ordre des slots : Tête, Bras G, Bras D, Torse, Jambe G, Jambe D
   'Barbarian': {
     nom: 'Barbarian',
     capacites: 'Mode Goliath',
     paMax: 60,
     peMax: 60,
     cdfMax: 12,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Force', 'Endurance', 'Hargne', 'Combat'],
-    overdrivesText: 'Force, Endurance, Hargne, Combat',
     source: 'Livre de Base'
   },
   'Bard': {
@@ -28,7 +28,7 @@ KNIGHT.data.armorData = {
     paMax: 40,
     peMax: 80,
     cdfMax: 12,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Déplacement', 'Aura', 'Parole', 'Dextérité'],
     source: 'Livre de Base'
   },
@@ -38,7 +38,7 @@ KNIGHT.data.armorData = {
     paMax: 120,
     peMax: 20,
     cdfMax: 8,
-    slots: { tete: 7, torse: 7, 'bras-g': 7, 'bras-d': 10, 'jambe-g': 7, 'jambe-d': 7 },
+    slots: { tete: 7, 'bras-g': 7, 'bras-d': 7, torse: 10, 'jambe-g': 7, 'jambe-d': 7 },
     overdrives: ['Force', 'Endurance', 'Tir', 'Perception'],
     source: 'Livre de Base'
   },
@@ -48,7 +48,7 @@ KNIGHT.data.armorData = {
     paMax: 70,
     peMax: 60,
     cdfMax: 10,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Force', 'Endurance', 'Savoir', 'Technique'],
     source: 'Livre de Base'
   },
@@ -58,7 +58,7 @@ KNIGHT.data.armorData = {
     paMax: 50,
     peMax: 70,
     cdfMax: 12,
-    slots: { tete: 4, torse: 4, 'bras-g': 4, 'bras-d': 6, 'jambe-g': 4, 'jambe-d': 4 },
+    slots: { tete: 4, 'bras-g': 4, 'bras-d': 4, torse: 6, 'jambe-g': 4, 'jambe-d': 4 },
     overdrives: ['Déplacement', 'Tir', 'Discrétion', 'Dextérité'],
     source: 'Livre de Base'
   },
@@ -68,7 +68,7 @@ KNIGHT.data.armorData = {
     paMax: 50,
     peMax: 70,
     cdfMax: 12,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Déplacement', 'Combat', 'Discrétion', 'Dextérité'],
     source: 'Livre de Base'
   },
@@ -78,7 +78,7 @@ KNIGHT.data.armorData = {
     paMax: 90,
     peMax: 50,
     cdfMax: 8,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Force', 'Endurance', 'Aura', 'Sang-froid'],
     source: 'Livre de Base'
   },
@@ -88,7 +88,7 @@ KNIGHT.data.armorData = {
     paMax: 100,
     peMax: 40,
     cdfMax: 8,
-    slots: { tete: 7, torse: 10, 'bras-g': 10, 'bras-d': 12, 'jambe-g': 7, 'jambe-d': 7 },
+    slots: { tete: 7, 'bras-g': 10, 'bras-d': 10, torse: 12, 'jambe-g': 7, 'jambe-d': 7 },
     overdrives: ['Déplacement', 'Combat', 'Tir', 'Dextérité'],
     source: 'Livre de Base'
   },
@@ -98,7 +98,7 @@ KNIGHT.data.armorData = {
     paMax: 40,
     peMax: 80,
     cdfMax: 14,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Combat', 'Instinct', 'Aura', 'Sang-froid'],
     source: 'Livre de Base'
   },
@@ -110,7 +110,7 @@ KNIGHT.data.armorData = {
     paMax: 60,
     peMax: 50,
     cdfMax: 14,
-    slots: { tete: 7, torse: 8, 'bras-g': 8, 'bras-d': 10, 'jambe-g': 6, 'jambe-d': 6 },
+    slots: { tete: 7, 'bras-g': 8, 'bras-d': 8, torse: 10, 'jambe-g': 6, 'jambe-d': 6 },
     overdrives: ['Combat', 'Tir', 'Hargne', 'Sang-froid'],
     source: 'Supplément 2038'
   },
@@ -120,7 +120,7 @@ KNIGHT.data.armorData = {
     paMax: 50,
     peMax: 60,
     cdfMax: 14,
-    slots: { tete: 7, torse: 10, 'bras-g': 10, 'bras-d': 12, 'jambe-g': 7, 'jambe-d': 7 },
+    slots: { tete: 7, 'bras-g': 10, 'bras-d': 10, torse: 12, 'jambe-g': 7, 'jambe-d': 7 },
     overdrives: ['Instinct', 'Savoir', 'Perception', 'Sang-froid'],
     source: 'Supplément 2038'
   },
@@ -130,7 +130,7 @@ KNIGHT.data.armorData = {
     paMax: 60,
     peMax: 80,
     cdfMax: 14,
-    slots: { tete: 7, torse: 8, 'bras-g': 8, 'bras-d': 10, 'jambe-g': 6, 'jambe-d': 6 },
+    slots: { tete: 7, 'bras-g': 8, 'bras-d': 8, torse: 10, 'jambe-g': 6, 'jambe-d': 6 },
     overdrives: ['Instinct', 'Dextérité', 'Endurance', 'Sang-froid'],
     source: 'Supplément 2038'
   },
@@ -142,7 +142,7 @@ KNIGHT.data.armorData = {
     paMax: 50,
     peMax: 80,
     cdfMax: 12,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Combat', 'Instinct', 'Tir', 'Technique'],
     source: 'Codex v1.5'
   },
@@ -154,7 +154,7 @@ KNIGHT.data.armorData = {
     paMax: 60,
     peMax: 80,
     cdfMax: 10,
-    slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 5, 'bras-d': 5, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Savoir', 'Technique', 'Sang-froid', 'Hargne'],
     source: 'Atlas'
   },
@@ -164,7 +164,7 @@ KNIGHT.data.armorData = {
     paMax: 60,
     peMax: 60,
     cdfMax: 8,
-    slots: { tete: 5, torse: 8, 'bras-g': 8, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
+    slots: { tete: 5, 'bras-g': 8, 'bras-d': 8, torse: 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Combat', 'Déplacement', 'Dextérité', 'Instinct'],
     source: 'Atlas'
   }
