@@ -282,7 +282,6 @@ KNIGHT.app = (function () {
     var map = {
       'nom':          function (v) { _char.nom = v; _updateHeaderName(); },
       'voeu':         function (v) { _char.voeu = v; },
-      'pg':           function (v) { _char.pg = parseInt(v) || 0; },
       'px':           function (v) { _char.px = parseInt(v) || 0; },
       'pg-armure':    function (v) { _char.pgArmure = parseInt(v) || 0; },
       'px-depenses':  function (v) { _char.pxDepenses = parseInt(v) || 0; },
@@ -305,7 +304,7 @@ KNIGHT.app = (function () {
   function _syncScalaires() {
     var map = {
       'nom': _char.nom, 'voeu': _char.voeu,
-      'pg': _char.pg, 'px': _char.px, 'pg-armure': _char.pgArmure,
+      'px': _char.px, 'pg-armure': _char.pgArmure,
       'px-depenses': _char.pxDepenses,
       'defense': _char.derived.defense, 'reaction': _char.derived.reaction,
       'initiative': _char.derived.initiative,

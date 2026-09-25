@@ -18,8 +18,31 @@ KNIGHT.ui.catalog = (function () {
     'archetype': { catalog: 'archetypes', field: 'archetype' },
     'section':   { catalog: 'sections',   field: 'section' },
     'blason':    { catalog: 'blasons',    field: 'blason' },
-    'armure':    { catalog: 'armures',    field: 'armure' }
+    'armure':    { catalog: 'armures',    field: 'warrior.nomArmure' }
   };
+
+  /* Helper pour accéder aux champs imbriqués */
+  function _getField(obj, path) {
+    if (!path) return undefined;
+    var parts = path.split('.');
+    var current = obj;
+    for (var i = 0; i < parts.length; i++) {
+      if (current[parts[i]] === undefined) return undefined;
+      current = current[parts[i]];
+    }
+    return current;
+  }
+
+  function _setField(obj, path, value) {
+    if (!path) return;
+    var parts = path.split('.');
+    var current = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (current[parts[i]] === undefined) current[parts[i]] = {};
+      current = current[parts[i]];
+    }
+    current[parts[parts.length - 1]] = value;
+  }
 
   /* ── Initialisation ── */
   function init(char) {
@@ -46,7 +69,7 @@ KNIGHT.ui.catalog = (function () {
     var mapping = _catalogMappings[selectId];
     
     // Conserver la valeur actuelle
-    var currentValue = select.value || _char[mapping.field];
+    var currentValue = select.value || _getField(_char, mapping.field);
 
     // Vider et ajouter l'option par défaut
     select.innerHTML = '<option value="">— Sélectionner —</option>';
@@ -72,7 +95,7 @@ KNIGHT.ui.catalog = (function () {
       var mapping = _catalogMappings[selectId];
       var select = document.getElementById(selectId);
       if (select) {
-        select.value = char[mapping.field] || '';
+        select.value = _getField(char, mapping.field) || '';
       }
     });
     _initSelects(); // Re-remplir au cas où les catalogues ont changé
@@ -84,7 +107,7 @@ KNIGHT.ui.catalog = (function () {
       var mapping = _catalogMappings[selectId];
       var select = document.getElementById(selectId);
       if (select) {
-        char[mapping.field] = select.value;
+        _setField(char, mapping.field, select.value);
       }
     });
   }
@@ -121,7 +144,7 @@ KNIGHT.ui.catalog = (function () {
       if (select) {
         select.value = newItem;
         // Mettre à jour le personnage
-        _char[_catalogMappings[selectId].field] = newItem;
+        _setField(_char, _catalogMappings[selectId].field, newItem);
       }
     } else {
       alert('Cet élément existe déjà ou est invalide.');
@@ -136,7 +159,7 @@ KNIGHT.ui.catalog = (function () {
       if (select) {
         select.addEventListener('change', function () {
           if (_char) {
-            _char[mapping.field] = this.value;
+            _setField(_char, mapping.field, this.value);
           }
         });
       }

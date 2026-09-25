@@ -18,7 +18,6 @@ KNIGHT.models.Character = function () {
   this.archetype = '';
   this.section   = '';
   this.blason    = '';
-  this.armure    = '';
   this.voeu      = '';
 
   // ── Aspects ──
@@ -170,7 +169,6 @@ KNIGHT.models.Character.prototype = {
       archetype:  this.archetype,
       section:    this.section,
       blason:     this.blason,
-      armure:     this.armure,
       voeu:       this.voeu,
       aspects:    this.aspects.map(function (a) { return a.serialize(); }),
       gauges:     JSON.parse(JSON.stringify(this.gauges)),
@@ -209,7 +207,7 @@ KNIGHT.models.Character.prototype = {
     var self = this;
 
     // Scalaires
-    var scalaires = ['nom','archetype','section','blason','armure','voeu',
+    var scalaires = ['nom','archetype','section','blason','voeu',
                      'heroisme','pg','px','pgArmure','pxDepenses',
                      'equipement','histoire','notes','avantages','inconvenients'];
     scalaires.forEach(function (k) {
