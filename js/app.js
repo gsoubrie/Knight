@@ -281,9 +281,6 @@ KNIGHT.app = (function () {
   function _initScalaires() {
     var map = {
       'nom':          function (v) { _char.nom = v; _updateHeaderName(); },
-      'archetype':    function (v) { _char.archetype = v; },
-      'section':      function (v) { _char.section = v; },
-      'blason':       function (v) { _char.blason = v; },
       'voeu':         function (v) { _char.voeu = v; },
       'pg':           function (v) { _char.pg = parseInt(v) || 0; },
       'px':           function (v) { _char.px = parseInt(v) || 0; },
@@ -307,8 +304,7 @@ KNIGHT.app = (function () {
 
   function _syncScalaires() {
     var map = {
-      'nom': _char.nom, 'archetype': _char.archetype, 'section': _char.section,
-      'blason': _char.blason, 'voeu': _char.voeu,
+      'nom': _char.nom, 'voeu': _char.voeu,
       'pg': _char.pg, 'px': _char.px, 'pg-armure': _char.pgArmure,
       'px-depenses': _char.pxDepenses,
       'defense': _char.derived.defense, 'reaction': _char.derived.reaction,
@@ -336,6 +332,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.aspects.collect();
     KNIGHT.ui.gauges.collect(_char);
     KNIGHT.ui.arsenal.collect(_char);
+    KNIGHT.ui.catalog.collect(_char);
   }
 
   function _save() {
@@ -431,6 +428,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.arsenal.render(_char);
     KNIGHT.ui.ledger.render(_char);
     KNIGHT.ui.armor.render(_char);
+    KNIGHT.ui.catalog.render(_char);
     _renderHeroisme();
     _renderMotivations();
     _renderContacts();
@@ -467,6 +465,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.arsenal.init(_char);
     KNIGHT.ui.ledger.init(_char);
     KNIGHT.ui.armor.init(_char);
+    KNIGHT.ui.catalog.init(_char);
 
     // App-level
     _initHeroisme();

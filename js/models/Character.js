@@ -10,11 +10,15 @@ var KNIGHT = KNIGHT || {};
 KNIGHT.models = KNIGHT.models || {};
 
 KNIGHT.models.Character = function () {
+  // ── Catalogues ──
+  this.catalogs = KNIGHT.models.Catalog.createDefaultCatalogs();
+
   // ── Identité ──
   this.nom       = '';
   this.archetype = '';
   this.section   = '';
   this.blason    = '';
+  this.armure    = '';
   this.voeu      = '';
 
   // ── Aspects ──
@@ -166,6 +170,7 @@ KNIGHT.models.Character.prototype = {
       archetype:  this.archetype,
       section:    this.section,
       blason:     this.blason,
+      armure:     this.armure,
       voeu:       this.voeu,
       aspects:    this.aspects.map(function (a) { return a.serialize(); }),
       gauges:     JSON.parse(JSON.stringify(this.gauges)),
@@ -188,7 +193,13 @@ KNIGHT.models.Character.prototype = {
       notes:        this.notes,
       quicklist:    JSON.parse(JSON.stringify(this.quicklist)),
       avantages:    this.avantages,
-      inconvenients: this.inconvenients
+      inconvenients: this.inconvenients,
+      catalogs:     {
+        archetypes: this.catalogs.archetypes.serialize(),
+        sections:   this.catalogs.sections.serialize(),
+        blasons:    this.catalogs.blasons.serialize(),
+        armures:    this.catalogs.armures.serialize()
+      }
     };
     return data;
   },
@@ -198,12 +209,20 @@ KNIGHT.models.Character.prototype = {
     var self = this;
 
     // Scalaires
-    var scalaires = ['nom','archetype','section','blason','voeu',
+    var scalaires = ['nom','archetype','section','blason','armure','voeu',
                      'heroisme','pg','px','pgArmure','pxDepenses',
                      'equipement','histoire','notes','avantages','inconvenients'];
     scalaires.forEach(function (k) {
       if (data[k] !== undefined) self[k] = data[k];
     });
+
+    // Catalogues
+    if (data.catalogs) {
+      if (data.catalogs.archetypes) self.catalogs.archetypes.deserialize(data.catalogs.archetypes);
+      if (data.catalogs.sections)   self.catalogs.sections.deserialize(data.catalogs.sections);
+      if (data.catalogs.blasons)    self.catalogs.blasons.deserialize(data.catalogs.blasons);
+      if (data.catalogs.armures)    self.catalogs.armures.deserialize(data.catalogs.armures);
+    }
 
     // Aspects
     if (data.aspects) {

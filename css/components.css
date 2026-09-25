@@ -1377,3 +1377,24 @@ textarea:read-only {
 .mode-play .nv-label {
   margin-left: 24px;
 }
+
+/* ── SELECT WITH BUTTON CONTAINER ── */
+.field select {
+  width: auto;
+  min-width: 0;
+}
+
+.field > div[style*="display:flex"] {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.field > div[style*="display:flex"] select {
+  flex: 1;
+  width: auto;
+}
+
+.field > div[style*="display:flex"] .btn {
+  flex-shrink: 0;
+}
