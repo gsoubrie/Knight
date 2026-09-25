@@ -186,6 +186,10 @@ KNIGHT.ui.catalog = (function () {
               // Appliquer les données de l'armure si sélectionnée
               if (hasArmure && KNIGHT.data && KNIGHT.data.armorData) {
                 KNIGHT.data.armorData.applyToCharacter(_char, this.value);
+                // Mettre à jour l'interface
+                if (typeof KNIGHT.app !== 'undefined' && KNIGHT.app.renderAll) {
+                  KNIGHT.app.renderAll();
+                }
               }
             }
           }

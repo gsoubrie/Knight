@@ -19,6 +19,7 @@ KNIGHT.data.armorData = {
     cdfMax: 12,
     slots: { tete: 5, torse: 5, 'bras-g': 5, 'bras-d': 8, 'jambe-g': 5, 'jambe-d': 5 },
     overdrives: ['Force', 'Endurance', 'Hargne', 'Combat'],
+    overdrivesText: 'Force, Endurance, Hargne, Combat',
     source: 'Livre de Base'
   },
   'Bard': {
@@ -192,15 +193,18 @@ KNIGHT.data.armorData.applyToCharacter = function(char, armorName) {
     char.warrior.slots['jambe-d'].max = armor.slots['jambe-d'];
   }
   
-  // Mettre à jour les capacités
-  char.warrior.capacite = armor.capacites;
+  // Mettre à jour les capacités et overdrives
+  // Construire le texte complet pour le champ capacite
+  var capacitesText = armor.capacites || '';
+  var overdrivesText = armor.overdrives ? armor.overdrives.join(', ') : '';
+  var fullCapacites = capacitesText;
+  if (overdrivesText) {
+    fullCapacites = capacitesText + ' | Overdrives: ' + overdrivesText;
+  }
+  char.warrior.capacite = fullCapacites;
   
-  // Mettre à jour les overdrives
+  // Mettre à jour les overdrives (tableau pour traitement interne)
   char.warrior.activeTypes = armor.overdrives ? armor.overdrives.slice() : [];
-  
-  // Mettre à jour pgArmure (Points de Gloire de l'armure)
-  // Note: pgArmure semble être un champ séparé, on peut le mettre à jour si besoin
-  // char.pgArmure = ... (à définir selon les règles)
   
   return true;
 };

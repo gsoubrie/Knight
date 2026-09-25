@@ -334,6 +334,7 @@ KNIGHT.app = (function () {
     
     // Synchroniser les champs de l'onglet Armure
     if (_char.warrior) {
+      // Champs inputs
       var wMap = {
         'w-pa-max': _char.warrior.paMax,
         'w-pe-max': _char.warrior.peMax,
@@ -345,6 +346,26 @@ KNIGHT.app = (function () {
       Object.keys(wMap).forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.value = wMap[id] !== undefined ? wMap[id] : '';
+      });
+      
+      // Titre (span)
+      var titleEl = document.getElementById('armure-title');
+      if (titleEl) {
+        titleEl.textContent = _char.warrior.nomArmure || 'Warrior';
+      }
+      
+      // Synchroniser les slots max
+      var slotMap = {
+        'slot-max-tete': _char.warrior.slots.tete.max,
+        'slot-max-torse': _char.warrior.slots.torse.max,
+        'slot-max-bras-g': _char.warrior.slots['bras-g'].max,
+        'slot-max-bras-d': _char.warrior.slots['bras-d'].max,
+        'slot-max-jambe-g': _char.warrior.slots['jambe-g'].max,
+        'slot-max-jambe-d': _char.warrior.slots['jambe-d'].max
+      };
+      Object.keys(slotMap).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.value = slotMap[id] !== undefined ? slotMap[id] : '';
       });
     }
     
