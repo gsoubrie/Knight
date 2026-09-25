@@ -291,7 +291,7 @@
     <!-- Panneau détail + stats warrior -->
     <div>
       <div class="card section-gap">
-        <div class="card-title accent-red"><span id="armure-title">Warrior</span> — Répartition des modules</div>
+        <div class="card-title accent-red"><span id="armure-title">Warrior</span><span id="armure-overdrives-title"></span> — Répartition des modules</div>
         <div class="grid-3" style="gap:8px;margin-bottom:12px;">
           <div class="stat-box"><div class="stat-box-label">PA Max</div><input type="number" id="w-pa-max" value="100"></div>
           <div class="stat-box"><div class="stat-box-label">PE Max</div><input type="number" id="w-pe-max" value="40"></div>
@@ -307,6 +307,9 @@
         <div class="grid-2" style="gap:8px;margin-bottom:12px;">
           <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" placeholder="ex. Barbarian"></div>
           <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération"></div>
+        </div>
+        <div class="field"><label>Overdrives</label>
+          <div id="armure-overdrives-container" class="overdrives-list"></div>
         </div>
         <div class="field"><label>Capacités</label>
           <div id="armure-capacites-container" class="capacites-list"></div>
