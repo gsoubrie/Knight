@@ -49,6 +49,7 @@ KNIGHT.ui.catalog = (function () {
     _char = char;
     _initSelects();
     _initAddButtons();
+    _initSelectChangeHandlers();
   }
 
   /* ── Remplir les sélecteurs ── */
@@ -112,6 +113,10 @@ KNIGHT.ui.catalog = (function () {
     // Appliquer les données de l'armure si sélectionnée
     if (hasArmure && KNIGHT.data && KNIGHT.data.armorData) {
       KNIGHT.data.armorData.applyToCharacter(char, armureValue);
+      // Mettre à jour l'interface de l'armure
+      if (KNIGHT.ui.armor && KNIGHT.ui.armor.render) {
+        KNIGHT.ui.armor.render(char);
+      }
     }
   }
 
@@ -186,9 +191,13 @@ KNIGHT.ui.catalog = (function () {
               // Appliquer les données de l'armure si sélectionnée
               if (hasArmure && KNIGHT.data && KNIGHT.data.armorData) {
                 KNIGHT.data.armorData.applyToCharacter(_char, this.value);
-                // Mettre à jour l'interface
-                if (typeof KNIGHT.app !== 'undefined' && KNIGHT.app.renderAll) {
-                  KNIGHT.app.renderAll();
+                // Mettre à jour l'interface (scalaires + armure)
+                if (typeof KNIGHT.app !== 'undefined' && KNIGHT.app.syncScalaires) {
+                  KNIGHT.app.syncScalaires();
+                }
+                // Mettre à jour l'interface de l'armure (SVG + badges)
+                if (KNIGHT.ui.armor && KNIGHT.ui.armor.render) {
+                  KNIGHT.ui.armor.render(_char);
                 }
               }
             }
@@ -197,9 +206,6 @@ KNIGHT.ui.catalog = (function () {
       }
     });
   }
-
-  // Initialiser les gestionnaires de changement
-  _initSelectChangeHandlers();
 
   /* ── API publique ── */
   return {

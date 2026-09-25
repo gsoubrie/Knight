@@ -1411,9 +1411,135 @@ textarea:read-only {
   background: var(--bg-input);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 6px 10px;
+  padding: 12px;
   font-family: var(--font-body);
   font-size: 12px;
   color: var(--text);
-  white-space: nowrap;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
+.capacite-header {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+
+.capacite-description {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.capacite-section {
+  color: var(--text);
+  font-size: 11px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.capacite-section strong {
+  color: var(--accent-blue);
+}
+
+.capacite-variantes {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.capacite-variant {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.variant-header {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--accent-purple);
+  margin-bottom: 4px;
+}
+
+.variant-description {
+  color: var(--text-secondary);
+  font-size: 11px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.variant-section {
+  color: var(--text);
+  font-size: 11px;
+  margin-bottom: 2px;
+  line-height: 1.5;
+}
+
+.variant-section strong {
+  color: var(--accent-green);
+}
+
+.capacite-types {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.capacite-type {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.type-header {
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--accent-orange);
+  margin-bottom: 4px;
+}
+
+.type-caracs {
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* Overdrives */
+.overdrives-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.overdrives-badge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.od-tag {
+  background: var(--bg-input);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.od-separator {
+  color: var(--text-faint);
+  margin: 0 6px;
+  font-size: 10px;
 }

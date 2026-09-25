@@ -9,6 +9,14 @@
 
 var KNIGHT = KNIGHT || {};
 
+// Fonction utilitaire pour échapper le HTML
+function _escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  var div = document.createElement('div');
+  div.textContent = String(text);
+  return div.innerHTML;
+}
+
 KNIGHT.app = (function () {
 
   /* ── Personnage courant ── */
@@ -346,14 +354,123 @@ KNIGHT.app = (function () {
         if (el) el.value = wMap[id] !== undefined ? wMap[id] : '';
       });
       
-      // Afficher les capacités sous forme de conteneurs
+      // Afficher les overdrives
+      var overdrivesContainer = document.getElementById('armure-overdrives-container');
+      if (overdrivesContainer && _char.warrior && _char.warrior.activeTypes) {
+        if (_char.warrior.activeTypes.length > 0) {
+          var odHtml = '<div class="overdrives-badge">' + _char.warrior.activeTypes.map(function(od) {
+            return '<span class="od-tag">' + _escapeHtml(od) + '</span>';
+          }).join('') + '</div>';
+          overdrivesContainer.innerHTML = odHtml;
+          // Mettre à jour le titre avec les overdrives
+          var odTitleEl = document.getElementById('armure-overdrives-title');
+          if (odTitleEl) {
+            odTitleEl.innerHTML = ' <span class="od-separator">|</span> ' + _char.warrior.activeTypes.map(_escapeHtml).join(', ');
+          }
+        } else {
+          overdrivesContainer.innerHTML = '<div style="color:var(--text-faint);">Aucun overdrive</div>';
+          var odTitleEl = document.getElementById('armure-overdrives-title');
+          if (odTitleEl) odTitleEl.innerHTML = '';
+        }
+      }
+
+      // Afficher les capacités sous forme de conteneurs avec descriptions détaillées
       var capacitesContainer = document.getElementById('armure-capacites-container');
-      if (capacitesContainer && _char.warrior.capacite) {
-        // Séparer les capacités par virgule ou point-virgule
-        var capacites = _char.warrior.capacite.split(/[;,]/).map(function(c) { return c.trim(); }).filter(function(c) { return c; });
-        capacitesContainer.innerHTML = capacites.map(function(capacite) {
-          return '<div class="capacite-item">' + capacite + '</div>';
-        }).join('');
+      if (capacitesContainer) {
+        // Si on a des descriptions détaillées, on les utilise
+        if (_char.warrior && _char.warrior.capaciteDescriptions && Object.keys(_char.warrior.capaciteDescriptions).length > 0) {
+          var html = '';
+          try {
+            Object.keys(_char.warrior.capaciteDescriptions).forEach(function(capaciteName) {
+              var capData = _char.warrior.capaciteDescriptions[capaciteName];
+              if (!capData || typeof capData !== 'object') return;
+              
+              html += '<div class="capacite-item">';
+              html += '<div class="capacite-header">' + (capaciteName || 'Capacité') + '</div>';
+              
+              if (capData.description) {
+                html += '<div class="capacite-description">' + _escapeHtml(capData.description) + '</div>';
+              }
+              
+              if (capData.effet) {
+                html += '<div class="capacite-section"><strong>Effet:</strong> ' + _escapeHtml(capData.effet) + '</div>';
+              }
+              
+              if (capData.energie) {
+                html += '<div class="capacite-section"><strong>Énergie:</strong> ' + _escapeHtml(capData.energie) + '</div>';
+              }
+              
+              if (capData.activation) {
+                html += '<div class="capacite-section"><strong>Activation:</strong> ' + _escapeHtml(capData.activation) + '</div>';
+              }
+              
+              if (capData.duree) {
+                html += '<div class="capacite-section"><strong>Durée:</strong> ' + _escapeHtml(capData.duree) + '</div>';
+              }
+              
+              // Pour les capacités avec variantes (comme Mode Cea, Mode Warlord, etc.)
+              if (capData.variantes && typeof capData.variantes === 'object') {
+                html += '<div class="capacite-variantes">';
+                Object.keys(capData.variantes).forEach(function(variantName) {
+                  var variant = capData.variantes[variantName];
+                  if (!variant || typeof variant !== 'object') return;
+                  html += '<div class="capacite-variant">';
+                  html += '<div class="variant-header">' + _escapeHtml(variantName) + '</div>';
+                  if (variant.description) {
+                    html += '<div class="variant-description">' + _escapeHtml(variant.description) + '</div>';
+                  }
+                  if (variant.effet) {
+                    html += '<div class="variant-section"><strong>Effet:</strong> ' + _escapeHtml(variant.effet) + '</div>';
+                  }
+                  if (variant.degats) {
+                    html += '<div class="variant-section"><strong>Dégâts:</strong> ' + _escapeHtml(variant.degats) + '</div>';
+                  }
+                  if (variant.violence) {
+                    html += '<div class="variant-section"><strong>Violence:</strong> ' + _escapeHtml(variant.violence) + '</div>';
+                  }
+                  if (variant.portree) {
+                    html += '<div class="variant-section"><strong>Portée:</strong> ' + _escapeHtml(variant.portree) + '</div>';
+                  }
+                  if (variant.effets && Array.isArray(variant.effets) && variant.effets.length > 0) {
+                    html += '<div class="variant-section"><strong>Effets:</strong> ' + _escapeHtml(variant.effets.join(', ')) + '</div>';
+                  }
+                  html += '</div>';
+                });
+                html += '</div>';
+              }
+              
+              // Pour les capacités avec types (comme Warrior Type)
+              if (capData.types && typeof capData.types === 'object') {
+                html += '<div class="capacite-types">';
+                Object.keys(capData.types).forEach(function(typeName) {
+                  var type = capData.types[typeName];
+                  if (!type || typeof type !== 'object') return;
+                  html += '<div class="capacite-type">';
+                  html += '<div class="type-header">' + _escapeHtml(typeName) + ' (' + _escapeHtml(type.aspect || '') + ')</div>';
+                  if (Array.isArray(type.caracs)) {
+                    html += '<div class="type-caracs">' + _escapeHtml(type.caracs.join(', ')) + '</div>';
+                  }
+                  html += '</div>';
+                });
+                html += '</div>';
+              }
+              
+              html += '</div>';
+            });
+            capacitesContainer.innerHTML = html;
+          } catch (e) {
+            console.error('Erreur lors de l\'affichage des capacités:', e);
+            capacitesContainer.innerHTML = '<div style="color:red;">Erreur d\'affichage</div>';
+          }
+        } else if (_char.warrior && _char.warrior.capacite) {
+          // Fallback: Séparer les capacités par virgule ou point-virgule
+          var capacites = _char.warrior.capacite.split(/[;,]/).map(function(c) { return c.trim(); }).filter(function(c) { return c; });
+          capacitesContainer.innerHTML = capacites.map(function(capacite) {
+            return '<div class="capacite-item">' + _escapeHtml(capacite) + '</div>';
+          }).join('');
+        } else {
+          capacitesContainer.innerHTML = '<div style="color:var(--text-faint);">Aucune capacité</div>';
+        }
       }
       
       // Titre (span)
@@ -568,6 +685,7 @@ KNIGHT.app = (function () {
     showNotif: _showNotif,
     getChar:   function () { return _char; },
     renderAll: _renderAll,
+    syncScalaires: _syncScalaires,
     _setEditMode: _setEditMode
   };
 
