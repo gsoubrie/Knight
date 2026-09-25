@@ -48,21 +48,25 @@ KNIGHT.models.Catalog.prototype = {
   }
 };
 
-// Catalogues par défaut
+// Catalogues par défaut basés sur Knight V1 officiel
 KNIGHT.models.Catalog.createDefaultCatalogs = function () {
   return {
     archetypes: new KNIGHT.models.Catalog('Archétypes', [
-      'Soldat', 'Rebut', 'Citoyen', 'Noble', 'Clerc', 'Technicien', 'Pilote', 'Éclaireur'
+      'Agent du Nodachi', 'Archétype libre', 'Artiste', 'Célébrité', 'Citoyen',
+      'Combattant', 'Force de la nature', 'Génie', 'Habitant des territoires libres',
+      'Hors-la-loi', 'Indépendant', 'Leader', 'Membre d\'un service secret',
+      'Membre d\'une société secrète', 'Rebut', 'Religieux', 'Survivant', 'Voyageur'
     ]),
     sections: new KNIGHT.models.Catalog('Sections', [
-      'Table Ronde', 'Gardiens', 'Croisés', 'Vanguarde', 'Ombre', 'Logistique'
+      'Cyclope', 'Dragon', 'Gargoyle', 'Giant', 'Griffon', 'Korrigan', 'Ogre', 'Tarasque'
     ]),
     blasons: new KNIGHT.models.Catalog('Blasons', [
-      'Lion', 'Aigle', 'Dragon', 'Épée', 'Bouclier', 'Rose', 'Loup', 'Fleur de Lys', 'Griffon', 'Phénix'
+      'L\'aigle', 'L\'ours', 'Le cerf', 'Le cheval', 'Le corbeau', 'Le dragon',
+      'Le faucon', 'Le lion', 'Le loup', 'Le sanglier', 'Le serpent', 'Le taureau'
     ]),
     armures: new KNIGHT.models.Catalog('Armures', [
-      'Fenrir', 'Durandal', 'Excalibur', 'Joyeuse', 'Hauteclaire', 'Cortana',
-      'Morglay', 'Flamberge', 'Haudegonde', 'Balise'
+      'Barbarian', 'Bard', 'Druid', 'Monk', 'Paladin', 'Priest', 'Psion',
+      'Ranger', 'Rogue', 'Shaman', 'Sorcerer', 'Warlock', 'Warmaster', 'Warrior', 'Wizard'
     ])
   };
 };
