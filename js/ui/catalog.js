@@ -99,6 +99,12 @@ KNIGHT.ui.catalog = (function () {
       }
     });
     _initSelects(); // Re-remplir au cas où les catalogues ont changé
+    
+    // Si une armure est déjà sélectionnée, appliquer ses données
+    var armureValue = _getField(char, 'warrior.nomArmure');
+    if (armureValue && KNIGHT.data && KNIGHT.data.armorData) {
+      KNIGHT.data.armorData.applyToCharacter(char, armureValue);
+    }
   }
 
   /* ── Collecter les données des sélecteurs ── */
@@ -160,6 +166,11 @@ KNIGHT.ui.catalog = (function () {
         select.addEventListener('change', function () {
           if (_char) {
             _setField(_char, mapping.field, this.value);
+            
+            // Si c'est le sélecteur d'armure, appliquer les données de l'armure
+            if (selectId === 'armure' && this.value && KNIGHT.data && KNIGHT.data.armorData) {
+              KNIGHT.data.armorData.applyToCharacter(_char, this.value);
+            }
           }
         });
       }

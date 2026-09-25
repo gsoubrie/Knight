@@ -299,6 +299,22 @@ KNIGHT.app = (function () {
       var el = document.getElementById(id);
       if (el) el.addEventListener('input', function () { map[id](this.value); });
     });
+    
+    // Gestion des champs de l'onglet Armure
+    if (_char.warrior) {
+      var wMap = {
+        'w-pa-max':    function (v) { _char.warrior.paMax = parseInt(v) || 0; },
+        'w-pe-max':    function (v) { _char.warrior.peMax = parseInt(v) || 0; },
+        'w-cdf-max':   function (v) { _char.warrior.cdfMax = parseInt(v) || 0; },
+        'armure-nom':  function (v) { _char.warrior.nomArmure = v; },
+        'armure-gen':  function (v) { _char.warrior.generation = v; },
+        'armure-capacite': function (v) { _char.warrior.capacite = v; }
+      };
+      Object.keys(wMap).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.addEventListener('input', function () { wMap[id](this.value); });
+      });
+    }
   }
 
   function _syncScalaires() {
@@ -315,6 +331,23 @@ KNIGHT.app = (function () {
       var el = document.getElementById(id);
       if (el) el.value = map[id] !== undefined ? map[id] : '';
     });
+    
+    // Synchroniser les champs de l'onglet Armure
+    if (_char.warrior) {
+      var wMap = {
+        'w-pa-max': _char.warrior.paMax,
+        'w-pe-max': _char.warrior.peMax,
+        'w-cdf-max': _char.warrior.cdfMax,
+        'armure-nom': _char.warrior.nomArmure,
+        'armure-gen': _char.warrior.generation,
+        'armure-capacite': _char.warrior.capacite
+      };
+      Object.keys(wMap).forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.value = wMap[id] !== undefined ? wMap[id] : '';
+      });
+    }
+    
     _updateHeaderName();
   }
 
