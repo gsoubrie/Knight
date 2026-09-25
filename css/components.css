@@ -1398,3 +1398,22 @@ textarea:read-only {
 .field > div[style*="display:flex"] .btn {
   flex-shrink: 0;
 }
+
+/* ── CAPACITES CONTAINERS ── */
+.capacites-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.capacite-item {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--text);
+  white-space: nowrap;
+}

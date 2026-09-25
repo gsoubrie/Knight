@@ -307,8 +307,7 @@ KNIGHT.app = (function () {
         'w-pe-max':    function (v) { _char.warrior.peMax = parseInt(v) || 0; },
         'w-cdf-max':   function (v) { _char.warrior.cdfMax = parseInt(v) || 0; },
         'armure-nom':  function (v) { _char.warrior.nomArmure = v; },
-        'armure-gen':  function (v) { _char.warrior.generation = v; },
-        'armure-capacite': function (v) { _char.warrior.capacite = v; }
+        'armure-gen':  function (v) { _char.warrior.generation = v; }
       };
       Object.keys(wMap).forEach(function (id) {
         var el = document.getElementById(id);
@@ -340,13 +339,22 @@ KNIGHT.app = (function () {
         'w-pe-max': _char.warrior.peMax,
         'w-cdf-max': _char.warrior.cdfMax,
         'armure-nom': _char.warrior.nomArmure,
-        'armure-gen': _char.warrior.generation,
-        'armure-capacite': _char.warrior.capacite
+        'armure-gen': _char.warrior.generation
       };
       Object.keys(wMap).forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.value = wMap[id] !== undefined ? wMap[id] : '';
       });
+      
+      // Afficher les capacités sous forme de conteneurs
+      var capacitesContainer = document.getElementById('armure-capacites-container');
+      if (capacitesContainer && _char.warrior.capacite) {
+        // Séparer les capacités par virgule ou point-virgule
+        var capacites = _char.warrior.capacite.split(/[;,]/).map(function(c) { return c.trim(); }).filter(function(c) { return c; });
+        capacitesContainer.innerHTML = capacites.map(function(capacite) {
+          return '<div class="capacite-item">' + capacite + '</div>';
+        }).join('');
+      }
       
       // Titre (span)
       var titleEl = document.getElementById('armure-title');

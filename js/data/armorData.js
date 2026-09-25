@@ -193,15 +193,8 @@ KNIGHT.data.armorData.applyToCharacter = function(char, armorName) {
     char.warrior.slots['jambe-d'].max = armor.slots['jambe-d'];
   }
   
-  // Mettre à jour les capacités et overdrives
-  // Construire le texte complet pour le champ capacite
-  var capacitesText = armor.capacites || '';
-  var overdrivesText = armor.overdrives ? armor.overdrives.join(', ') : '';
-  var fullCapacites = capacitesText;
-  if (overdrivesText) {
-    fullCapacites = capacitesText + ' | Overdrives: ' + overdrivesText;
-  }
-  char.warrior.capacite = fullCapacites;
+  // Mettre à jour les capacités (sans les overdrives dans le texte)
+  char.warrior.capacite = armor.capacites || '';
   
   // Mettre à jour les overdrives (tableau pour traitement interne)
   char.warrior.activeTypes = armor.overdrives ? armor.overdrives.slice() : [];

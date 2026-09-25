@@ -292,6 +292,11 @@
     <div>
       <div class="card section-gap">
         <div class="card-title accent-red"><span id="armure-title">Warrior</span> — Répartition des modules</div>
+        <div class="grid-3" style="gap:8px;margin-bottom:12px;">
+          <div class="stat-box"><div class="stat-box-label">PA Max</div><input type="number" id="w-pa-max" value="100"></div>
+          <div class="stat-box"><div class="stat-box-label">PE Max</div><input type="number" id="w-pe-max" value="40"></div>
+          <div class="stat-box"><div class="stat-box-label">CdF Max</div><input type="number" id="w-cdf-max" value="8"></div>
+        </div>
         <p style="font-size:11px;color:var(--text-faint);margin-bottom:12px;">Clique sur une zone pour voir et gérer ses modules.</p>
         <div id="armor-detail-panel" class="armor-detail-panel">
           <div class="armor-detail-placeholder">Clique sur une zone pour voir les détails</div>
@@ -299,18 +304,12 @@
       </div>
 
       <div class="card">
-        <div class="card-title">Stats Warrior</div>
-        <div class="grid-3" style="gap:8px;margin-bottom:12px;">
-          <div class="stat-box"><div class="stat-box-label">PA Max</div><input type="number" id="w-pa-max" value="100"></div>
-          <div class="stat-box"><div class="stat-box-label">PE Max</div><input type="number" id="w-pe-max" value="40"></div>
-          <div class="stat-box"><div class="stat-box-label">CdF Max</div><input type="number" id="w-cdf-max" value="8"></div>
-        </div>
-        <div class="grid-2" style="gap:8px;">
-          <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" placeholder="ex. Fenrir"></div>
+        <div class="grid-2" style="gap:8px;margin-bottom:12px;">
+          <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" placeholder="ex. Barbarian"></div>
           <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération"></div>
         </div>
-        <div class="field"><label>Overdrives / Capacités</label>
-          <textarea id="armure-capacite" placeholder="Overdrives Warrior : 1 en Combat, 1 en Déplacement, 1 en Hargne, 1 en Tir…"></textarea>
+        <div class="field"><label>Capacités</label>
+          <div id="armure-capacites-container" class="capacites-list"></div>
         </div>
       </div>
     </div>
