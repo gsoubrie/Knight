@@ -315,7 +315,8 @@ KNIGHT.app = (function () {
         'w-pe-max':    function (v) { _char.warrior.peMax = parseInt(v) || 0; },
         'w-cdf-max':   function (v) { _char.warrior.cdfMax = parseInt(v) || 0; },
         'armure-nom':  function (v) { _char.warrior.nomArmure = v; },
-        'armure-gen':  function (v) { _char.warrior.generation = v; }
+        'armure-gen':  function (v) { _char.warrior.generation = v; },
+        'armure-capacite': function (v) { _char.warrior.capacite = v; },
       };
       Object.keys(wMap).forEach(function (id) {
         var el = document.getElementById(id);

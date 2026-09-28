@@ -102,8 +102,8 @@ KNIGHT.ui.catalog = (function () {
     _initSelects(); // Re-remplir au cas où les catalogues ont changé
     
     // Si une armure est déjà sélectionnée
-    var armureValue = _getField(char, 'warrior.nomArmure');
-    var hasArmure = armureValue && armureValue.trim() !== '';
+    var armureValue = _getField(char, 'warrior.nomArmure') || 'Warrior';  // Hardcode Warrior
+    var hasArmure = true;  // Toujours afficher l'onglet Armure (hardcode)
     
     // Afficher/masquer l'onglet Armure
     if (KNIGHT.ui.tabs && KNIGHT.ui.tabs.setArmureTabVisible) {

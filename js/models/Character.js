@@ -50,12 +50,16 @@ KNIGHT.models.Character = function () {
 
   // ── Warrior ──
   this.warrior = {
-    nomArmure:      '',
+    nomArmure:      'Warrior',
     generation:     '1ère génération',
-    capacite:       '',
+    capacite:       'Type',
     paMax:          100,
     peMax:          40,
     cdfMax:         8,
+    capaciteDescriptions: {},
+    activeCapacite: '',
+    activeType:     '',
+    capaciteActive: false,
     activeTypes:    [],
     typesNotes:     '',
     slots: {
@@ -159,6 +163,88 @@ KNIGHT.models.Character.prototype = {
 
   removeQuicklistItem: function (itemId) {
     this.quicklist = this.quicklist.filter(function (q) { return q.id !== itemId; });
+  },
+
+
+  /* ── Gestion des capacités d'armure ── */
+
+  // Active ou désactive la capacité de l'armure
+  setCapaciteActive: function (active, capacite, type) {
+    this.warrior.capaciteActive = active;
+    if (capacite !== undefined) {
+      this.warrior.activeCapacite = capacite;
+    }
+    if (type !== undefined) {
+      this.warrior.activeType = type;
+    }
+    this._applyCapaciteOD();
+  },
+
+  // Applique les bonus OD en fonction de la capacité active
+  _applyCapaciteOD: function () {
+    if (!this.warrior.capaciteActive || !this.warrior.activeType) {
+      this._clearCapaciteOD();
+      return;
+    }
+    if (this.warrior.activeCapacite === 'Type' && KNIGHT.data && KNIGHT.data.armorData) {
+      var armorData = KNIGHT.data.armorData.Warrior;
+      if (armorData && armorData.descriptionCapacites && armorData.descriptionCapacites.Type) {
+        var typeInfo = armorData.descriptionCapacites.Type.types[this.warrior.activeType];
+        if (typeInfo) {
+          var self = this;
+          typeInfo.caracs.forEach(function (caracName) {
+            var aspect = self.getAspectByCarac(caracName);
+            if (aspect) {
+              for (var i = 0; i < aspect.caras.length; i++) {
+                if (aspect.caras[i].name === caracName) {
+                  aspect.caras[i].od = 1;
+                  var odInput = document.getElementById('od-' + aspect.id + '-' + i);
+                  if (odInput) odInput.value = 1;
+                  break;
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+  },
+
+  _clearCapaciteOD: function () {
+    if (this.warrior.activeCapacite === 'Type' && this.warrior.activeType) {
+      if (KNIGHT.data && KNIGHT.data.armorData && KNIGHT.data.armorData.Warrior) {
+        var armorData = KNIGHT.data.armorData.Warrior;
+        var typeInfo = armorData.descriptionCapacites.Type.types[this.warrior.activeType];
+        if (typeInfo) {
+          var self = this;
+          typeInfo.caracs.forEach(function (caracName) {
+            var aspect = self.getAspectByCarac(caracName);
+            if (aspect) {
+              for (var i = 0; i < aspect.caras.length; i++) {
+                if (aspect.caras[i].name === caracName) {
+                  aspect.caras[i].od = 0;
+                  var odInput = document.getElementById('od-' + aspect.id + '-' + i);
+                  if (odInput) odInput.value = 0;
+                  break;
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+  },
+
+  getAspectByCarac: function (caracName) {
+    for (var i = 0; i < this.aspects.length; i++) {
+      var aspect = this.aspects[i];
+      for (var j = 0; j < aspect.caras.length; j++) {
+        if (aspect.caras[j].name === caracName) {
+          return aspect;
+        }
+      }
+    }
+    return null;
   },
 
   /* ── Sérialisation ── */

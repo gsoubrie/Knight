@@ -481,6 +481,7 @@ KNIGHT.ui.armor = (function () {
     });
 
     _renderDetail(null);
+    _initCapaciteControls(char);
   }
 
   /* ── helpers ── */
@@ -488,6 +489,54 @@ KNIGHT.ui.armor = (function () {
   function _bindInput(id, cb) {
     var el = document.getElementById(id);
     if (el) el.addEventListener('input', function () { cb(this.value); });
+  }
+
+
+  /* -- Gestion de la capacité Type -- */
+
+  function _initCapaciteControls(char) {
+    var typeSelect = document.getElementById('warrior-type-select');
+    if (typeSelect) {
+      var types = ['Soldier', 'Hunter', 'Scholar', 'Herald', 'Scout'];
+      types.forEach(function(type) {
+        var opt = document.createElement('option');
+        opt.value = type;
+        opt.textContent = type;
+        typeSelect.appendChild(opt);
+      });
+      typeSelect.value = char.warrior.activeType || '';
+      typeSelect.addEventListener('change', function() {
+        char.warrior.activeType = this.value;
+        if (char.warrior.capaciteActive) {
+          char.setCapaciteActive(true, 'Type', this.value);
+        }
+      });
+    }
+    var toggleBtn = document.getElementById('warrior-capacite-toggle');
+    if (toggleBtn) {
+      _updateCapaciteButton(char);
+      toggleBtn.addEventListener('click', function() {
+        var newState = !char.warrior.capaciteActive;
+        var type = char.warrior.activeType || (typeSelect ? typeSelect.value : 'Soldier');
+        char.setCapaciteActive(newState, 'Type', type);
+        _updateCapaciteButton(char);
+      });
+    }
+  }
+
+  function _updateCapaciteButton(char) {
+    var toggleBtn = document.getElementById('warrior-capacite-toggle');
+    if (toggleBtn) {
+      if (char.warrior.capaciteActive) {
+        toggleBtn.textContent = 'Desactiver Type';
+        toggleBtn.className = 'btn btn-danger btn-sm';
+        toggleBtn.title = 'Desactiver la capacite Type';
+      } else {
+        toggleBtn.textContent = 'Activer Type';
+        toggleBtn.className = 'btn btn-success btn-sm';
+        toggleBtn.title = 'Activer la capacite Type';
+      }
+    }
   }
 
   return { init: init, render: render, refresh: refresh };

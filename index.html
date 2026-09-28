@@ -69,8 +69,7 @@
       <div class="field">
         <label>Armure</label>
         <div style="display:flex;gap:4px;">
-          <select id="armure" style="flex:1;"><option value="">— Sélectionner —</option></select>
-          <button class="btn btn-add btn-sm" id="btn-add-armure" title="Ajouter une nouvelle armure">+</button>
+<input type="text" id="armure" value="Warrior" style="flex:1;" readonly>
         </div>
       </div>
     </div>
@@ -305,14 +304,26 @@
 
       <div class="card">
         <div class="grid-2" style="gap:8px;margin-bottom:12px;">
-          <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" placeholder="ex. Barbarian"></div>
-          <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération"></div>
+          <div class="field"><label>Nom de l'armure</label><input type="text" id="armure-nom" value="Warrior" readonly></div>
+          <div class="field"><label>Génération</label><input type="text" id="armure-gen" value="1ère génération" readonly></div>
+          <div class="field"><label>Capacité</label><input type="text" id="armure-capacite" value="Type" readonly></div>
         </div>
         <div class="field"><label>Overdrives</label>
           <div id="armure-overdrives-container" class="overdrives-list"></div>
         </div>
         <div class="field"><label>Capacités</label>
           <div id="armure-capacites-container" class="capacites-list"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Capacité Type</div>
+        <div class="field">
+          <label>Type</label>
+          <select id="warrior-type-select" style="flex:1;"></select>
+        </div>
+        <div class="field" style="margin-top: 10px;">
+          <button id="warrior-capacite-toggle" class="btn btn-success btn-sm">Activer Type</button>
+          <span id="warrior-capacite-status" style="margin-left: 10px; font-size: 12px; color: var(--text-faint);">Non activé</span>
         </div>
       </div>
     </div>

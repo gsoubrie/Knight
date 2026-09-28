@@ -84,7 +84,7 @@ KNIGHT.ui.tabs = (function () {
     _switchSubTab('armes');
     
     // Masquer l'onglet Armure par défaut (sera affiché si armure sélectionnée)
-    _setArmureTabVisible(false);
+    _setArmureTabVisible(true);
   }
 
   return {
