@@ -144,7 +144,7 @@ select option { background: var(--bg-card); }
 
 /* Inline number input (petits champs) */
 .input-sm {
-  width: 44px !important;
+  width: 60px !important;
   text-align: center !important;
   padding: 4px 6px !important;
   font-size: 13px !important;
@@ -344,7 +344,7 @@ select option { background: var(--bg-card); }
   font-size: 15px !important;
   font-weight: 700 !important;
   color: var(--text) !important;
-  width: 54px !important;
+  width: 70px !important;
   text-align: center !important;
 }
 .gauge-sep { color: var(--text-faint); font-size: 12px; }
@@ -357,7 +357,7 @@ select option { background: var(--bg-card); }
   font-size: 12px !important;
   font-weight: 600 !important;
   color: var(--text-dim) !important;
-  width: 50px !important;
+  width: 60px !important;
   text-align: center !important;
 }
 
@@ -966,10 +966,138 @@ select option { background: var(--bg-card); }
 
 /* ── DÉRIVÉES HINT ── */
 .derived-hint {
-  font-size: 10px;
-  color: var(--text-faint);
+  font-size: 12px;
+  color: var(--text-dim);
   margin-top: 8px;
   line-height: 1.6;
+}
+
+/* ── POINTS GROUP (pour la ligne Héroïsme/PE/PX/PG) ── */
+.points-grid {
+  gap: 12px;
+}
+
+.points-group {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.points-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.points-label,
+.points-label-left {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.points-label {
+  margin-bottom: 6px;
+  text-align: center;
+  width: 100%;
+}
+
+.points-label-left {
+  color: var(--text-dim);
+  min-width: 80px;
+}
+
+.points-label.accent-gold { color: var(--gold); }
+.points-label.accent-blue { color: var(--blue); }
+
+/* Mini heroism dots - prend toute la largeur */
+.heroism-dots-mini {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.heroism-dot-mini {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-dim);
+  background: transparent;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--gold-dim);
+  user-select: none;
+}
+
+.heroism-dot-mini.active {
+  background: radial-gradient(circle, var(--gold), #8B6A10);
+  border-color: var(--gold);
+  color: var(--bg-deep);
+}
+
+/* PE Display */
+.pes-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.points-hint {
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-top: 6px;
+  text-align: center;
+}
+
+/* PX/PG Values */
+.points-values {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.points-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+}
+
+.points-value-label {
+  font-size: 8px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.points-value span:last-child {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
 }
 
 /* ── ARMOR SVG PAGE ── */
@@ -1397,6 +1525,53 @@ textarea:read-only {
 
 .field > div[style*="display:flex"] .btn {
   flex-shrink: 0;
+}
+
+/* ── FIELD DISPLAY VALUE (pour mode lecture seule) ── */
+.field-display-value {
+  display: none;
+  padding: 8px 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.field > div[style*="display:flex"] .field-display-value {
+  display: inline-block;
+}
+
+/* Désactiver les selects en mode lecture seule */
+select:disabled {
+  opacity: 1;
+  cursor: default;
+  background: var(--bg-input) !important;
+  color: var(--text-dim) !important;
+  border-color: var(--border) !important;
+}
+
+/* ── INPUT READONLY STYLES (amélioration) ── */
+input:read-only,
+textarea:read-only {
+  background: var(--bg-input) !important;
+  color: var(--text-dim) !important;
+  cursor: default !important;
+  border-color: var(--border) !important;
+}
+
+/* Mode jeu - désactiver tous les champs */
+.mode-play input:not(.gauge-current):not(.gauge-max),
+.mode-play textarea,
+.mode-play select {
+  background: var(--bg-input) !important;
+  color: var(--text-dim) !important;
+  cursor: default !important;
+  border-color: var(--border) !important;
 }
 
 /* ── CAPACITES CONTAINERS ── */

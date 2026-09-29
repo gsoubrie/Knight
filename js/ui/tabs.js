@@ -64,7 +64,7 @@ KNIGHT.ui.tabs = (function () {
 
   function init() {
     // Onglets principaux
-    ['carac', 'combat', 'arsenal', 'armure', 'reste'].forEach(function (id) {
+    ['general', 'carac', 'combat', 'arsenal', 'armure', 'journaux', 'reste'].forEach(function (id) {
       var tab = document.getElementById('tab-' + id);
       if (tab) {
         tab.addEventListener('click', function () { _switchTab(id); });
@@ -80,7 +80,7 @@ KNIGHT.ui.tabs = (function () {
     });
 
     // État initial
-    _switchTab('carac');
+    _switchTab('general');
     _switchSubTab('armes');
     
     // Masquer l'onglet Armure par défaut (sera affiché si armure sélectionnée)

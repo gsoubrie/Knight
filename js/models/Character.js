@@ -47,6 +47,7 @@ KNIGHT.models.Character = function () {
   this.px = 0;
   this.pgArmure   = 60;
   this.pxDepenses = 0;
+  this.pgDepenses = 0;
 
   // ── Warrior ──
   this.warrior = {
@@ -88,6 +89,8 @@ KNIGHT.models.Character = function () {
   // ── Ledgers ──
   this.ledgerPes = new KNIGHT.models.Ledger('pes', "Points d'Espoir", 50);
   this.ledgerPg  = new KNIGHT.models.Ledger('pg',  'Points de Gloire', 0);
+  this.ledgerHeroisme = new KNIGHT.models.Ledger('heroisme', "Points d'Héroïsme", 6);
+  this.ledgerXp = new KNIGHT.models.Ledger('xp', "Points d'Expérience", 0);
 
   // ── Divers ──
   this.motivations = [];   // { type: 'major'|'minor', texte: '' }
@@ -264,12 +267,15 @@ KNIGHT.models.Character.prototype = {
       px:         this.px,
       pgArmure:   this.pgArmure,
       pxDepenses: this.pxDepenses,
+      pgDepenses: this.pgDepenses,
       warrior:    JSON.parse(JSON.stringify(this.warrior)),
       weapons:    this.weapons.map(function (w) { return w.serialize(); }),
       modules:    this.modules.map(function (m) { return m.serialize(); }),
       ia:         JSON.parse(JSON.stringify(this.ia)),
       ledgerPes:  this.ledgerPes.serialize(),
       ledgerPg:   this.ledgerPg.serialize(),
+      ledgerHeroisme: this.ledgerHeroisme.serialize(),
+      ledgerXp: this.ledgerXp.serialize(),
       motivations:  JSON.parse(JSON.stringify(this.motivations)),
       contacts:     JSON.parse(JSON.stringify(this.contacts)),
       equipement:   this.equipement,
@@ -294,7 +300,7 @@ KNIGHT.models.Character.prototype = {
 
     // Scalaires
     var scalaires = ['nom','archetype','section','blason','voeu',
-                     'heroisme','pg','px','pgArmure','pxDepenses',
+                     'heroisme','pg','px','pgArmure','pxDepenses','pgDepenses',
                      'equipement','histoire','notes','avantages','inconvenients'];
     scalaires.forEach(function (k) {
       if (data[k] !== undefined) self[k] = data[k];
@@ -368,6 +374,8 @@ KNIGHT.models.Character.prototype = {
     // Ledgers
     if (data.ledgerPes) self.ledgerPes.deserialize(data.ledgerPes);
     if (data.ledgerPg)  self.ledgerPg.deserialize(data.ledgerPg);
+    if (data.ledgerHeroisme) self.ledgerHeroisme.deserialize(data.ledgerHeroisme);
+    if (data.ledgerXp) self.ledgerXp.deserialize(data.ledgerXp);
 
     // Tableaux
     if (data.motivations) self.motivations = data.motivations.slice();

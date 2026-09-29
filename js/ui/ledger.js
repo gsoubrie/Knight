@@ -83,6 +83,8 @@ KNIGHT.ui.ledger = (function () {
     _char = char;
     _renderLedger(char.ledgerPes);
     _renderLedger(char.ledgerPg);
+    _renderLedger(char.ledgerHeroisme);
+    _renderLedger(char.ledgerXp);
   }
 
   /* ════════════════════════════════════════
@@ -170,6 +172,8 @@ KNIGHT.ui.ledger = (function () {
     _char = char;
     _initLedger(char.ledgerPes);
     _initLedger(char.ledgerPg);
+    _initLedger(char.ledgerHeroisme);
+    _initLedger(char.ledgerXp);
     render(char);
   }
 

@@ -36,6 +36,11 @@ KNIGHT.app = (function () {
     _updateModeButton();
     // Ajouter/supprimer la classe mode-play sur le body pour le CSS
     document.body.classList.toggle('mode-play', !enabled);
+    
+    // Appliquer la transformation après un petit délai pour laisser le temps au DOM de se mettre à jour
+    setTimeout(function() {
+      _transformFieldsToLabels(!enabled);
+    }, 50);
   }
 
   function _toggleEditMode() {
@@ -52,12 +57,58 @@ KNIGHT.app = (function () {
   function _applyEditMode() {
     var fields = document.querySelectorAll('input, textarea, select');
     fields.forEach(function (field) {
-      field.readOnly = !_isEditMode;
+      if (field.tagName === 'SELECT') {
+        field.disabled = !_isEditMode;
+      } else {
+        field.readOnly = !_isEditMode;
+      }
     });
     // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
     var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
     editButtons.forEach(function (btn) {
       btn.style.display = _isEditMode ? '' : 'none';
+    });
+    
+    // Transformer les champs en affichage label en mode lecture seule
+    _transformFieldsToLabels(!_isEditMode);
+  }
+
+  function _transformFieldsToLabels(readOnlyMode) {
+    // Sélectionner tous les conteneurs de champs avec select
+    var fieldContainers = document.querySelectorAll('.field');
+    fieldContainers.forEach(function(container) {
+      var select = container.querySelector('select');
+      if (select) {
+        // Trouver la valeur sélectionnée
+        var selectedIndex = select.selectedIndex;
+        var selectedText = selectedIndex >= 0 ? select.options[selectedIndex].text : (select.options[0]?.text || '');
+        
+        // Créer ou mettre à jour un span pour afficher la valeur
+        var displaySpan = container.querySelector('.field-display-value');
+        if (!displaySpan) {
+          displaySpan = document.createElement('span');
+          displaySpan.className = 'field-display-value';
+          // Insérer avant le select dans le même conteneur parent
+          var selectParent = select.parentElement;
+          if (selectParent) {
+            selectParent.insertBefore(displaySpan, select);
+          } else {
+            container.insertBefore(displaySpan, select);
+          }
+        }
+        
+        // Mettre à jour la valeur affichée
+        displaySpan.textContent = selectedText || '—';
+        
+        // Afficher/masquer le span et le select
+        if (readOnlyMode) {
+          select.style.display = 'none';
+          displaySpan.style.display = 'inline-block';
+        } else {
+          select.style.display = '';
+          displaySpan.style.display = 'none';
+        }
+      }
     });
   }
 
@@ -78,6 +129,10 @@ KNIGHT.app = (function () {
       (function (n) {
         var dot = document.getElementById('h' + n);
         if (dot) dot.addEventListener('click', function () { _toggleHeroisme(n); });
+        
+        // Ajouter les clics sur les mini-dots
+        var miniDot = document.getElementById('h' + n + '-mini');
+        if (miniDot) miniDot.addEventListener('click', function () { _toggleHeroisme(n); });
       }(i));
     }
     _renderHeroisme();
@@ -92,6 +147,22 @@ KNIGHT.app = (function () {
     for (var i = 1; i <= 6; i++) {
       var dot = document.getElementById('h' + i);
       if (dot) dot.classList.toggle('active', i <= _char.heroisme);
+      
+      // Synchroniser les mini-dots
+      var miniDot = document.getElementById('h' + i + '-mini');
+      if (miniDot) miniDot.classList.toggle('active', i <= _char.heroisme);
+    }
+    
+    // Mettre à jour l'affichage numérique
+    var displayEl = document.getElementById('heroisme-display');
+    if (displayEl) {
+      displayEl.textContent = _char.heroisme + ' pts';
+    }
+    
+    // Mettre à jour le hidden input pour le mode lecture seule
+    var hiddenEl = document.getElementById('heroisme-value');
+    if (hiddenEl) {
+      hiddenEl.value = _char.heroisme;
     }
   }
 
@@ -292,7 +363,20 @@ KNIGHT.app = (function () {
       'voeu':         function (v) { _char.voeu = v; },
       'px':           function (v) { _char.px = parseInt(v) || 0; },
       'pg-armure':    function (v) { _char.pgArmure = parseInt(v) || 0; },
+      'pg-depenses':  function (v) { _char.pgDepenses = parseInt(v) || 0; },
       'px-depenses':  function (v) { _char.pxDepenses = parseInt(v) || 0; },
+      'heroisme-base': function (v) { 
+        if (_char.ledgerHeroisme) { 
+          _char.ledgerHeroisme.base = parseInt(v) || 0; 
+          KNIGHT.ui.ledger.render(_char); 
+        } 
+      },
+      'xp-base':      function (v) { 
+        if (_char.ledgerXp) { 
+          _char.ledgerXp.base = parseInt(v) || 0; 
+          KNIGHT.ui.ledger.render(_char); 
+        } 
+      },
       'defense':      function (v) { _char.derived.defense = parseInt(v) || 0; },
       'reaction':     function (v) { _char.derived.reaction = parseInt(v) || 0; },
       'initiative':   function (v) { _char.derived.initiative = parseInt(v) || 0; },
@@ -300,12 +384,22 @@ KNIGHT.app = (function () {
       'inconvenients': function (v) { _char.inconvenients = v; },
       'equipement':   function (v) { _char.equipement = v; },
       'histoire':     function (v) { _char.histoire = v; },
-      'notes':        function (v) { _char.notes = v; }
+      'notes':        function (v) { _char.notes = v; },
+      'armure':       function (v) { 
+        if (_char.warrior) { 
+          _char.warrior.nomArmure = v; 
+        } 
+      }
     };
 
     Object.keys(map).forEach(function (id) {
       var el = document.getElementById(id);
-      if (el) el.addEventListener('input', function () { map[id](this.value); });
+      if (el) {
+        el.addEventListener('input', function () { 
+          map[id](this.value); 
+          _syncDisplayValues();
+        });
+      }
     });
     
     // Gestion des champs de l'onglet Armure
@@ -314,7 +408,12 @@ KNIGHT.app = (function () {
         'w-pa-max':    function (v) { _char.warrior.paMax = parseInt(v) || 0; },
         'w-pe-max':    function (v) { _char.warrior.peMax = parseInt(v) || 0; },
         'w-cdf-max':   function (v) { _char.warrior.cdfMax = parseInt(v) || 0; },
-        'armure-nom':  function (v) { _char.warrior.nomArmure = v; },
+        'armure-nom':  function (v) { 
+          _char.warrior.nomArmure = v; 
+          // Synchroniser le champ armure dans l'onglet Caractéristiques
+          var armureField = document.getElementById('armure');
+          if (armureField) armureField.value = v;
+        },
         'armure-gen':  function (v) { _char.warrior.generation = v; },
         'armure-capacite': function (v) { _char.warrior.capacite = v; },
       };
@@ -329,11 +428,15 @@ KNIGHT.app = (function () {
     var map = {
       'nom': _char.nom, 'voeu': _char.voeu,
       'px': _char.px, 'pg-armure': _char.pgArmure,
+      'pg-depenses': _char.pgDepenses || 0,
       'px-depenses': _char.pxDepenses,
+      'heroisme-base': _char.ledgerHeroisme ? _char.ledgerHeroisme.base : 6,
+      'xp-base': _char.ledgerXp ? _char.ledgerXp.base : 0,
       'defense': _char.derived.defense, 'reaction': _char.derived.reaction,
       'initiative': _char.derived.initiative,
       'avantages': _char.avantages, 'inconvenients': _char.inconvenients,
-      'equipement': _char.equipement, 'histoire': _char.histoire, 'notes': _char.notes
+      'equipement': _char.equipement, 'histoire': _char.histoire, 'notes': _char.notes,
+      'armure': _char.warrior ? _char.warrior.nomArmure : 'Warrior'
     };
     Object.keys(map).forEach(function (id) {
       var el = document.getElementById(id);
@@ -342,7 +445,6 @@ KNIGHT.app = (function () {
     
     // Synchroniser les champs de l'onglet Armure
     if (_char.warrior) {
-      // Champs inputs
       var wMap = {
         'w-pa-max': _char.warrior.paMax,
         'w-pe-max': _char.warrior.peMax,
@@ -363,7 +465,6 @@ KNIGHT.app = (function () {
             return '<span class="od-tag">' + _escapeHtml(od) + '</span>';
           }).join('') + '</div>';
           overdrivesContainer.innerHTML = odHtml;
-          // Mettre à jour le titre avec les overdrives
           var odTitleEl = document.getElementById('armure-overdrives-title');
           if (odTitleEl) {
             odTitleEl.innerHTML = ' <span class="od-separator">|</span> ' + _char.warrior.activeTypes.map(_escapeHtml).join(', ');
@@ -375,41 +476,32 @@ KNIGHT.app = (function () {
         }
       }
 
-      // Afficher les capacités sous forme de conteneurs avec descriptions détaillées
+      // Afficher les capacités
       var capacitesContainer = document.getElementById('armure-capacites-container');
       if (capacitesContainer) {
-        // Si on a des descriptions détaillées, on les utilise
         if (_char.warrior && _char.warrior.capaciteDescriptions && Object.keys(_char.warrior.capaciteDescriptions).length > 0) {
           var html = '';
           try {
             Object.keys(_char.warrior.capaciteDescriptions).forEach(function(capaciteName) {
               var capData = _char.warrior.capaciteDescriptions[capaciteName];
               if (!capData || typeof capData !== 'object') return;
-              
               html += '<div class="capacite-item">';
               html += '<div class="capacite-header">' + (capaciteName || 'Capacité') + '</div>';
-              
               if (capData.description) {
                 html += '<div class="capacite-description">' + _escapeHtml(capData.description) + '</div>';
               }
-              
               if (capData.effet) {
                 html += '<div class="capacite-section"><strong>Effet:</strong> ' + _escapeHtml(capData.effet) + '</div>';
               }
-              
               if (capData.energie) {
                 html += '<div class="capacite-section"><strong>Énergie:</strong> ' + _escapeHtml(capData.energie) + '</div>';
               }
-              
               if (capData.activation) {
                 html += '<div class="capacite-section"><strong>Activation:</strong> ' + _escapeHtml(capData.activation) + '</div>';
               }
-              
               if (capData.duree) {
                 html += '<div class="capacite-section"><strong>Durée:</strong> ' + _escapeHtml(capData.duree) + '</div>';
               }
-              
-              // Pour les capacités avec variantes (comme Mode Cea, Mode Warlord, etc.)
               if (capData.variantes && typeof capData.variantes === 'object') {
                 html += '<div class="capacite-variantes">';
                 Object.keys(capData.variantes).forEach(function(variantName) {
@@ -439,8 +531,6 @@ KNIGHT.app = (function () {
                 });
                 html += '</div>';
               }
-              
-              // Pour les capacités avec types (comme Warrior Type)
               if (capData.types && typeof capData.types === 'object') {
                 html += '<div class="capacite-types">';
                 Object.keys(capData.types).forEach(function(typeName) {
@@ -455,7 +545,6 @@ KNIGHT.app = (function () {
                 });
                 html += '</div>';
               }
-              
               html += '</div>';
             });
             capacitesContainer.innerHTML = html;
@@ -464,7 +553,6 @@ KNIGHT.app = (function () {
             capacitesContainer.innerHTML = '<div style="color:red;">Erreur d\'affichage</div>';
           }
         } else if (_char.warrior && _char.warrior.capacite) {
-          // Fallback: Séparer les capacités par virgule ou point-virgule
           var capacites = _char.warrior.capacite.split(/[;,]/).map(function(c) { return c.trim(); }).filter(function(c) { return c; });
           capacitesContainer.innerHTML = capacites.map(function(capacite) {
             return '<div class="capacite-item">' + _escapeHtml(capacite) + '</div>';
@@ -474,13 +562,11 @@ KNIGHT.app = (function () {
         }
       }
       
-      // Titre (span)
       var titleEl = document.getElementById('armure-title');
       if (titleEl) {
         titleEl.textContent = _char.warrior.nomArmure || 'Warrior';
       }
       
-      // Synchroniser les slots max
       var slotMap = {
         'slot-max-tete': _char.warrior.slots.tete.max,
         'slot-max-torse': _char.warrior.slots.torse.max,
@@ -495,7 +581,50 @@ KNIGHT.app = (function () {
       });
     }
     
+    // Synchroniser les affichages des valeurs dans l'onglet Général
+    _syncDisplayValues();
     _updateHeaderName();
+  }
+
+  function _syncDisplayValues() {
+    // PES
+    var pesCurrentEl = document.getElementById('pes-current');
+    var pesMaxEl = document.getElementById('pes-max');
+    var pesCurrentDisplay = document.getElementById('pes-current-display');
+    var pesMaxDisplay = document.getElementById('pes-max-display');
+    
+    if (pesCurrentEl && pesCurrentDisplay) {
+      pesCurrentDisplay.textContent = pesCurrentEl.value;
+    }
+    if (pesMaxEl && pesMaxDisplay) {
+      pesMaxDisplay.textContent = pesMaxEl.value;
+    }
+    
+    // PX
+    var pxEl = document.getElementById('px');
+    var pxDepensesEl = document.getElementById('px-depenses');
+    var pxDisplay = document.getElementById('px-display');
+    var pxDepensesDisplay = document.getElementById('px-depenses-display');
+    
+    if (pxEl && pxDisplay) {
+      pxDisplay.textContent = pxEl.value;
+    }
+    if (pxDepensesEl && pxDepensesDisplay) {
+      pxDepensesDisplay.textContent = pxDepensesEl.value;
+    }
+    
+    // PG
+    var pgArmureEl = document.getElementById('pg-armure');
+    var pgDepensesEl2 = document.getElementById('pg-depenses');
+    var pgArmureDisplay = document.getElementById('pg-armure-display');
+    var pgDepensesDisplay2 = document.getElementById('pg-depenses-display');
+    
+    if (pgArmureEl && pgArmureDisplay) {
+      pgArmureDisplay.textContent = pgArmureEl.value;
+    }
+    if (pgDepensesEl2 && pgDepensesDisplay2) {
+      pgDepensesDisplay2.textContent = pgDepensesEl2.value;
+    }
   }
 
   function _updateHeaderName() {
@@ -612,6 +741,10 @@ KNIGHT.app = (function () {
     _renderMotivations();
     _renderContacts();
     _renderQuicklist();
+    // Appliquer la transformation des champs si on est en mode lecture seule
+    if (!_isEditMode) {
+      _transformFieldsToLabels(true);
+    }
   }
 
   /* ════════════════════════════════════════

@@ -28,18 +28,20 @@
 
 <!-- TABS NAV -->
 <nav class="tabs-bar">
+  <div class="tab" id="tab-general"><span class="tab-icon">📝</span> Général</div>
   <div class="tab" id="tab-carac"><span class="tab-icon">⚔</span> Caractéristiques</div>
   <div class="tab" id="tab-combat"><span class="tab-icon">🛡</span> Combat</div>
   <div class="tab" id="tab-arsenal"><span class="tab-icon">🔧</span> Arsenal</div>
   <div class="tab" id="tab-armure"><span class="tab-icon">🤖</span> Armure</div>
+  <div class="tab" id="tab-journaux"><span class="tab-icon">📖</span> Journaux</div>
   <div class="tab" id="tab-reste"><span class="tab-icon">📋</span> Divers</div>
 </nav>
 
 
-<!-- ════ ONGLET 1 : CARACTÉRISTIQUES ════ -->
-<div class="tab-page" id="page-carac">
+<!-- ════ ONGLET GENERAL ════ -->
+<div class="tab-page" id="page-general">
 
-  <!-- Identité -->
+  <!-- Identité du Chevalier -->
   <div class="card section-gap">
     <div class="card-title">Identité du Chevalier</div>
     <div class="grid-3">
@@ -69,11 +71,115 @@
       <div class="field">
         <label>Armure</label>
         <div style="display:flex;gap:4px;">
-<input type="text" id="armure" value="Warrior" style="flex:1;" readonly>
+          <input type="text" id="armure" value="Warrior" style="flex:1;" readonly>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Points principaux (Héroïsme, PE, PX, PG) -->
+  <div class="card section-gap">
+    <div class="card-title">Points & Ressources</div>
+    <div class="grid-4 points-grid">
+      <!-- Héroïsme -->
+      <div class="points-group">
+        <div class="points-label accent-gold">Héroïsme</div>
+        <div class="heroism-dots-mini">
+          <div class="heroism-dot-mini" id="h1-mini" title="1 pt">1</div>
+          <div class="heroism-dot-mini" id="h2-mini">2</div>
+          <div class="heroism-dot-mini" id="h3-mini" title="3 pts">3</div>
+          <div class="heroism-dot-mini" id="h4-mini">4</div>
+          <div class="heroism-dot-mini" id="h5-mini">5</div>
+          <div class="heroism-dot-mini" id="h6-mini" title="6 pts">6</div>
+        </div>
+      </div>
+      
+      <!-- PE -->
+      <div class="points-group">
+        <div class="points-label accent-blue">Points d'Espoir</div>
+        <div class="pes-display">
+          <span id="pes-current-display">50</span>
+          <span class="gauge-sep">/</span>
+          <span id="pes-max-display">50</span>
+        </div>
+        <input type="hidden" id="pes-current" value="50" min="0">
+        <input type="hidden" id="pes-max" value="50" min="0">
+        <div class="points-hint">= 50 + bonus Dame</div>
+      </div>
+      
+      <!-- PX -->
+      <div class="points-group">
+        <div class="points-row">
+          <span class="points-label-left accent-gold">Points XP</span>
+          <div class="points-values">
+            <div class="points-value">
+              <span class="points-value-label">Total</span>
+              <span id="px-display">0</span>
+            </div>
+            <div class="points-value">
+              <span class="points-value-label">Dépensés</span>
+              <span id="px-depenses-display">0</span>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="px" value="0">
+        <input type="hidden" id="px-depenses" value="0">
+      </div>
+      
+      <!-- PG -->
+      <div class="points-group">
+        <div class="points-row">
+          <span class="points-label-left accent-gold">Points de Gloire</span>
+          <div class="points-values">
+            <div class="points-value">
+              <span class="points-value-label">Total</span>
+              <span id="pg-armure-display">60</span>
+            </div>
+            <div class="points-value">
+              <span class="points-value-label">Dépensés</span>
+              <span id="pg-depenses-display">0</span>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="pg-armure" value="60">
+        <input type="hidden" id="pg-depenses" value="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- Héroïsme détaillé -->
+  <div class="card section-gap" id="heroism-detail-card">
+    <div class="card-title accent-gold">Points d'Héroïsme</div>
+    <div class="heroism-dots">
+      <div class="heroism-dot" id="h1" title="1 pt : Ignorer agonie / Dernier PES / Relancer / Max dégâts / +1 cara combo">1</div>
+      <div class="heroism-dot" id="h2">2</div>
+      <div class="heroism-dot" id="h3" title="3 pts : Tirer une carte du Destin">3</div>
+      <div class="heroism-dot" id="h4">4</div>
+      <div class="heroism-dot" id="h5">5</div>
+      <div class="heroism-dot" id="h6" title="6 pts : Activer le Mode Héroïque">6</div>
+    </div>
+    <div class="heroism-memo">
+      <div class="heroism-memo-item"><strong>1 pt</strong>Ignorer agonie · Dernier PES · Relancer 1 jet · Max dégâts · +1 cara combo</div>
+      <div class="heroism-memo-item"><strong>3 pts</strong>Tirer une carte du Destin</div>
+      <div class="heroism-memo-item"><strong>6 pts</strong>Activer le Mode Héroïque</div>
+    </div>
+  </div>
+
+  <!-- Motivations -->
+  <div class="card section-gap">
+    <div class="card-title">Motivations</div>
+    <div id="motivations-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-danger btn-sm" id="btn-add-major">+ Majeure</button>
+      <button class="btn btn-sm" id="btn-add-minor">+ Mineure</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ════ ONGLET 1 : CARACTÉRISTIQUES ════ -->
+<div class="tab-page" id="page-carac">
 
   <!-- Aspects en colonne -->
   <div id="aspects-grid" class="section-gap"></div>
@@ -111,22 +217,6 @@
         <div class="gauge-track" id="gauge-ps-track"><div class="gauge-fill" id="gauge-ps-fill" style="width:22%"></div></div>
       </div>
       <p class="gauge-hint">= 10 + 6 × (plus haute cara Chair sans OD)</p>
-    </div>
-    <!-- PES -->
-    <div class="card">
-      <div class="card-title accent-blue">Points d'Espoir</div>
-      <div class="gauge-wrap gauge-pes">
-        <div class="gauge-header">
-          <span class="gauge-label">PES</span>
-          <div class="gauge-values">
-            <input type="number" class="gauge-current" id="pes-current" value="50" min="0">
-            <span class="gauge-sep">/</span>
-            <input type="number" class="gauge-max" id="pes-max" value="50" min="0">
-          </div>
-        </div>
-        <div class="gauge-track" id="gauge-pes-track"><div class="gauge-fill" id="gauge-pes-fill" style="width:100%"></div></div>
-      </div>
-      <p class="gauge-hint">= 50 + bonus (plus haute cara Dame sans OD)</p>
     </div>
     <!-- PA -->
     <div class="card">
@@ -175,31 +265,12 @@
   <!-- Valeurs dérivées -->
   <div class="card section-gap">
     <div class="card-title accent-blue">Valeurs Dérivées</div>
-    <div class="grid-4">
+    <div class="grid-3">
       <div class="stat-box"><div class="stat-box-label">Défense</div><input type="number" id="defense" value="0"></div>
       <div class="stat-box"><div class="stat-box-label">Réaction</div><input type="number" id="reaction" value="0"></div>
       <div class="stat-box"><div class="stat-box-label">Initiative</div><input type="number" id="initiative" value="0"></div>
-      <div class="stat-box"><div class="stat-box-label">Points XP</div><input type="number" id="px" value="0"></div>
     </div>
     <p class="derived-hint">Défense = plus haute cara Bête (OD compris) &nbsp;·&nbsp; Réaction = plus haute cara Machine (OD compris) &nbsp;·&nbsp; Initiative = 3D6 + plus haute cara Masque (OD compris)</p>
-  </div>
-
-  <!-- Héroïsme -->
-  <div class="card section-gap">
-    <div class="card-title accent-gold">Points d'Héroïsme <span style="font-size:10px;color:var(--text-faint);font-family:var(--font-body);font-weight:400;letter-spacing:0;text-transform:none;">— max 6</span></div>
-    <div class="heroism-dots">
-      <div class="heroism-dot" id="h1" title="1 pt : Ignorer agonie / Dernier PES / Relancer / Max dégâts / +1 cara combo">1</div>
-      <div class="heroism-dot" id="h2">2</div>
-      <div class="heroism-dot" id="h3" title="3 pts : Tirer une carte du Destin">3</div>
-      <div class="heroism-dot" id="h4">4</div>
-      <div class="heroism-dot" id="h5">5</div>
-      <div class="heroism-dot active" id="h6" title="6 pts : Activer le Mode Héroïque">6</div>
-    </div>
-    <div class="heroism-memo">
-      <div class="heroism-memo-item"><strong>1 pt</strong>Ignorer agonie · Dernier PES · Relancer 1 jet · Max dégâts · +1 cara combo</div>
-      <div class="heroism-memo-item"><strong>3 pts</strong>Tirer une carte du Destin</div>
-      <div class="heroism-memo-item"><strong>6 pts</strong>Activer le Mode Héroïque</div>
-    </div>
   </div>
 
   <!-- Styles de combat -->
@@ -332,58 +403,90 @@
 </div>
 
 
+<!-- ════ ONGLET JOURNAUX ════ -->
+<div class="tab-page" id="page-journaux">
+
+  <!-- Journal des Points d'Héroïsme -->
+  <div class="card section-gap">
+    <div class="card-title accent-gold">Journal — Points d'Héroïsme <span style="font-size:10px;color:var(--text-faint);font-family:var(--font-body);font-weight:400;letter-spacing:0;text-transform:none;">— max 6</span></div>
+    <div class="ledger-summary">
+      <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="heroisme-solde">6</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="heroisme-gains">+0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="heroisme-depenses">−0</div></div>
+    </div>
+    <div class="field" style="margin-bottom:10px;"><label>Héroïsme de base</label><input type="number" id="heroisme-base" value="6" min="0" max="6" style="width:80px;"></div>
+    <div class="ledger-add-row">
+      <div class="field" style="margin:0;"><label>Description</label><input type="text" id="heroisme-add-desc" placeholder="Ex : Récompense pour mission héroïque…"></div>
+      <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="heroisme-add-amount" placeholder="1" min="1" max="6"></div>
+      <input type="hidden" id="heroisme-add-type" value="credit">
+      <button class="btn btn-credit btn-sm" id="heroisme-btn-credit">+ Gain</button>
+      <button class="btn btn-debit btn-sm" id="heroisme-btn-debit">− Dép.</button>
+    </div>
+    <div class="ledger-entries" id="heroisme-entries"><div class="ledger-empty">Aucune entrée</div></div>
+  </div>
+
+  <!-- Journal des Points XP -->
+  <div class="card section-gap">
+    <div class="card-title accent-gold">Journal — Points d'Expérience</div>
+    <div class="ledger-summary">
+      <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="xp-solde">0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="xp-gains">+0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="xp-depenses-display">−0</div></div>
+    </div>
+    <div class="field" style="margin-bottom:10px;"><label>XP de base</label><input type="number" id="xp-base" value="0" min="0" style="width:80px;"></div>
+    <div class="ledger-add-row">
+      <div class="field" style="margin:0;"><label>Description</label><input type="text" id="xp-add-desc" placeholder="Ex : Récompense mission…"></div>
+      <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="xp-add-amount" placeholder="5" min="1"></div>
+      <input type="hidden" id="xp-add-type" value="credit">
+      <button class="btn btn-credit btn-sm" id="xp-btn-credit">+ Gain</button>
+      <button class="btn btn-debit btn-sm" id="xp-btn-debit">− Dép.</button>
+    </div>
+    <div class="ledger-entries" id="xp-entries"><div class="ledger-empty">Aucune entrée</div></div>
+  </div>
+
+  <!-- Journal PES -->
+  <div class="card section-gap">
+    <div class="card-title accent-blue">Journal — Points d'Espoir</div>
+    <div class="ledger-summary">
+      <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="pes-solde">50</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="pes-gains">+0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="pes-depenses">−0</div></div>
+    </div>
+    <div class="field" style="margin-bottom:10px;"><label>PES de base</label><input type="number" id="pes-base" value="50" min="0" style="width:100px;"></div>
+    <div class="ledger-add-row">
+      <div class="field" style="margin:0;"><label>Description</label><input type="text" id="pes-add-desc" placeholder="Ex : Rechargé en mission…"></div>
+      <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="pes-add-amount" placeholder="5" min="1"></div>
+      <input type="hidden" id="pes-add-type" value="debit">
+      <button class="btn btn-credit btn-sm" id="pes-btn-credit">+ Gain</button>
+      <button class="btn btn-debit btn-sm" id="pes-btn-debit">− Dép.</button>
+    </div>
+    <div class="ledger-entries" id="pes-entries"><div class="ledger-empty">Aucune entrée</div></div>
+  </div>
+
+  <!-- Journal PG -->
+  <div class="card section-gap">
+    <div class="card-title accent-gold">Journal — Points de Gloire</div>
+    <div class="ledger-summary">
+      <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="pg-solde">0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="pg-gains">+0</div></div>
+      <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="pg-depenses">−0</div></div>
+    </div>
+    <div class="field" style="margin-bottom:10px;"><label>PG de base</label><input type="number" id="pg-base" value="0" min="0" style="width:100px;"></div>
+    <div class="ledger-add-row">
+      <div class="field" style="margin:0;"><label>Description</label><input type="text" id="pg-add-desc" placeholder="Ex : Récompense Table Ronde…"></div>
+      <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="pg-add-amount" placeholder="3" min="1"></div>
+      <input type="hidden" id="pg-add-type" value="debit">
+      <button class="btn btn-credit btn-sm" id="pg-btn-credit">+ Gain</button>
+      <button class="btn btn-debit btn-sm" id="pg-btn-debit">− Dép.</button>
+    </div>
+    <div class="ledger-entries" id="pg-entries"><div class="ledger-empty">Aucune entrée</div></div>
+  </div>
+
+</div>
+
+
 <!-- ════ ONGLET 5 : DIVERS ════ -->
 <div class="tab-page" id="page-reste">
-
-  <div class="grid-2 section-gap">
-    <!-- Journal PES -->
-    <div class="card">
-      <div class="card-title accent-blue">Journal — Points d'Espoir</div>
-      <div class="ledger-summary">
-        <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="pes-solde">50</div></div>
-        <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="pes-gains">+0</div></div>
-        <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="pes-depenses">−0</div></div>
-      </div>
-      <div class="field" style="margin-bottom:10px;"><label>PES de base</label><input type="number" id="pes-base" value="50" min="0" style="width:80px;"></div>
-      <div class="ledger-add-row">
-        <div class="field" style="margin:0;"><label>Description</label><input type="text" id="pes-add-desc" placeholder="Ex : Rechargé en mission…"></div>
-        <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="pes-add-amount" placeholder="5" min="1"></div>
-        <input type="hidden" id="pes-add-type" value="debit">
-        <button class="btn btn-credit btn-sm" id="pes-btn-credit">+ Gain</button>
-        <button class="btn btn-debit btn-sm" id="pes-btn-debit">− Dép.</button>
-      </div>
-      <div class="ledger-entries" id="pes-entries"><div class="ledger-empty">Aucune entrée</div></div>
-    </div>
-
-    <!-- Journal PG -->
-    <div class="card">
-      <div class="card-title accent-gold">Journal — Points de Gloire</div>
-      <div class="ledger-summary">
-        <div class="ledger-stat"><div class="ledger-stat-label">Solde</div><div class="ledger-stat-value neutral" id="pg-solde">0</div></div>
-        <div class="ledger-stat"><div class="ledger-stat-label">Gains</div><div class="ledger-stat-value positive" id="pg-gains">+0</div></div>
-        <div class="ledger-stat"><div class="ledger-stat-label">Dépenses</div><div class="ledger-stat-value negative" id="pg-depenses">−0</div></div>
-      </div>
-      <div class="field" style="margin-bottom:10px;"><label>PG de base</label><input type="number" id="pg-base" value="0" min="0" style="width:80px;"></div>
-      <div class="ledger-add-row">
-        <div class="field" style="margin:0;"><label>Description</label><input type="text" id="pg-add-desc" placeholder="Ex : Récompense Table Ronde…"></div>
-        <div class="field" style="margin:0;"><label>Montant</label><input type="number" id="pg-add-amount" placeholder="3" min="1"></div>
-        <input type="hidden" id="pg-add-type" value="debit">
-        <button class="btn btn-credit btn-sm" id="pg-btn-credit">+ Gain</button>
-        <button class="btn btn-debit btn-sm" id="pg-btn-debit">− Dép.</button>
-      </div>
-      <div class="ledger-entries" id="pg-entries"><div class="ledger-empty">Aucune entrée</div></div>
-    </div>
-  </div>
-
-  <!-- Motivations -->
-  <div class="card section-gap">
-    <div class="card-title">Motivations</div>
-    <div id="motivations-list"></div>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button class="btn btn-danger btn-sm" id="btn-add-major">+ Majeure</button>
-      <button class="btn btn-sm" id="btn-add-minor">+ Mineure</button>
-    </div>
-  </div>
 
   <!-- Contacts -->
   <div class="card section-gap">
@@ -410,19 +513,10 @@
     </div>
   </div>
 
-  <!-- Ressources -->
-  <div class="grid-2 section-gap">
-    <div class="card">
-      <div class="card-title accent-gold">Ressources</div>
-      <div class="grid-2" style="gap:8px;">
-        <div class="stat-box"><div class="stat-box-label">PG Armure</div><input type="number" id="pg-armure" value="60"></div>
-        <div class="stat-box"><div class="stat-box-label">PX Dépensés</div><input type="number" id="px-depenses" value="0"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Équipement hors armure</div>
-      <textarea id="equipement" placeholder="Équipement Guardian, véhicule, objets divers…" style="min-height:80px;"></textarea>
-    </div>
+  <!-- Équipement -->
+  <div class="card section-gap">
+    <div class="card-title">Équipement hors armure</div>
+    <textarea id="equipement" placeholder="Équipement Guardian, véhicule, objets divers…" style="min-height:80px;"></textarea>
   </div>
 
   <!-- Histoire & Notes -->
