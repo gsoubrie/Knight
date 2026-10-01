@@ -165,7 +165,7 @@ select option { background: var(--bg-card); }
 .aspect-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   padding: 10px 14px;
   background: var(--bg-panel);
   border-bottom: 1px solid var(--border);
@@ -972,6 +972,36 @@ select option { background: var(--bg-card); }
   line-height: 1.6;
 }
 
+/* Valeurs dérivées en cadres */
+.derived-box {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+}
+.derived-box-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.derived-box-value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.derived-box-hint {
+  font-size: 9px;
+  color: var(--text-faint);
+  line-height: 1.4;
+}
+
 /* ── POINTS GROUP (pour la ligne Héroïsme/PE/PX/PG) ── */
 .points-grid {
   gap: 12px;
@@ -1059,6 +1089,43 @@ select option { background: var(--bg-card); }
   font-size: 18px;
   font-weight: 700;
   color: var(--text);
+}
+
+/* Quick gauge display for general tab */
+.gauge-quick-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.gauge-quick-label {
+  font-size: 14px !important;
+  margin-bottom: 4px !important;
+}
+
+/* Quick gauges in general tab */
+.points-group .gauge-track {
+  height: 8px;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+
+
+/* Jauges de combat toujours éditables en mode jeu */
+.mode-play .gauge-current,
+.mode-play .gauge-max {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+  border-color: var(--border-hi) !important;
+  cursor: text !important;
 }
 
 .points-hint {
@@ -1487,19 +1554,74 @@ textarea:read-only {
   color: var(--bg-deep) !important;
 }
 
+/* ── Display elements for mode jeu ── */
+.aspect-score-display {
+  display: none;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 20px;
+  text-align: center;
+  padding: 2px 6px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-right: 8px;
+}
+
+.cara-score-display {
+  display: none;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 24px;
+  text-align: center;
+  padding: 2px 4px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+.cara-od-display {
+  display: none;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  min-width: 36px;
+  text-align: center;
+  padding: 2px 4px;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.cara-od-display:empty {
+  display: none !important;
+}
+
 /* ── MODE JEU : Masquer les éléments non activés ── */
 /* Masquer les niveaux non cochés */
 .mode-play .nv-row:not(.checked) {
   display: none !important;
 }
-/* Masquer les champs de score et OD ( garden space) */
+/* Masquer les inputs de score et OD des caractéristiques */
 .mode-play .cara-score-row input,
 .mode-play .cara-od-label {
   display: none !important;
 }
-/* Masquer le score des aspects */
+/* Masquer le score input des aspects mais afficher le display */
 .mode-play .aspect-score-wrap {
   display: none !important;
+}
+.mode-play .aspect-score-display {
+  display: inline-block !important;
+}
+/* Afficher les displays des caractéristiques */
+.mode-play .cara-score-display,
+.mode-play .cara-od-display {
+  display: inline-block !important;
 }
 /* Ajuster la marge des labels de niveau */
 .mode-play .nv-label {
@@ -1564,14 +1686,26 @@ textarea:read-only {
   border-color: var(--border) !important;
 }
 
-/* Mode jeu - désactiver tous les champs */
-.mode-play input:not(.gauge-current):not(.gauge-max),
+/* Mode jeu - désactiver tous les champs sauf ceux de combat */
+.mode-play input:not(.gauge-current):not(.gauge-max):not(#ps-current):not(#ps-max):not(#pa-current):not(#pa-max):not(#pe-current):not(#pe-max):not(#cdf-current):not(#cdf-max):not(#defense):not(#reaction):not(#initiative),
 .mode-play textarea,
 .mode-play select {
   background: var(--bg-input) !important;
   color: var(--text-dim) !important;
   cursor: default !important;
   border-color: var(--border) !important;
+}
+
+/* Style pour les champs de combat éditables en mode jeu */
+.mode-play #ps-current, .mode-play #ps-max,
+.mode-play #pa-current, .mode-play #pa-max,
+.mode-play #pe-current, .mode-play #pe-max,
+.mode-play #cdf-current, .mode-play #cdf-max,
+.mode-play #defense, .mode-play #reaction, .mode-play #initiative {
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+  cursor: text !important;
+  border-color: var(--border-hi) !important;
 }
 
 /* ── CAPACITES CONTAINERS ── */

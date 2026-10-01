@@ -18,8 +18,10 @@ KNIGHT.ui.gauges = (function () {
   // ── Mise à jour visuelle ──
 
   function _update(name) {
-    var cur = parseFloat(document.getElementById(name + '-current').value) || 0;
-    var max = parseFloat(document.getElementById(name + '-max').value)     || 1;
+    var curEl = document.getElementById(name + '-current');
+    var maxEl = document.getElementById(name + '-max');
+    var cur = (curEl && curEl.value) ? parseFloat(curEl.value) || 0 : 0;
+    var max = (maxEl && maxEl.value) ? parseFloat(maxEl.value) || 1 : 1;
     var pct = Math.max(0, Math.min(100, (cur / max) * 100));
     var fill = document.getElementById('gauge-' + name + '-fill');
     if (fill) fill.style.width = pct + '%';
@@ -54,7 +56,7 @@ KNIGHT.ui.gauges = (function () {
       var maxEl = document.getElementById(name + '-max');
       if (curEl) curEl.value = g.current;
       if (maxEl) maxEl.value = g.max;
-      _update(name);
+      if (curEl || maxEl) _update(name);
     });
   }
 

@@ -17,7 +17,7 @@ KNIGHT.ui.aspects = (function () {
      Construction du DOM d'un aspect
   ───────────────────────────────────────── */
 
-  function _buildBlock(aspect) {
+  function _buildBlock(aspect, activeOverdrives) {
     var block = document.createElement('div');
     block.className = 'aspect-block';
     block.id = 'aspect-' + aspect.id;
@@ -31,6 +31,11 @@ KNIGHT.ui.aspects = (function () {
     nameEl.className = 'aspect-name';
     nameEl.setAttribute('data-aspect', aspect.id);
     nameEl.textContent = aspect.label;
+
+    // Score display span pour mode lecture seule
+    var scoreDisplay = document.createElement('span');
+    scoreDisplay.className = 'aspect-score-display';
+    scoreDisplay.textContent = aspect.score;
 
     var scoreWrap = document.createElement('div');
     scoreWrap.className = 'aspect-score-wrap';
@@ -48,20 +53,25 @@ KNIGHT.ui.aspects = (function () {
     scoreInput.max       = 20;
     scoreInput.addEventListener('input', function () {
       aspect.score = parseInt(this.value) || 0;
+      scoreDisplay.textContent = aspect.score; // Mettre à jour l'affichage
     });
 
     scoreWrap.appendChild(scoreLabel);
     scoreWrap.appendChild(scoreInput);
+    // Insérer dans l'ordre : name, score display, score wrap
     header.appendChild(nameEl);
+    header.appendChild(scoreDisplay);
     header.appendChild(scoreWrap);
 
     // ── Corps : 3 caractéristiques ──
     var body = document.createElement('div');
     body.className = 'aspect-body';
 
+    var hasOverdrive = activeOverdrives && activeOverdrives.indexOf(aspect.id) !== -1;
+
     aspect.caras.forEach(function (cara, i) {
       var niveaux = KNIGHT.models.Aspect.getNiveaux(aspect.id, i);
-      body.appendChild(_buildCara(aspect, cara, i, niveaux));
+      body.appendChild(_buildCara(aspect, cara, i, niveaux, hasOverdrive));
     });
 
     block.appendChild(header);
@@ -73,9 +83,12 @@ KNIGHT.ui.aspects = (function () {
      Construction d'une caractéristique
   ───────────────────────────────────────── */
 
-  function _buildCara(aspect, cara, i, niveaux) {
+  function _buildCara(aspect, cara, i, niveaux, hasOverdrive) {
     var wrap = document.createElement('div');
     wrap.className = 'cara-wrap';
+
+    // Calculer l'OD total (base + bonus overdrive)
+    var odTotal = cara.od + (hasOverdrive ? 1 : 0);
 
     // Ligne score
     var scoreRow = document.createElement('div');
@@ -84,6 +97,14 @@ KNIGHT.ui.aspects = (function () {
     var nameEl = document.createElement('span');
     nameEl.className = 'cara-name';
     nameEl.textContent = cara.name;
+
+    var scoreDisplay = document.createElement('span');
+    scoreDisplay.className = 'cara-score-display';
+    scoreDisplay.textContent = cara.score;
+
+    var odDisplay = document.createElement('span');
+    odDisplay.className = 'cara-od-display';
+    odDisplay.textContent = odTotal > 0 ? 'OD:' + odTotal : '';
 
     var scoreEl = document.createElement('input');
     scoreEl.type      = 'number';
@@ -95,6 +116,7 @@ KNIGHT.ui.aspects = (function () {
     scoreEl.title     = 'Score';
     scoreEl.addEventListener('input', function () {
       cara.score = parseInt(this.value) || 0;
+      scoreDisplay.textContent = cara.score; // Mettre à jour l'affichage
     });
 
     var odLabel = document.createElement('span');
@@ -111,11 +133,16 @@ KNIGHT.ui.aspects = (function () {
     odEl.title     = 'Overdrive';
     odEl.addEventListener('input', function () {
       cara.od = parseInt(this.value) || 0;
+      // Recalculer l'OD total avec le bonus overdrive
+      var newOdTotal = cara.od + (hasOverdrive ? 1 : 0);
+      odDisplay.textContent = newOdTotal > 0 ? 'OD:' + newOdTotal : ''; // Mettre à jour l'affichage
     });
 
     scoreRow.appendChild(nameEl);
+    scoreRow.appendChild(scoreDisplay);
     scoreRow.appendChild(scoreEl);
     scoreRow.appendChild(odLabel);
+    scoreRow.appendChild(odDisplay);
     scoreRow.appendChild(odEl);
 
     // Niveaux NV1→NV5
@@ -175,8 +202,11 @@ KNIGHT.ui.aspects = (function () {
     if (!container) return;
     container.innerHTML = '';
 
+    // Récupérer les overdrives actifs de l'armure
+    var activeOverdrives = (char.warrior && char.warrior.activeTypes) ? char.warrior.activeTypes : [];
+
     char.aspects.forEach(function (aspect) {
-      container.appendChild(_buildBlock(aspect));
+      container.appendChild(_buildBlock(aspect, activeOverdrives));
     });
   }
 

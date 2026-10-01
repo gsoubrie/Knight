@@ -61,7 +61,7 @@ KNIGHT.models.Character = function () {
     activeCapacite: '',
     activeType:     '',
     capaciteActive: false,
-    activeTypes:    [],
+    activeTypes:    ['Deplacement', 'Combat', 'Tir', 'Dexterite'],
     typesNotes:     '',
     slots: {
       tete:    { max: 7,  modules: [] },

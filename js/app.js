@@ -55,12 +55,19 @@ KNIGHT.app = (function () {
   }
 
   function _applyEditMode() {
+    // IDs des champs de combat à garder éditables même en mode Jeu
+    var combatFieldIds = ['ps-current', 'ps-max', 'pa-current', 'pa-max', 'pe-current', 'pe-max', 'cdf-current', 'cdf-max', 'defense', 'reaction', 'initiative'];
+    
     var fields = document.querySelectorAll('input, textarea, select');
     fields.forEach(function (field) {
       if (field.tagName === 'SELECT') {
         field.disabled = !_isEditMode;
       } else {
-        field.readOnly = !_isEditMode;
+        // Les champs de combat restent toujours éditables
+        var isCombatField = combatFieldIds.indexOf(field.id) !== -1 || 
+                           field.classList.contains('gauge-current') || 
+                           field.classList.contains('gauge-max');
+        field.readOnly = !_isEditMode && !isCombatField;
       }
     });
     // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
@@ -98,7 +105,7 @@ KNIGHT.app = (function () {
         }
         
         // Mettre à jour la valeur affichée
-        displaySpan.textContent = selectedText || '—';
+        displaySpan.textContent = selectedText && !selectedText.includes('Sélectionner') ? selectedText : '...';
         
         // Afficher/masquer le span et le select
         if (readOnlyMode) {
@@ -377,9 +384,12 @@ KNIGHT.app = (function () {
           KNIGHT.ui.ledger.render(_char); 
         } 
       },
-      'defense':      function (v) { _char.derived.defense = parseInt(v) || 0; },
-      'reaction':     function (v) { _char.derived.reaction = parseInt(v) || 0; },
-      'initiative':   function (v) { _char.derived.initiative = parseInt(v) || 0; },
+      'defense':      function (v) { _char.derived.defense = parseInt(v) || 0; _updateDerivedDisplay(); },
+      'reaction':     function (v) { _char.derived.reaction = parseInt(v) || 0; _updateDerivedDisplay(); },
+      'initiative':   function (v) { _char.derived.initiative = parseInt(v) || 0; _updateDerivedDisplay(); },
+      'defense-input':    function (v) { _char.derived.defense = parseInt(v) || 0; _updateDerivedDisplay(); },
+      'reaction-input':   function (v) { _char.derived.reaction = parseInt(v) || 0; _updateDerivedDisplay(); },
+      'initiative-input': function (v) { _char.derived.initiative = parseInt(v) || 0; _updateDerivedDisplay(); },
       'avantages':    function (v) { _char.avantages = v; },
       'inconvenients': function (v) { _char.inconvenients = v; },
       'equipement':   function (v) { _char.equipement = v; },
@@ -457,7 +467,7 @@ KNIGHT.app = (function () {
         if (el) el.value = wMap[id] !== undefined ? wMap[id] : '';
       });
       
-      // Afficher les overdrives
+      // Afficher les overdrives dans l'onglet Armure
       var overdrivesContainer = document.getElementById('armure-overdrives-container');
       if (overdrivesContainer && _char.warrior && _char.warrior.activeTypes) {
         if (_char.warrior.activeTypes.length > 0) {
@@ -473,6 +483,19 @@ KNIGHT.app = (function () {
           overdrivesContainer.innerHTML = '<div style="color:var(--text-faint);">Aucun overdrive</div>';
           var odTitleEl = document.getElementById('armure-overdrives-title');
           if (odTitleEl) odTitleEl.innerHTML = '';
+        }
+      }
+      
+      // Afficher les overdrives dans l'onglet Caractéristiques
+      var overdrivesQuickContainer = document.getElementById('armor-overdrives-quick');
+      if (overdrivesQuickContainer) {
+        if (_char.warrior && _char.warrior.activeTypes && _char.warrior.activeTypes.length > 0) {
+          var odQuickHtml = '<div class="overdrives-badge">' + _char.warrior.activeTypes.map(function(od) {
+            return '<span class="od-tag">' + _escapeHtml(od) + '</span>';
+          }).join('') + '</div>';
+          overdrivesQuickContainer.innerHTML = odQuickHtml;
+        } else {
+          overdrivesQuickContainer.innerHTML = '<div style="color:var(--text-faint);">Aucune armure ou aucun overdrive actif</div>';
         }
       }
 
@@ -584,6 +607,7 @@ KNIGHT.app = (function () {
     // Synchroniser les affichages des valeurs dans l'onglet Général
     _syncDisplayValues();
     _updateHeaderName();
+    _updateDerivedDisplay();
   }
 
   function _syncDisplayValues() {
@@ -624,6 +648,77 @@ KNIGHT.app = (function () {
     }
     if (pgDepensesEl2 && pgDepensesDisplay2) {
       pgDepensesDisplay2.textContent = pgDepensesEl2.value;
+    }
+    
+    // Jauges rapides (PS, PA, PE)
+    var psCurrentEl = document.getElementById('ps-current');
+    var psMaxEl = document.getElementById('ps-max');
+    var psQuickCurrent = document.getElementById('ps-quick-current');
+    var psQuickMax = document.getElementById('ps-quick-max');
+    var psQuickFill = document.getElementById('gauge-ps-quick-fill');
+    if (psCurrentEl && psQuickCurrent) psQuickCurrent.textContent = psCurrentEl.value;
+    if (psMaxEl && psQuickMax) psQuickMax.textContent = psMaxEl.value;
+    if (psCurrentEl && psMaxEl && psQuickFill) {
+      var psPct = Math.max(0, Math.min(100, (parseFloat(psCurrentEl.value) / parseFloat(psMaxEl.value)) * 100));
+      psQuickFill.style.width = psPct + '%';
+    }
+    
+    var paCurrentEl = document.getElementById('pa-current');
+    var paMaxEl = document.getElementById('pa-max');
+    var paQuickCurrent = document.getElementById('pa-quick-current');
+    var paQuickMax = document.getElementById('pa-quick-max');
+    var paQuickFill = document.getElementById('gauge-pa-quick-fill');
+    if (paCurrentEl && paQuickCurrent) paQuickCurrent.textContent = paCurrentEl.value;
+    if (paMaxEl && paQuickMax) paQuickMax.textContent = paMaxEl.value;
+    if (paCurrentEl && paMaxEl && paQuickFill) {
+      var paPct = Math.max(0, Math.min(100, (parseFloat(paCurrentEl.value) / parseFloat(paMaxEl.value)) * 100));
+      paQuickFill.style.width = paPct + '%';
+    }
+    
+    var peCurrentEl = document.getElementById('pe-current');
+    var peMaxEl = document.getElementById('pe-max');
+    var peQuickCurrent = document.getElementById('pe-quick-current');
+    var peQuickMax = document.getElementById('pe-quick-max');
+    var peQuickFill = document.getElementById('gauge-pe-quick-fill');
+    if (peCurrentEl && peQuickCurrent) peQuickCurrent.textContent = peCurrentEl.value;
+    if (peMaxEl && peQuickMax) peQuickMax.textContent = peMaxEl.value;
+    if (peCurrentEl && peMaxEl && peQuickFill) {
+      var pePct = Math.max(0, Math.min(100, (parseFloat(peCurrentEl.value) / parseFloat(peMaxEl.value)) * 100));
+      peQuickFill.style.width = pePct + '%';
+    }
+  }
+
+  function _initQuickGauges() {
+    // Ajouter des listeners sur les inputs de jauges pour mettre à jour les affichages rapides
+    var gaugeIds = ['ps', 'pa', 'pe'];
+    gaugeIds.forEach(function(id) {
+      var currentEl = document.getElementById(id + '-current');
+      var maxEl = document.getElementById(id + '-max');
+      if (currentEl) {
+        currentEl.addEventListener('input', _syncDisplayValues);
+      }
+      if (maxEl) {
+        maxEl.addEventListener('input', _syncDisplayValues);
+      }
+    });
+  }
+
+  function _updateDerivedDisplay() {
+    var defenseInput = document.getElementById('defense');
+    var reactionInput = document.getElementById('reaction');
+    var initiativeInput = document.getElementById('initiative');
+    var defenseDisplay = document.getElementById('defense-display');
+    var reactionDisplay = document.getElementById('reaction-display');
+    var initiativeDisplay = document.getElementById('initiative-display');
+    
+    if (defenseInput && defenseDisplay) {
+      defenseDisplay.textContent = defenseInput.value;
+    }
+    if (reactionInput && reactionDisplay) {
+      reactionDisplay.textContent = reactionInput.value;
+    }
+    if (initiativeInput && initiativeDisplay) {
+      initiativeDisplay.textContent = initiativeInput.value;
     }
   }
 
@@ -785,6 +880,7 @@ KNIGHT.app = (function () {
     _initContacts();
     _initQuicklist();
     _initScalaires();
+    _initQuickGauges();
 
     // Header
     _updateHeaderName();

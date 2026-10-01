@@ -83,7 +83,7 @@
     <div class="grid-4 points-grid">
       <!-- Héroïsme -->
       <div class="points-group">
-        <div class="points-label accent-gold">Héroïsme</div>
+        <div class="points-label accent-gold">Points d'Héroïsme</div>
         <div class="heroism-dots-mini">
           <div class="heroism-dot-mini" id="h1-mini" title="1 pt">1</div>
           <div class="heroism-dot-mini" id="h2-mini">2</div>
@@ -92,19 +92,6 @@
           <div class="heroism-dot-mini" id="h5-mini">5</div>
           <div class="heroism-dot-mini" id="h6-mini" title="6 pts">6</div>
         </div>
-      </div>
-      
-      <!-- PE -->
-      <div class="points-group">
-        <div class="points-label accent-blue">Points d'Espoir</div>
-        <div class="pes-display">
-          <span id="pes-current-display">50</span>
-          <span class="gauge-sep">/</span>
-          <span id="pes-max-display">50</span>
-        </div>
-        <input type="hidden" id="pes-current" value="50" min="0">
-        <input type="hidden" id="pes-max" value="50" min="0">
-        <div class="points-hint">= 50 + bonus Dame</div>
       </div>
       
       <!-- PX -->
@@ -147,21 +134,40 @@
     </div>
   </div>
 
-  <!-- Héroïsme détaillé -->
-  <div class="card section-gap" id="heroism-detail-card">
-    <div class="card-title accent-gold">Points d'Héroïsme</div>
-    <div class="heroism-dots">
-      <div class="heroism-dot" id="h1" title="1 pt : Ignorer agonie / Dernier PES / Relancer / Max dégâts / +1 cara combo">1</div>
-      <div class="heroism-dot" id="h2">2</div>
-      <div class="heroism-dot" id="h3" title="3 pts : Tirer une carte du Destin">3</div>
-      <div class="heroism-dot" id="h4">4</div>
-      <div class="heroism-dot" id="h5">5</div>
-      <div class="heroism-dot" id="h6" title="6 pts : Activer le Mode Héroïque">6</div>
-    </div>
-    <div class="heroism-memo">
-      <div class="heroism-memo-item"><strong>1 pt</strong>Ignorer agonie · Dernier PES · Relancer 1 jet · Max dégâts · +1 cara combo</div>
-      <div class="heroism-memo-item"><strong>3 pts</strong>Tirer une carte du Destin</div>
-      <div class="heroism-memo-item"><strong>6 pts</strong>Activer le Mode Héroïque</div>
+  <!-- Jauges rapides (PS, PA, PE) -->
+  <div class="card section-gap">
+    <div class="card-title">Jauges de combat</div>
+    <div class="grid-3 points-grid">
+      <!-- PS -->
+      <div class="points-group">
+        <div class="points-label accent-red gauge-quick-label">PS</div>
+        <div class="gauge-quick-display">
+          <span id="ps-quick-current">10</span>
+          <span class="gauge-sep">/</span>
+          <span id="ps-quick-max">46</span>
+        </div>
+        <div class="gauge-track gauge-ps" id="gauge-ps-quick-track"><div class="gauge-fill" id="gauge-ps-quick-fill" style="width:22%"></div></div>
+      </div>
+      <!-- PA -->
+      <div class="points-group">
+        <div class="points-label accent-gold gauge-quick-label">PA</div>
+        <div class="gauge-quick-display">
+          <span id="pa-quick-current">100</span>
+          <span class="gauge-sep">/</span>
+          <span id="pa-quick-max">100</span>
+        </div>
+        <div class="gauge-track gauge-pa" id="gauge-pa-quick-track"><div class="gauge-fill" id="gauge-pa-quick-fill" style="width:100%"></div></div>
+      </div>
+      <!-- PE -->
+      <div class="points-group">
+        <div class="points-label accent-blue gauge-quick-label">PE</div>
+        <div class="gauge-quick-display">
+          <span id="pe-quick-current">40</span>
+          <span class="gauge-sep">/</span>
+          <span id="pe-quick-max">40</span>
+        </div>
+        <div class="gauge-track gauge-pe" id="gauge-pe-quick-track"><div class="gauge-fill" id="gauge-pe-quick-fill" style="width:100%"></div></div>
+      </div>
     </div>
   </div>
 
@@ -180,6 +186,12 @@
 
 <!-- ════ ONGLET 1 : CARACTÉRISTIQUES ════ -->
 <div class="tab-page" id="page-carac">
+
+  <!-- Overdrives de l'armure -->
+  <div class="card section-gap">
+    <div class="card-title accent-red">Overdrives actifs</div>
+    <div id="armor-overdrives-quick" class="overdrives-list"></div>
+  </div>
 
   <!-- Aspects en colonne -->
   <div id="aspects-grid" class="section-gap"></div>
@@ -234,9 +246,9 @@
       </div>
       <p class="gauge-hint">Warrior : 100 PA de base</p>
     </div>
-    <!-- CDF + PE -->
+    <!-- Champ de Force -->
     <div class="card">
-      <div class="card-title accent-green">Champ de Force & Énergie</div>
+      <div class="card-title accent-green">Champ de Force</div>
       <div class="gauge-wrap gauge-cdf">
         <div class="gauge-header">
           <span class="gauge-label">CDF</span>
@@ -248,7 +260,12 @@
         </div>
         <div class="gauge-track" id="gauge-cdf-track"><div class="gauge-fill" id="gauge-cdf-fill" style="width:100%"></div></div>
       </div>
-      <div class="gauge-wrap gauge-pe" style="margin-top:14px;">
+    </div>
+    
+    <!-- Énergie -->
+    <div class="card">
+      <div class="card-title accent-blue">Énergie</div>
+      <div class="gauge-wrap gauge-pe">
         <div class="gauge-header">
           <span class="gauge-label">PE</span>
           <div class="gauge-values">
@@ -266,11 +283,27 @@
   <div class="card section-gap">
     <div class="card-title accent-blue">Valeurs Dérivées</div>
     <div class="grid-3">
-      <div class="stat-box"><div class="stat-box-label">Défense</div><input type="number" id="defense" value="0"></div>
-      <div class="stat-box"><div class="stat-box-label">Réaction</div><input type="number" id="reaction" value="0"></div>
-      <div class="stat-box"><div class="stat-box-label">Initiative</div><input type="number" id="initiative" value="0"></div>
+      <div class="derived-box">
+        <div class="derived-box-label">Défense</div>
+        <div class="derived-box-value" id="defense-display">0</div>
+        <div class="derived-box-hint">= plus haute cara Bête (OD compris)</div>
+      </div>
+      <div class="derived-box">
+        <div class="derived-box-label">Réaction</div>
+        <div class="derived-box-value" id="reaction-display">0</div>
+        <div class="derived-box-hint">= plus haute cara Machine (OD compris)</div>
+      </div>
+      <div class="derived-box">
+        <div class="derived-box-label">Initiative</div>
+        <div class="derived-box-value" id="initiative-display">0</div>
+        <div class="derived-box-hint">= 3D6 + plus haute cara Masque (OD compris)</div>
+      </div>
     </div>
-    <p class="derived-hint">Défense = plus haute cara Bête (OD compris) &nbsp;·&nbsp; Réaction = plus haute cara Machine (OD compris) &nbsp;·&nbsp; Initiative = 3D6 + plus haute cara Masque (OD compris)</p>
+    <div style="display:none;">
+      <input type="number" id="defense" value="0" min="0">
+      <input type="number" id="reaction" value="0" min="0">
+      <input type="number" id="initiative" value="0" min="0">
+    </div>
   </div>
 
   <!-- Styles de combat -->
