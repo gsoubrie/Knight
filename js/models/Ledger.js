@@ -72,8 +72,6 @@ KNIGHT.models.Ledger.prototype = {
 
   serialize: function () {
     return {
-      id:      this.id,
-      label:   this.label,
       base:    this.base,
       entries: this.entries.slice()
     };
@@ -83,5 +81,6 @@ KNIGHT.models.Ledger.prototype = {
     if (!data) return;
     this.base    = data.base    !== undefined ? data.base : this.base;
     this.entries = data.entries ? data.entries.slice() : [];
+    // id et label sont statiques, ne pas les restaurer depuis la sauvegarde
   }
 };

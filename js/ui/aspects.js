@@ -67,10 +67,9 @@ KNIGHT.ui.aspects = (function () {
     var body = document.createElement('div');
     body.className = 'aspect-body';
 
-    var hasOverdrive = activeOverdrives && activeOverdrives.indexOf(aspect.id) !== -1;
-
     aspect.caras.forEach(function (cara, i) {
       var niveaux = KNIGHT.models.Aspect.getNiveaux(aspect.id, i);
+      var hasOverdrive = activeOverdrives && activeOverdrives.indexOf(cara.name) !== -1;
       body.appendChild(_buildCara(aspect, cara, i, niveaux, hasOverdrive));
     });
 
@@ -87,9 +86,6 @@ KNIGHT.ui.aspects = (function () {
     var wrap = document.createElement('div');
     wrap.className = 'cara-wrap';
 
-    // Calculer l'OD total (base + bonus overdrive)
-    var odTotal = cara.od + (hasOverdrive ? 1 : 0);
-
     // Ligne score
     var scoreRow = document.createElement('div');
     scoreRow.className = 'cara-score-row';
@@ -101,10 +97,6 @@ KNIGHT.ui.aspects = (function () {
     var scoreDisplay = document.createElement('span');
     scoreDisplay.className = 'cara-score-display';
     scoreDisplay.textContent = cara.score;
-
-    var odDisplay = document.createElement('span');
-    odDisplay.className = 'cara-od-display';
-    odDisplay.textContent = odTotal > 0 ? 'OD:' + odTotal : '';
 
     var scoreEl = document.createElement('input');
     scoreEl.type      = 'number';
@@ -119,31 +111,9 @@ KNIGHT.ui.aspects = (function () {
       scoreDisplay.textContent = cara.score; // Mettre à jour l'affichage
     });
 
-    var odLabel = document.createElement('span');
-    odLabel.className   = 'cara-od-label';
-    odLabel.textContent = 'OD';
-
-    var odEl = document.createElement('input');
-    odEl.type      = 'number';
-    odEl.className = 'input-sm';
-    odEl.id        = 'od-' + aspect.id + '-' + i;
-    odEl.value     = cara.od;
-    odEl.min       = 0;
-    odEl.max       = 10;
-    odEl.title     = 'Overdrive';
-    odEl.addEventListener('input', function () {
-      cara.od = parseInt(this.value) || 0;
-      // Recalculer l'OD total avec le bonus overdrive
-      var newOdTotal = cara.od + (hasOverdrive ? 1 : 0);
-      odDisplay.textContent = newOdTotal > 0 ? 'OD:' + newOdTotal : ''; // Mettre à jour l'affichage
-    });
-
     scoreRow.appendChild(nameEl);
     scoreRow.appendChild(scoreDisplay);
     scoreRow.appendChild(scoreEl);
-    scoreRow.appendChild(odLabel);
-    scoreRow.appendChild(odDisplay);
-    scoreRow.appendChild(odEl);
 
     // Niveaux NV1→NV5
     var nvList = document.createElement('div');
@@ -222,9 +192,8 @@ KNIGHT.ui.aspects = (function () {
 
       aspect.caras.forEach(function (cara, i) {
         var sEl = document.getElementById('cara-' + aspect.id + '-' + i);
-        var oEl = document.getElementById('od-'   + aspect.id + '-' + i);
         if (sEl) cara.score = parseInt(sEl.value) || 0;
-        if (oEl) cara.od    = parseInt(oEl.value) || 0;
+        // OD est géré via les capacités d'armure, pas via des inputs
         // nv est mis à jour directement via les listeners click
       });
     });

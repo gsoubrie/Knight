@@ -231,6 +231,53 @@ KNIGHT.app = (function () {
   }
 
   /* ════════════════════════════════════════
+     VŒUX
+  ════════════════════════════════════════ */
+
+  function _renderVoeux() {
+    var list = document.getElementById('voeux-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    _char.voeux.forEach(function (v, i) {
+      var div = document.createElement('div');
+      div.className = 'voeu-item';
+
+      var ta = document.createElement('textarea');
+      ta.className = 'voeu-text';
+      ta.rows = 2;
+      ta.placeholder = 'Description du vœu…';
+      ta.value = v.texte || '';
+      ta.addEventListener('input', (function (idx) {
+        return function (e) { _char.voeux[idx].texte = e.target.value; };
+      }(i)));
+
+      var del = document.createElement('button');
+      del.className = 'voeu-del';
+      del.textContent = '×';
+      del.title = 'Supprimer';
+      del.addEventListener('click', (function (idx) {
+        return function () {
+          _char.removeVoeu(idx);
+          _renderVoeux();
+        };
+      }(i)));
+
+      div.appendChild(ta);
+      div.appendChild(del);
+      list.appendChild(div);
+    });
+  }
+
+  function _initVoeux() {
+    var btn = document.getElementById('btn-add-voeu');
+    if (btn) btn.addEventListener('click', function () {
+      _char.addVoeu();
+      _renderVoeux();
+    });
+  }
+
+  /* ════════════════════════════════════════
      CONTACTS
   ════════════════════════════════════════ */
 
@@ -367,7 +414,6 @@ KNIGHT.app = (function () {
   function _initScalaires() {
     var map = {
       'nom':          function (v) { _char.nom = v; _updateHeaderName(); },
-      'voeu':         function (v) { _char.voeu = v; },
       'px':           function (v) { _char.px = parseInt(v) || 0; },
       'pg-armure':    function (v) { _char.pgArmure = parseInt(v) || 0; },
       'pg-depenses':  function (v) { _char.pgDepenses = parseInt(v) || 0; },
@@ -436,7 +482,7 @@ KNIGHT.app = (function () {
 
   function _syncScalaires() {
     var map = {
-      'nom': _char.nom, 'voeu': _char.voeu,
+      'nom': _char.nom,
       'px': _char.px, 'pg-armure': _char.pgArmure,
       'pg-depenses': _char.pgDepenses || 0,
       'px-depenses': _char.pxDepenses,
@@ -834,6 +880,7 @@ KNIGHT.app = (function () {
     KNIGHT.ui.catalog.render(_char);
     _renderHeroisme();
     _renderMotivations();
+    _renderVoeux();
     _renderContacts();
     _renderQuicklist();
     // Appliquer la transformation des champs si on est en mode lecture seule
@@ -877,6 +924,7 @@ KNIGHT.app = (function () {
     // App-level
     _initHeroisme();
     _initMotivations();
+    _initVoeux();
     _initContacts();
     _initQuicklist();
     _initScalaires();
@@ -950,6 +998,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Succès : re-render tout
         KNIGHT.app.renderAll();
         KNIGHT.app.showNotif('✓', 'Personnage chargé depuis l\'URL');
+        // Passer en mode Jeu quand un JSON est chargé depuis l'URL
+        KNIGHT.app._setEditMode(false);
+        // Mettre à jour l'URL pour refléter le mode Jeu
+        var urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('mode', 'play');
+        window.history.replaceState({}, '', '?' + urlParams.toString());
       }
     );
     return; // On a tenté le chargement par URL, on sort

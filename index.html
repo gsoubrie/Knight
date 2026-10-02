@@ -67,7 +67,7 @@
           <button class="btn btn-add btn-sm" id="btn-add-blason" title="Ajouter un nouveau blason">+</button>
         </div>
       </div>
-      <div class="field"><label>Vœu</label><input type="text" id="voeu" placeholder="…"></div>
+
       <div class="field">
         <label>Armure</label>
         <div style="display:flex;gap:4px;">
@@ -181,23 +181,17 @@
     </div>
   </div>
 
-</div>
-
-
-<!-- ════ ONGLET 1 : CARACTÉRISTIQUES ════ -->
-<div class="tab-page" id="page-carac">
-
-  <!-- Overdrives de l'armure -->
+  <!-- Vœux -->
   <div class="card section-gap">
-    <div class="card-title accent-red">Overdrives actifs</div>
-    <div id="armor-overdrives-quick" class="overdrives-list"></div>
+    <div class="card-title">Vœux</div>
+    <div id="voeux-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-add btn-sm" id="btn-add-voeu">+ Ajouter un vœu</button>
+    </div>
   </div>
 
-  <!-- Aspects en colonne -->
-  <div id="aspects-grid" class="section-gap"></div>
-
   <!-- Avantages / Inconvénients -->
-  <div class="grid-2">
+  <div class="grid-2 section-gap">
     <div class="card">
       <div class="card-title accent-green">Avantages</div>
       <textarea id="avantages" placeholder="Liste des avantages…"></textarea>
@@ -207,6 +201,22 @@
       <textarea id="inconvenients" placeholder="Liste des inconvénients…"></textarea>
     </div>
   </div>
+
+</div>
+
+
+<!-- ════ ONGLET 1 : CARACTÉRISTIQUES ════ -->
+<div class="tab-page" id="page-carac">
+
+  <!-- Aspects en colonne -->
+  <div id="aspects-grid" class="section-gap"></div>
+
+  <!-- Overdrives de l'armure -->
+  <div class="card section-gap">
+    <div class="card-title accent-red">Overdrives actifs</div>
+    <div id="armor-overdrives-quick" class="overdrives-list"></div>
+  </div>
+
 </div>
 
 
@@ -221,15 +231,19 @@
         <div class="gauge-header">
           <span class="gauge-label">PS</span>
           <div class="gauge-values">
-            <input type="number" class="gauge-current" id="ps-current" value="10" min="0">
+            <button class="btn btn-sm btn-gauge-minus" data-gauge="ps" data-type="current" title="Diminuer">−</button>
+            <span class="gauge-display" id="ps-current-display">10</span>
             <span class="gauge-sep">/</span>
-            <input type="number" class="gauge-max" id="ps-max" value="46" min="0">
+            <span class="gauge-display" id="ps-max-display">46</span>
+            <button class="btn btn-sm btn-gauge-plus" data-gauge="ps" data-type="current" title="Augmenter">+</button>
           </div>
         </div>
         <div class="gauge-track" id="gauge-ps-track"><div class="gauge-fill" id="gauge-ps-fill" style="width:22%"></div></div>
       </div>
       <p class="gauge-hint">= 10 + 6 × (plus haute cara Chair sans OD)</p>
     </div>
+    <input type="hidden" id="ps-current" value="10" min="0">
+    <input type="hidden" id="ps-max" value="46" min="0">
     <!-- PA -->
     <div class="card">
       <div class="card-title accent-gold">Points d'Armure</div>
@@ -237,15 +251,19 @@
         <div class="gauge-header">
           <span class="gauge-label">PA</span>
           <div class="gauge-values">
-            <input type="number" class="gauge-current" id="pa-current" value="100" min="0">
+            <button class="btn btn-sm btn-gauge-minus" data-gauge="pa" data-type="current" title="Diminuer">−</button>
+            <span class="gauge-display" id="pa-current-display">100</span>
             <span class="gauge-sep">/</span>
-            <input type="number" class="gauge-max" id="pa-max" value="100" min="0">
+            <span class="gauge-display" id="pa-max-display">100</span>
+            <button class="btn btn-sm btn-gauge-plus" data-gauge="pa" data-type="current" title="Augmenter">+</button>
           </div>
         </div>
         <div class="gauge-track" id="gauge-pa-track"><div class="gauge-fill" id="gauge-pa-fill" style="width:100%"></div></div>
       </div>
       <p class="gauge-hint">Warrior : 100 PA de base</p>
     </div>
+    <input type="hidden" id="pa-current" value="100" min="0">
+    <input type="hidden" id="pa-max" value="100" min="0">
     <!-- Champ de Force -->
     <div class="card">
       <div class="card-title accent-green">Champ de Force</div>
@@ -253,14 +271,18 @@
         <div class="gauge-header">
           <span class="gauge-label">CDF</span>
           <div class="gauge-values">
-            <input type="number" class="gauge-current" id="cdf-current" value="8" min="0">
+            <button class="btn btn-sm btn-gauge-minus" data-gauge="cdf" data-type="current" title="Diminuer">−</button>
+            <span class="gauge-display" id="cdf-current-display">8</span>
             <span class="gauge-sep">/</span>
-            <input type="number" class="gauge-max" id="cdf-max" value="8" min="0">
+            <span class="gauge-display" id="cdf-max-display">8</span>
+            <button class="btn btn-sm btn-gauge-plus" data-gauge="cdf" data-type="current" title="Augmenter">+</button>
           </div>
         </div>
         <div class="gauge-track" id="gauge-cdf-track"><div class="gauge-fill" id="gauge-cdf-fill" style="width:100%"></div></div>
       </div>
     </div>
+    <input type="hidden" id="cdf-current" value="8" min="0">
+    <input type="hidden" id="cdf-max" value="8" min="0">
     
     <!-- Énergie -->
     <div class="card">
@@ -269,12 +291,42 @@
         <div class="gauge-header">
           <span class="gauge-label">PE</span>
           <div class="gauge-values">
-            <input type="number" class="gauge-current" id="pe-current" value="40" min="0">
+            <button class="btn btn-sm btn-gauge-minus" data-gauge="pe" data-type="current" title="Diminuer">−</button>
+            <span class="gauge-display" id="pe-current-display">40</span>
             <span class="gauge-sep">/</span>
-            <input type="number" class="gauge-max" id="pe-max" value="40" min="0">
+            <span class="gauge-display" id="pe-max-display">40</span>
+            <button class="btn btn-sm btn-gauge-plus" data-gauge="pe" data-type="current" title="Augmenter">+</button>
           </div>
         </div>
         <div class="gauge-track" id="gauge-pe-track"><div class="gauge-fill" id="gauge-pe-fill" style="width:100%"></div></div>
+      </div>
+    </div>
+    <input type="hidden" id="pe-current" value="40" min="0">
+    <input type="hidden" id="pe-max" value="40" min="0">
+  </div>
+
+  <!-- Journal des modifications -->
+  <div class="card section-gap">
+    <div class="card-title accent-blue">Journal des modifications</div>
+    <button class="btn btn-load btn-sm" id="btn-gauge-journal">📖 Voir le journal</button>
+    <div id="gauge-journal-list" style="margin-top: 10px;"></div>
+  </div>
+
+  <!-- Modal pour ajouter une modification de jauge -->
+  <div class="modal-overlay" id="gauge-modify-modal">
+    <div class="modal" style="width: 400px;">
+      <div class="modal-title">Modifier la jauge</div>
+      <div class="field">
+        <label>Points ajoutés/enlevés</label>
+        <input type="number" id="gauge-modify-delta" value="1" min="-999" max="999">
+      </div>
+      <div class="field">
+        <label>Description</label>
+        <textarea id="gauge-modify-reason" placeholder="Origine de la modification…" style="min-height: 60px;"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-load" id="gauge-modify-cancel">Annuler</button>
+        <button class="btn btn-save" id="gauge-modify-confirm">Valider</button>
       </div>
     </div>
   </div>

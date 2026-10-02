@@ -9,6 +9,14 @@
 var KNIGHT = KNIGHT || {};
 KNIGHT.ui = KNIGHT.ui || {};
 
+// Fonction utilitaire pour échapper le HTML
+function _escapeHtml(text) {
+  if (text === null || text === undefined) return '';
+  var div = document.createElement('div');
+  div.textContent = String(text);
+  return div.innerHTML;
+}
+
 KNIGHT.ui.gauges = (function () {
 
   var _char = null;
@@ -25,6 +33,12 @@ KNIGHT.ui.gauges = (function () {
     var pct = Math.max(0, Math.min(100, (cur / max) * 100));
     var fill = document.getElementById('gauge-' + name + '-fill');
     if (fill) fill.style.width = pct + '%';
+    
+    // Mettre à jour les affichages des valeurs
+    var curDisplay = document.getElementById(name + '-current-display');
+    var maxDisplay = document.getElementById(name + '-max-display');
+    if (curDisplay) curDisplay.textContent = Math.floor(cur);
+    if (maxDisplay) maxDisplay.textContent = Math.floor(max);
 
     // Sync modèle
     if (_char && _char.gauges[name]) {
@@ -45,6 +59,140 @@ KNIGHT.ui.gauges = (function () {
     _update(name);
   }
 
+  // ── Modal de modification de jauge ──
+
+  var _currentGaugeModal = null;
+
+  function _openGaugeModal(gaugeId, type, defaultDelta) {
+    _currentGaugeModal = { gaugeId: gaugeId, type: type };
+    
+    var modal = document.getElementById('gauge-modify-modal');
+    if (!modal) return;
+    
+    var deltaEl = document.getElementById('gauge-modify-delta');
+    var reasonEl = document.getElementById('gauge-modify-reason');
+    
+    if (deltaEl) deltaEl.value = defaultDelta;
+    if (reasonEl) reasonEl.value = '';
+    
+    modal.classList.add('open');
+  }
+
+  function _closeGaugeModal() {
+    var modal = document.getElementById('gauge-modify-modal');
+    if (modal) modal.classList.remove('open');
+    _currentGaugeModal = null;
+    
+    // Retirer le listener de delta
+    var deltaEl = document.getElementById('gauge-modify-delta');
+    if (deltaEl) {
+      var newDeltaEl = deltaEl.cloneNode(true);
+      deltaEl.parentNode.replaceChild(newDeltaEl, deltaEl);
+    }
+  }
+
+  function _applyGaugeModal() {
+    if (!_currentGaugeModal || !_char) return;
+    
+    var gaugeId = _currentGaugeModal.gaugeId;
+    var type = _currentGaugeModal.type;
+    
+    var deltaEl = document.getElementById('gauge-modify-delta');
+    var reasonEl = document.getElementById('gauge-modify-reason');
+    
+    if (!deltaEl) return;
+    
+    var delta = parseInt(deltaEl.value) || 0;
+    var reason = reasonEl ? reasonEl.value.trim() : '';
+    
+    if (delta === 0 && !reason) {
+      _closeGaugeModal();
+      return;
+    }
+    
+    // Appliquer la modification
+    var el = document.getElementById(gaugeId + '-' + type);
+    if (!el) return;
+    
+    var oldValue = parseInt(el.value) || 0;
+    var newValue = Math.max(0, oldValue + delta);
+    
+    // Mettre à jour l'input
+    el.value = newValue;
+    
+    // Mettre à jour l'affichage
+    var displayEl = document.getElementById(gaugeId + '-' + type + '-display');
+    if (displayEl) {
+      displayEl.textContent = newValue;
+    }
+    
+    // Ajouter un log avec la nouvelle valeur
+    if (_char.addGaugeLog) {
+      _char.addGaugeLog(gaugeId, type, oldValue, newValue, reason);
+    }
+    
+    // Mettre à jour la jauge visuelle
+    _update(gaugeId);
+    
+    // Synchroniser le modèle
+    if (_char.gauges[gaugeId]) {
+      _char.gauges[gaugeId][type] = newValue;
+    }
+    
+    _closeGaugeModal();
+  }
+
+  // ── Journal des modifications ──
+
+  var _journalVisible = false;
+
+  function _toggleJournal() {
+    _journalVisible = !_journalVisible;
+    var journalList = document.getElementById('gauge-journal-list');
+    var journalBtn = document.getElementById('btn-gauge-journal');
+    
+    if (!_char || !journalList) return;
+    
+    if (_journalVisible) {
+      _renderJournal();
+      journalBtn.textContent = '📖 Masquer le journal';
+    } else {
+      journalList.innerHTML = '';
+      journalBtn.textContent = '📖 Voir le journal';
+    }
+  }
+
+  function _renderJournal() {
+    var journalList = document.getElementById('gauge-journal-list');
+    if (!journalList || !_char || !_char.gaugeLogs) return;
+    
+    var html = '<div class="journal-table"><div class="journal-header">';
+    html += '<span class="journal-col">Heure</span>';
+    html += '<span class="journal-col">Jauge</span>';
+    html += '<span class="journal-col">Modification</span>';
+    html += '<span class="journal-col">Valeur</span>';
+    html += '<span class="journal-col">Description</span>';
+    html += '</div>';
+    
+    _char.gaugeLogs.slice().reverse().forEach(function(log) {
+      var gaugeLabels = { ps: 'PS', pa: 'PA', pe: 'PE', cdf: 'CDF', pes: 'PES' };
+      var gaugeLabel = gaugeLabels[log.gaugeId] || log.gaugeId;
+      var changeText = (log.delta > 0 ? '+' : '') + log.delta;
+      var changeClass = log.delta > 0 ? 'journal-plus' : log.delta < 0 ? 'journal-minus' : '';
+      
+      html += '<div class="journal-row">';
+      html += '<span class="journal-col">' + _escapeHtml(log.timestamp) + '</span>';
+      html += '<span class="journal-col">' + _escapeHtml(gaugeLabel) + '</span>';
+      html += '<span class="journal-col ' + changeClass + '">' + _escapeHtml(changeText) + '</span>';
+      html += '<span class="journal-col">' + _escapeHtml(log.newValue) + '</span>';
+      html += '<span class="journal-col">' + _escapeHtml(log.reason) + '</span>';
+      html += '</div>';
+    });
+    
+    html += '</div>';
+    journalList.innerHTML = html;
+  }
+
   // ── Lecture depuis le modèle → DOM ──
 
   function render(char) {
@@ -54,8 +202,12 @@ KNIGHT.ui.gauges = (function () {
       if (!g) return;
       var curEl = document.getElementById(name + '-current');
       var maxEl = document.getElementById(name + '-max');
+      var curDisplayEl = document.getElementById(name + '-current-display');
+      var maxDisplayEl = document.getElementById(name + '-max-display');
       if (curEl) curEl.value = g.current;
       if (maxEl) maxEl.value = g.max;
+      if (curDisplayEl) curDisplayEl.textContent = g.current;
+      if (maxDisplayEl) maxDisplayEl.textContent = g.max;
       if (curEl || maxEl) _update(name);
     });
   }
@@ -87,7 +239,45 @@ KNIGHT.ui.gauges = (function () {
       if (trackEl) {
         trackEl.addEventListener('click', function (e) { _handleClick(e, name); });
       }
+      
+      // Boutons + et - pour current
+      var plusBtn = document.querySelector('.btn-gauge-plus[data-gauge="' + name + '"][data-type="current"]');
+      var minusBtn = document.querySelector('.btn-gauge-minus[data-gauge="' + name + '"][data-type="current"]');
+      
+      if (plusBtn) {
+        plusBtn.addEventListener('click', function() {
+          _openGaugeModal(name, 'current', 1);
+        });
+      }
+      if (minusBtn) {
+        minusBtn.addEventListener('click', function() {
+          _openGaugeModal(name, 'current', -1);
+        });
+      }
     });
+
+    // Bouton journal
+    var journalBtn = document.getElementById('btn-gauge-journal');
+    if (journalBtn) {
+      journalBtn.addEventListener('click', _toggleJournal);
+    }
+    
+    // Modal de modification
+    var modifyConfirmBtn = document.getElementById('gauge-modify-confirm');
+    var modifyCancelBtn = document.getElementById('gauge-modify-cancel');
+    var modal = document.getElementById('gauge-modify-modal');
+    
+    if (modifyConfirmBtn) {
+      modifyConfirmBtn.addEventListener('click', _applyGaugeModal);
+    }
+    if (modifyCancelBtn) {
+      modifyCancelBtn.addEventListener('click', _closeGaugeModal);
+    }
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) _closeGaugeModal();
+      });
+    }
 
     render(char);
   }

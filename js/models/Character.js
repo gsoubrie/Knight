@@ -18,7 +18,7 @@ KNIGHT.models.Character = function () {
   this.archetype = '';
   this.section   = '';
   this.blason    = '';
-  this.voeu      = '';
+  this.voeux     = [];
 
   // ── Aspects ──
   this.aspects = KNIGHT.models.Aspect.createAll();
@@ -31,6 +31,9 @@ KNIGHT.models.Character = function () {
     cdf: { current: 8,  max: 8  },
     pe:  { current: 40, max: 40 }
   };
+
+  // ── Logs des modifications de jauges ──
+  this.gaugeLogs = [];
 
   // ── Valeurs dérivées ──
   this.derived = {
@@ -139,12 +142,40 @@ KNIGHT.models.Character.prototype = {
     this.modules = this.modules.filter(function (m) { return m.id !== moduleId; });
   },
 
+  /**
+   * Ajoute une entrée de log pour une modification de jauge
+   * @param {string} gaugeId - Identifiant de la jauge (ps, pa, pe, cdf, pes)
+   * @param {string} type - 'current' ou 'max'
+   * @param {number} oldValue - Valeur précédente
+   * @param {number} newValue - Nouvelle valeur
+   * @param {string} reason - Origine de la modification
+   */
+  addGaugeLog: function(gaugeId, type, oldValue, newValue, reason) {
+    this.gaugeLogs.push({
+      id: 'log_' + Date.now() + '_' + Math.floor(Math.random() * 9999),
+      timestamp: new Date().toLocaleString('fr-FR'),
+      gaugeId: gaugeId,
+      type: type,
+      oldValue: oldValue,
+      newValue: newValue,
+      delta: newValue - oldValue,
+      reason: reason || ''
+    });
+  },
   addMotivation: function (type) {
     this.motivations.push({ type: type, texte: '' });
   },
 
   removeMotivation: function (index) {
     this.motivations.splice(index, 1);
+  },
+
+  addVoeu: function () {
+    this.voeux.push({ texte: '' });
+  },
+
+  removeVoeu: function (index) {
+    this.voeux.splice(index, 1);
   },
 
   addContact: function () {
@@ -258,9 +289,10 @@ KNIGHT.models.Character.prototype = {
       archetype:  this.archetype,
       section:    this.section,
       blason:     this.blason,
-      voeu:       this.voeu,
+      voeux:      JSON.parse(JSON.stringify(this.voeux)),
       aspects:    this.aspects.map(function (a) { return a.serialize(); }),
       gauges:     JSON.parse(JSON.stringify(this.gauges)),
+      gaugeLogs:  JSON.parse(JSON.stringify(this.gaugeLogs)),
       derived:    JSON.parse(JSON.stringify(this.derived)),
       heroisme:   this.heroisme,
       pg:         this.pg,
@@ -268,7 +300,7 @@ KNIGHT.models.Character.prototype = {
       pgArmure:   this.pgArmure,
       pxDepenses: this.pxDepenses,
       pgDepenses: this.pgDepenses,
-      warrior:    JSON.parse(JSON.stringify(this.warrior)),
+      warrior:    this._serializeWarrior(),
       weapons:    this.weapons.map(function (w) { return w.serialize(); }),
       modules:    this.modules.map(function (m) { return m.serialize(); }),
       ia:         JSON.parse(JSON.stringify(this.ia)),
@@ -283,15 +315,24 @@ KNIGHT.models.Character.prototype = {
       notes:        this.notes,
       quicklist:    JSON.parse(JSON.stringify(this.quicklist)),
       avantages:    this.avantages,
-      inconvenients: this.inconvenients,
-      catalogs:     {
-        archetypes: this.catalogs.archetypes.serialize(),
-        sections:   this.catalogs.sections.serialize(),
-        blasons:    this.catalogs.blasons.serialize(),
-        armures:    this.catalogs.armures.serialize()
-      }
+      inconvenients: this.inconvenients
     };
     return data;
+  },
+
+  _serializeWarrior: function () {
+    var w = this.warrior;
+    return {
+      paMax:          w.paMax,
+      peMax:          w.peMax,
+      cdfMax:         w.cdfMax,
+      activeCapacite: w.activeCapacite,
+      activeType:     w.activeType,
+      capaciteActive: w.capaciteActive,
+      activeTypes:    w.activeTypes.slice(),
+      typesNotes:     w.typesNotes,
+      slots:          JSON.parse(JSON.stringify(w.slots))
+    };
   },
 
   deserialize: function (data) {
@@ -299,7 +340,7 @@ KNIGHT.models.Character.prototype = {
     var self = this;
 
     // Scalaires
-    var scalaires = ['nom','archetype','section','blason','voeu',
+    var scalaires = ['nom','archetype','section','blason',
                      'heroisme','pg','px','pgArmure','pxDepenses','pgDepenses',
                      'equipement','histoire','notes','avantages','inconvenients'];
     scalaires.forEach(function (k) {
@@ -316,9 +357,11 @@ KNIGHT.models.Character.prototype = {
 
     // Aspects
     if (data.aspects) {
-      data.aspects.forEach(function (saved) {
-        var aspect = self.getAspect(saved.id);
-        if (aspect) aspect.deserialize(saved);
+      // Les aspects sont toujours dans le même ordre : chair, bete, machine, dame, masque
+      data.aspects.forEach(function (saved, i) {
+        if (self.aspects[i]) {
+          self.aspects[i].deserialize(saved);
+        }
       });
     }
 
@@ -330,6 +373,11 @@ KNIGHT.models.Character.prototype = {
           self.gauges[k].max     = data.gauges[k].max;
         }
       });
+    }
+
+    // Gauge Logs
+    if (data.gaugeLogs) {
+      self.gaugeLogs = data.gaugeLogs.slice();
     }
 
     // Derived
@@ -381,5 +429,10 @@ KNIGHT.models.Character.prototype = {
     if (data.motivations) self.motivations = data.motivations.slice();
     if (data.contacts)    self.contacts    = data.contacts.slice();
     if (data.quicklist)   self.quicklist   = data.quicklist.slice();
+    if (data.voeux)      self.voeux       = data.voeux.slice();
+    // Migration: si l'ancien champ voeu (string) existe, le convertir en tableau
+    if (data.voeu && !data.voeux) {
+      self.voeux = [{ texte: data.voeu }];
+    }
   }
 };

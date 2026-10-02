@@ -1,17 +1,26 @@
 {
   "nom": "Jonas",
-  "archetype": "",
-  "section": "",
-  "blason": "",
-  "voeu": "",
+  "archetype": "Survivant",
+  "section": "Gargoyle",
+  "blason": "L'ours",
+  "voeux": [],
   "aspects": [
     {
-      "id": "chair",
-      "score": 2,
+      "score": 3,
       "caras": [
         {
-          "name": "Déplacement",
-          "score": 1,
+          "score": 3,
+          "od": 0,
+          "nv": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
+          "score": 3,
           "od": 0,
           "nv": [
             false,
@@ -22,8 +31,23 @@
           ]
         },
         {
-          "name": "Force",
-          "score": 1,
+          "score": 3,
+          "od": 0,
+          "nv": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        }
+      ]
+    },
+    {
+      "score": 4,
+      "caras": [
+        {
+          "score": 4,
           "od": 0,
           "nv": [
             false,
@@ -34,7 +58,17 @@
           ]
         },
         {
-          "name": "Endurance",
+          "score": 3,
+          "od": 0,
+          "nv": [
+            true,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        {
           "score": 1,
           "od": 0,
           "nv": [
@@ -48,11 +82,9 @@
       ]
     },
     {
-      "id": "bete",
       "score": 2,
       "caras": [
         {
-          "name": "Hargne",
           "score": 1,
           "od": 0,
           "nv": [
@@ -64,7 +96,6 @@
           ]
         },
         {
-          "name": "Combat",
           "score": 1,
           "od": 0,
           "nv": [
@@ -76,7 +107,6 @@
           ]
         },
         {
-          "name": "Instinct",
           "score": 1,
           "od": 0,
           "nv": [
@@ -90,11 +120,9 @@
       ]
     },
     {
-      "id": "machine",
       "score": 2,
       "caras": [
         {
-          "name": "Tir",
           "score": 1,
           "od": 0,
           "nv": [
@@ -106,7 +134,6 @@
           ]
         },
         {
-          "name": "Savoir",
           "score": 1,
           "od": 0,
           "nv": [
@@ -118,7 +145,6 @@
           ]
         },
         {
-          "name": "Technique",
           "score": 1,
           "od": 0,
           "nv": [
@@ -132,11 +158,9 @@
       ]
     },
     {
-      "id": "dame",
       "score": 2,
       "caras": [
         {
-          "name": "Aura",
           "score": 1,
           "od": 0,
           "nv": [
@@ -148,7 +172,6 @@
           ]
         },
         {
-          "name": "Parole",
           "score": 1,
           "od": 0,
           "nv": [
@@ -160,49 +183,6 @@
           ]
         },
         {
-          "name": "Sang-Froid",
-          "score": 1,
-          "od": 0,
-          "nv": [
-            false,
-            false,
-            false,
-            false,
-            false
-          ]
-        }
-      ]
-    },
-    {
-      "id": "masque",
-      "score": 2,
-      "caras": [
-        {
-          "name": "Discrétion",
-          "score": 1,
-          "od": 0,
-          "nv": [
-            false,
-            false,
-            false,
-            false,
-            false
-          ]
-        },
-        {
-          "name": "Dextérité",
-          "score": 1,
-          "od": 0,
-          "nv": [
-            false,
-            false,
-            false,
-            false,
-            false
-          ]
-        },
-        {
-          "name": "Perception",
           "score": 1,
           "od": 0,
           "nv": [
@@ -248,14 +228,20 @@
   "px": 0,
   "pgArmure": 60,
   "pxDepenses": 0,
+  "pgDepenses": 0,
   "warrior": {
-    "nomArmure": "",
-    "generation": "1ère génération",
-    "capacite": "",
     "paMax": 100,
     "peMax": 40,
     "cdfMax": 8,
-    "activeTypes": [],
+    "activeCapacite": "",
+    "activeType": "",
+    "capaciteActive": false,
+    "activeTypes": [
+      "Deplacement",
+      "Combat",
+      "Tir",
+      "Dexterite"
+    ],
     "typesNotes": "",
     "slots": {
       "tete": {
@@ -287,7 +273,7 @@
   "weapons": [
     {
       "type": "weapon",
-      "id": "item_1790073527021_2919",
+      "id": "item_1790940078788_4290",
       "nom": "",
       "image": "",
       "pgCout": 0,
@@ -308,7 +294,7 @@
     },
     {
       "type": "weapon",
-      "id": "item_1790073527021_2765",
+      "id": "item_1790940078788_1703",
       "nom": "",
       "image": "",
       "pgCout": 0,
@@ -329,7 +315,7 @@
     },
     {
       "type": "weapon",
-      "id": "item_1790073527022_4265",
+      "id": "item_1790940078788_8722",
       "nom": "",
       "image": "",
       "pgCout": 0,
@@ -358,14 +344,18 @@
     "notes": ""
   },
   "ledgerPes": {
-    "id": "pes",
-    "label": "Points d'Espoir",
     "base": 50,
     "entries": []
   },
   "ledgerPg": {
-    "id": "pg",
-    "label": "Points de Gloire",
+    "base": 0,
+    "entries": []
+  },
+  "ledgerHeroisme": {
+    "base": 6,
+    "entries": []
+  },
+  "ledgerXp": {
     "base": 0,
     "entries": []
   },

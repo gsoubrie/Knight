@@ -64,10 +64,9 @@ KNIGHT.models.Aspect.prototype = {
   /** Sérialisation vers objet plat */
   serialize: function () {
     return {
-      id:    this.id,
       score: this.score,
       caras: this.caras.map(function (c) {
-        return { name: c.name, score: c.score, od: c.od, nv: c.nv.slice() };
+        return { score: c.score, od: c.od, nv: c.nv.slice() };
       })
     };
   },
