@@ -312,25 +312,6 @@
     <div id="gauge-journal-list" style="margin-top: 10px;"></div>
   </div>
 
-  <!-- Modal pour ajouter une modification de jauge -->
-  <div class="modal-overlay" id="gauge-modify-modal">
-    <div class="modal" style="width: 400px;">
-      <div class="modal-title">Modifier la jauge</div>
-      <div class="field">
-        <label>Points ajoutés/enlevés</label>
-        <input type="number" id="gauge-modify-delta" value="1" min="-999" max="999">
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea id="gauge-modify-reason" placeholder="Origine de la modification…" style="min-height: 60px;"></textarea>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-load" id="gauge-modify-cancel">Annuler</button>
-        <button class="btn btn-save" id="gauge-modify-confirm">Valider</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Valeurs dérivées -->
   <div class="card section-gap">
     <div class="card-title accent-blue">Valeurs Dérivées</div>
@@ -641,6 +622,25 @@
 
     <div class="modal-actions" style="margin-top:16px;">
       <button class="btn" id="btn-load-cancel">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour ajouter une modification de jauge -->
+<div class="modal-overlay" id="gauge-modify-modal">
+  <div class="modal" style="width: 400px;">
+    <div class="modal-title">Modifier la jauge</div>
+    <div class="field">
+      <label>Points ajoutés/enlevés</label>
+      <input type="number" id="gauge-modify-delta" value="1" min="-999" max="999" placeholder="Nombre de points">
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="gauge-modify-reason" placeholder="Raison : soin, dommage, potion, fatigue…" style="min-height: 60px;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-load" id="gauge-modify-cancel">Annuler</button>
+      <button class="btn btn-save" id="gauge-modify-confirm">Valider</button>
     </div>
   </div>
 </div>

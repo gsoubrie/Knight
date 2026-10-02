@@ -71,11 +71,28 @@ KNIGHT.ui.gauges = (function () {
     
     var deltaEl = document.getElementById('gauge-modify-delta');
     var reasonEl = document.getElementById('gauge-modify-reason');
+    var titleEl = document.querySelector('#gauge-modify-modal .modal-title');
     
-    if (deltaEl) deltaEl.value = defaultDelta;
+    // Mettre à jour le titre avec le nom de la jauge
+    var gaugeLabels = { ps: 'PS', pa: 'PA', pe: 'PE', cdf: 'CDF', pes: 'PES' };
+    var gaugeLabel = gaugeLabels[gaugeId] || gaugeId;
+    var actionLabel = defaultDelta > 0 ? 'Ajouter' : 'Retirer';
+    if (titleEl) {
+      titleEl.textContent = actionLabel + ' des ' + gaugeLabel;
+    }
+    
+    if (deltaEl) {
+      deltaEl.value = defaultDelta;
+      // Mettre le focus sur le champ delta
+      deltaEl.focus();
+      deltaEl.select();
+    }
     if (reasonEl) reasonEl.value = '';
     
     modal.classList.add('open');
+    
+    // Empêcher le scroll du body quand la modal est ouverte
+    document.body.style.overflow = 'hidden';
   }
 
   function _closeGaugeModal() {
@@ -83,12 +100,8 @@ KNIGHT.ui.gauges = (function () {
     if (modal) modal.classList.remove('open');
     _currentGaugeModal = null;
     
-    // Retirer le listener de delta
-    var deltaEl = document.getElementById('gauge-modify-delta');
-    if (deltaEl) {
-      var newDeltaEl = deltaEl.cloneNode(true);
-      deltaEl.parentNode.replaceChild(newDeltaEl, deltaEl);
-    }
+    // Rétablir le scroll du body
+    document.body.style.overflow = '';
   }
 
   function _applyGaugeModal() {
@@ -105,20 +118,23 @@ KNIGHT.ui.gauges = (function () {
     var delta = parseInt(deltaEl.value) || 0;
     var reason = reasonEl ? reasonEl.value.trim() : '';
     
-    if (delta === 0 && !reason) {
+    if (delta === 0) {
       _closeGaugeModal();
       return;
     }
     
     // Appliquer la modification
-    var el = document.getElementById(gaugeId + '-' + type);
-    if (!el) return;
+    var currentEl = document.getElementById(gaugeId + '-' + type);
+    var maxEl = document.getElementById(gaugeId + '-max');
     
-    var oldValue = parseInt(el.value) || 0;
-    var newValue = Math.max(0, oldValue + delta);
+    if (!currentEl) return;
+    
+    var oldValue = parseInt(currentEl.value) || 0;
+    var maxValue = maxEl ? parseInt(maxEl.value) || Infinity : Infinity;
+    var newValue = Math.max(0, Math.min(maxValue, oldValue + delta));
     
     // Mettre à jour l'input
-    el.value = newValue;
+    currentEl.value = newValue;
     
     // Mettre à jour l'affichage
     var displayEl = document.getElementById(gaugeId + '-' + type + '-display');
@@ -129,6 +145,11 @@ KNIGHT.ui.gauges = (function () {
     // Ajouter un log avec la nouvelle valeur
     if (_char.addGaugeLog) {
       _char.addGaugeLog(gaugeId, type, oldValue, newValue, reason);
+      
+      // Rafraîchir le journal s'il est actuellement ouvert
+      if (_journalVisible) {
+        _renderJournal();
+      }
     }
     
     // Mettre à jour la jauge visuelle
@@ -166,13 +187,7 @@ KNIGHT.ui.gauges = (function () {
     var journalList = document.getElementById('gauge-journal-list');
     if (!journalList || !_char || !_char.gaugeLogs) return;
     
-    var html = '<div class="journal-table"><div class="journal-header">';
-    html += '<span class="journal-col">Heure</span>';
-    html += '<span class="journal-col">Jauge</span>';
-    html += '<span class="journal-col">Modification</span>';
-    html += '<span class="journal-col">Valeur</span>';
-    html += '<span class="journal-col">Description</span>';
-    html += '</div>';
+    var html = '<div class="journal-table">';
     
     _char.gaugeLogs.slice().reverse().forEach(function(log) {
       var gaugeLabels = { ps: 'PS', pa: 'PA', pe: 'PE', cdf: 'CDF', pes: 'PES' };
@@ -276,6 +291,19 @@ KNIGHT.ui.gauges = (function () {
     if (modal) {
       modal.addEventListener('click', function(e) {
         if (e.target === modal) _closeGaugeModal();
+      });
+      
+      // Gestion de la touche Échap pour fermer la modal
+      modal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') _closeGaugeModal();
+      });
+    }
+    
+    // Gestion de la touche Entrée dans le champ delta
+    var deltaEl = document.getElementById('gauge-modify-delta');
+    if (deltaEl) {
+      deltaEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') _applyGaugeModal();
       });
     }
 

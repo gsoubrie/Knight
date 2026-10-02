@@ -936,7 +936,7 @@ select option { background: var(--bg-card); }
   inset: 0;
   background: rgba(0, 0, 0, .82);
   backdrop-filter: blur(4px);
-  z-index: 200;
+  z-index: 9999;
   align-items: center;
   justify-content: center;
   padding: var(--gap-md);
@@ -949,6 +949,8 @@ select option { background: var(--bg-card); }
   padding: var(--gap-lg);
   width: 520px;
   max-width: 100%;
+  position: relative;
+  z-index: 10;
 }
 .modal-title {
   font-family: var(--font-display);
@@ -1932,18 +1934,6 @@ textarea:read-only {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   overflow: hidden;
-}
-.journal-header {
-  display: grid;
-  grid-template-columns: 140px 80px 60px 80px 1fr;
-  background: var(--bg-input);
-  padding: 6px;
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-bottom: 1px solid var(--border);
 }
 .journal-row {
   display: grid;

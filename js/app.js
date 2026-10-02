@@ -56,7 +56,7 @@ KNIGHT.app = (function () {
 
   function _applyEditMode() {
     // IDs des champs de combat à garder éditables même en mode Jeu
-    var combatFieldIds = ['ps-current', 'ps-max', 'pa-current', 'pa-max', 'pe-current', 'pe-max', 'cdf-current', 'cdf-max', 'defense', 'reaction', 'initiative'];
+    var combatFieldIds = ['ps-current', 'ps-max', 'pa-current', 'pa-max', 'pe-current', 'pe-max', 'cdf-current', 'cdf-max', 'defense', 'reaction', 'initiative', 'gauge-modify-delta', 'gauge-modify-reason'];
     
     var fields = document.querySelectorAll('input, textarea, select');
     fields.forEach(function (field) {
@@ -66,14 +66,19 @@ KNIGHT.app = (function () {
         // Les champs de combat restent toujours éditables
         var isCombatField = combatFieldIds.indexOf(field.id) !== -1 || 
                            field.classList.contains('gauge-current') || 
-                           field.classList.contains('gauge-max');
+                           field.classList.contains('gauge-max') ||
+                           field.id === 'gauge-modify-delta' ||
+                           field.id === 'gauge-modify-reason';
         field.readOnly = !_isEditMode && !isCombatField;
       }
     });
     // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
     var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
     editButtons.forEach(function (btn) {
-      btn.style.display = _isEditMode ? '' : 'none';
+      // Ne pas cacher le bouton du journal des jauges en mode Jeu
+      if (btn.id !== 'btn-gauge-journal') {
+        btn.style.display = _isEditMode ? '' : 'none';
+      }
     });
     
     // Transformer les champs en affichage label en mode lecture seule

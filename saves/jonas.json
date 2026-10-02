@@ -198,7 +198,7 @@
   ],
   "gauges": {
     "ps": {
-      "current": 10,
+      "current": 11,
       "max": 46
     },
     "pes": {
@@ -218,6 +218,18 @@
       "max": 40
     }
   },
+  "gaugeLogs": [
+    {
+      "id": "log_1790960091968_6099",
+      "timestamp": "02/10/2026 18:54:51",
+      "gaugeId": "ps",
+      "type": "current",
+      "oldValue": 10,
+      "newValue": 11,
+      "delta": 1,
+      "reason": "ssss"
+    }
+  ],
   "derived": {
     "defense": 0,
     "reaction": 0,
