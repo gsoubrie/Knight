@@ -106,8 +106,7 @@ KNIGHT.models.Character = function () {
   this.quicklist   = [];   // { id, text, tag, checked }
 
   // ── Avantages / Inconvénients ──
-  this.avantages    = '';
-  this.inconvenients = '';
+  this.avantagesInconvenients = [];   // Tableau de { type: 'avantage'|'inconvenient', texte: '' }
 };
 
 KNIGHT.models.Character.prototype = {
@@ -176,6 +175,14 @@ KNIGHT.models.Character.prototype = {
 
   removeVoeu: function (index) {
     this.voeux.splice(index, 1);
+  },
+
+  addAvantageInconvenient: function (type) {
+    this.avantagesInconvenients.push({ type: type, texte: '' });
+  },
+
+  removeAvantageInconvenient: function (index) {
+    this.avantagesInconvenients.splice(index, 1);
   },
 
   addContact: function () {
@@ -314,8 +321,7 @@ KNIGHT.models.Character.prototype = {
       histoire:     this.histoire,
       notes:        this.notes,
       quicklist:    JSON.parse(JSON.stringify(this.quicklist)),
-      avantages:    this.avantages,
-      inconvenients: this.inconvenients
+      avantagesInconvenients: JSON.parse(JSON.stringify(this.avantagesInconvenients))
     };
     return data;
   },
@@ -342,7 +348,7 @@ KNIGHT.models.Character.prototype = {
     // Scalaires
     var scalaires = ['nom','archetype','section','blason',
                      'heroisme','pg','px','pgArmure','pxDepenses','pgDepenses',
-                     'equipement','histoire','notes','avantages','inconvenients'];
+                     'equipement','histoire','notes'];
     scalaires.forEach(function (k) {
       if (data[k] !== undefined) self[k] = data[k];
     });
@@ -433,6 +439,26 @@ KNIGHT.models.Character.prototype = {
     // Migration: si l'ancien champ voeu (string) existe, le convertir en tableau
     if (data.voeu && !data.voeux) {
       self.voeux = [{ texte: data.voeu }];
+    }
+    
+    // Avantages / Inconvénients - migration vers tableau unifié
+    if (data.avantagesInconvenients) {
+      self.avantagesInconvenients = data.avantagesInconvenients.slice();
+    } else {
+      // Migration des anciens formats séparés ou string
+      self.avantagesInconvenients = [];
+      if (data.avantages) {
+        var avantages = Array.isArray(data.avantages) ? data.avantages : [{ texte: data.avantages }];
+        avantages.forEach(function(a) {
+          self.avantagesInconvenients.push({ type: 'avantage', texte: a.texte || a });
+        });
+      }
+      if (data.inconvenients) {
+        var inconvenients = Array.isArray(data.inconvenients) ? data.inconvenients : [{ texte: data.inconvenients }];
+        inconvenients.forEach(function(i) {
+          self.avantagesInconvenients.push({ type: 'inconvenient', texte: i.texte || i });
+        });
+      }
     }
   }
 };

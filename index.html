@@ -177,7 +177,7 @@
     <div id="motivations-list"></div>
     <div style="display:flex;gap:8px;margin-top:10px;">
       <button class="btn btn-danger btn-sm" id="btn-add-major">+ Majeure</button>
-      <button class="btn btn-sm" id="btn-add-minor">+ Mineure</button>
+      <button class="btn btn-add btn-sm" id="btn-add-minor">+ Mineure</button>
     </div>
   </div>
 
@@ -191,14 +191,12 @@
   </div>
 
   <!-- Avantages / Inconvénients -->
-  <div class="grid-2 section-gap">
-    <div class="card">
-      <div class="card-title accent-green">Avantages</div>
-      <textarea id="avantages" placeholder="Liste des avantages…"></textarea>
-    </div>
-    <div class="card">
-      <div class="card-title accent-red">Inconvénients</div>
-      <textarea id="inconvenients" placeholder="Liste des inconvénients…"></textarea>
+  <div class="card section-gap">
+    <div class="card-title">Avantages / Inconvénients</div>
+    <div id="avantage-inconvenient-list"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-add btn-sm" id="btn-add-avantage" title="Ajouter un avantage">+ Avantages</button>
+      <button class="btn btn-danger btn-sm" id="btn-add-inconvenient" title="Ajouter un inconvénient">+ Inconvénients</button>
     </div>
   </div>
 
@@ -264,6 +262,8 @@
     </div>
     <input type="hidden" id="pa-current" value="100" min="0">
     <input type="hidden" id="pa-max" value="100" min="0">
+    
+
     <!-- Champ de Force -->
     <div class="card">
       <div class="card-title accent-green">Champ de Force</div>
@@ -303,6 +303,20 @@
     </div>
     <input type="hidden" id="pe-current" value="40" min="0">
     <input type="hidden" id="pe-max" value="40" min="0">
+  </div>
+
+  <!-- Héroïsme -->
+  <div class="card section-gap">
+    <div class="card-title accent-gold">Points d'Héroïsme</div>
+    <div class="heroism-dots">
+      <div class="heroism-dot" id="h1" title="1 pt">1</div>
+      <div class="heroism-dot" id="h2">2</div>
+      <div class="heroism-dot" id="h3" title="3 pts">3</div>
+      <div class="heroism-dot" id="h4">4</div>
+      <div class="heroism-dot" id="h5">5</div>
+      <div class="heroism-dot" id="h6" title="6 pts">6</div>
+    </div>
+    <input type="hidden" id="heroisme-value" value="6">
   </div>
 
   <!-- Journal des modifications -->

@@ -73,12 +73,19 @@ KNIGHT.app = (function () {
       }
     });
     // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
-    var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
+    var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, .voeu-del, .ai-del, .contact-del, .quicklist-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
     editButtons.forEach(function (btn) {
       // Ne pas cacher le bouton du journal des jauges en mode Jeu
       if (btn.id !== 'btn-gauge-journal') {
         btn.style.display = _isEditMode ? '' : 'none';
       }
+    });
+    
+    // Désactiver les dots d'héroïsme dans Général en mode Jeu (ils restent modifiables dans Combat)
+    var heroismMiniDots = document.querySelectorAll('.heroism-dot-mini');
+    heroismMiniDots.forEach(function(dot) {
+      dot.style.pointerEvents = _isEditMode ? '' : 'none';
+      dot.style.opacity = _isEditMode ? '' : '0.5';
     });
     
     // Transformer les champs en affichage label en mode lecture seule
@@ -151,30 +158,37 @@ KNIGHT.app = (function () {
   }
 
   function _toggleHeroisme(n) {
-    _char.heroisme = (_char.heroisme === n) ? n - 1 : n;
+    if (_char.gauges.heroisme) {
+      var newValue = (_char.gauges.heroisme.current === n) ? n - 1 : n;
+      _char.gauges.heroisme.current = newValue;
+      // Synchroniser l'ancienne propriété pour la compatibilité
+      _char.heroisme = newValue;
+    }
     _renderHeroisme();
   }
 
   function _renderHeroisme() {
+    var heroismeValue = _char.gauges.heroisme ? _char.gauges.heroisme.current : (_char.heroisme || 0);
+    
     for (var i = 1; i <= 6; i++) {
       var dot = document.getElementById('h' + i);
-      if (dot) dot.classList.toggle('active', i <= _char.heroisme);
+      if (dot) dot.classList.toggle('active', i <= heroismeValue);
       
       // Synchroniser les mini-dots
       var miniDot = document.getElementById('h' + i + '-mini');
-      if (miniDot) miniDot.classList.toggle('active', i <= _char.heroisme);
+      if (miniDot) miniDot.classList.toggle('active', i <= heroismeValue);
     }
     
     // Mettre à jour l'affichage numérique
     var displayEl = document.getElementById('heroisme-display');
     if (displayEl) {
-      displayEl.textContent = _char.heroisme + ' pts';
+      displayEl.textContent = heroismeValue + ' pts';
     }
     
     // Mettre à jour le hidden input pour le mode lecture seule
     var hiddenEl = document.getElementById('heroisme-value');
     if (hiddenEl) {
-      hiddenEl.value = _char.heroisme;
+      hiddenEl.value = heroismeValue;
     }
   }
 
@@ -187,7 +201,14 @@ KNIGHT.app = (function () {
     if (!list) return;
     list.innerHTML = '';
 
-    _char.motivations.forEach(function (m, i) {
+    // Trier : majeures en premier, puis mineures
+    var sorted = _char.motivations.slice().sort(function(a, b) {
+      if (a.type === 'major' && b.type !== 'major') return -1;
+      if (a.type !== 'major' && b.type === 'major') return 1;
+      return 0;
+    });
+
+    sorted.forEach(function (m, i) {
       var div = document.createElement('div');
       div.className = 'motivation-item';
 
@@ -201,19 +222,25 @@ KNIGHT.app = (function () {
       ta.placeholder = 'Description de la motivation…';
       ta.value = m.texte || '';
       ta.addEventListener('input', (function (idx) {
-        return function (e) { _char.motivations[idx].texte = e.target.value; };
+        return function (e) { 
+          var originalIdx = _char.motivations.indexOf(m);
+          if (originalIdx !== -1) _char.motivations[originalIdx].texte = e.target.value; 
+        };
       }(i)));
 
       var del = document.createElement('button');
       del.className = 'motivation-del';
       del.textContent = '×';
       del.title = 'Supprimer';
-      del.addEventListener('click', (function (idx) {
+      del.addEventListener('click', (function (motivation) {
         return function () {
-          _char.removeMotivation(idx);
-          _renderMotivations();
+          var idx = _char.motivations.indexOf(motivation);
+          if (idx !== -1) {
+            _char.removeMotivation(idx);
+            _renderMotivations();
+          }
         };
-      }(i)));
+      }(m)));
 
       div.appendChild(badge);
       div.appendChild(ta);
@@ -279,6 +306,75 @@ KNIGHT.app = (function () {
     if (btn) btn.addEventListener('click', function () {
       _char.addVoeu();
       _renderVoeux();
+    });
+  }
+
+  /* ════════════════════════════════════════
+     AVANTAGES / INCONVÉNIENTS
+  ════════════════════════════════════════ */
+
+  function _renderAvantagesInconvenients() {
+    var list = document.getElementById('avantage-inconvenient-list');
+    if (!list) return;
+    list.innerHTML = '';
+
+    // Trier : avantages en premier, puis inconvénients
+    var sorted = _char.avantagesInconvenients.slice().sort(function(a, b) {
+      if (a.type === 'avantage' && b.type !== 'avantage') return -1;
+      if (a.type !== 'avantage' && b.type === 'avantage') return 1;
+      return 0;
+    });
+
+    sorted.forEach(function (item) {
+      var div = document.createElement('div');
+      div.className = 'avantage-inconvenient-item';
+
+      var badge = document.createElement('span');
+      badge.className = 'ai-type ' + item.type;
+      badge.textContent = item.type === 'avantage' ? 'Avantage' : 'Inconvénient';
+
+      var ta = document.createElement('textarea');
+      ta.className = 'ai-text';
+      ta.rows = 2;
+      ta.placeholder = 'Description…';
+      ta.value = item.texte || '';
+      ta.addEventListener('input', (function (ai) {
+        return function (e) { ai.texte = e.target.value; };
+      }(item)));
+
+      var del = document.createElement('button');
+      del.className = 'ai-del';
+      del.textContent = '×';
+      del.title = 'Supprimer';
+      del.addEventListener('click', (function (ai) {
+        return function () {
+          var idx = _char.avantagesInconvenients.indexOf(ai);
+          if (idx !== -1) {
+            _char.removeAvantageInconvenient(idx);
+            _renderAvantagesInconvenients();
+          }
+        };
+      }(item)));
+
+      div.appendChild(badge);
+      div.appendChild(ta);
+      div.appendChild(del);
+      list.appendChild(div);
+    });
+  }
+
+  function _initAvantagesInconvenients() {
+    var btnAvantage = document.getElementById('btn-add-avantage');
+    var btnInconvenient = document.getElementById('btn-add-inconvenient');
+    
+    if (btnAvantage) btnAvantage.addEventListener('click', function () {
+      _char.addAvantageInconvenient('avantage');
+      _renderAvantagesInconvenients();
+    });
+    
+    if (btnInconvenient) btnInconvenient.addEventListener('click', function () {
+      _char.addAvantageInconvenient('inconvenient');
+      _renderAvantagesInconvenients();
     });
   }
 
@@ -441,8 +537,6 @@ KNIGHT.app = (function () {
       'defense-input':    function (v) { _char.derived.defense = parseInt(v) || 0; _updateDerivedDisplay(); },
       'reaction-input':   function (v) { _char.derived.reaction = parseInt(v) || 0; _updateDerivedDisplay(); },
       'initiative-input': function (v) { _char.derived.initiative = parseInt(v) || 0; _updateDerivedDisplay(); },
-      'avantages':    function (v) { _char.avantages = v; },
-      'inconvenients': function (v) { _char.inconvenients = v; },
       'equipement':   function (v) { _char.equipement = v; },
       'histoire':     function (v) { _char.histoire = v; },
       'notes':        function (v) { _char.notes = v; },
@@ -495,7 +589,6 @@ KNIGHT.app = (function () {
       'xp-base': _char.ledgerXp ? _char.ledgerXp.base : 0,
       'defense': _char.derived.defense, 'reaction': _char.derived.reaction,
       'initiative': _char.derived.initiative,
-      'avantages': _char.avantages, 'inconvenients': _char.inconvenients,
       'equipement': _char.equipement, 'histoire': _char.histoire, 'notes': _char.notes,
       'armure': _char.warrior ? _char.warrior.nomArmure : 'Warrior'
     };
@@ -701,6 +794,13 @@ KNIGHT.app = (function () {
       pgDepensesDisplay2.textContent = pgDepensesEl2.value;
     }
     
+    // Héroïsme - synchroniser l'affichage dans Général
+    var heroismeDisplayEl = document.getElementById('heroisme-display');
+    var heroismeValueEl = document.getElementById('heroisme-value');
+    if (heroismeValueEl && heroismeDisplayEl) {
+      heroismeDisplayEl.textContent = heroismeValueEl.value + ' pts';
+    }
+    
     // Jauges rapides (PS, PA, PE)
     var psCurrentEl = document.getElementById('ps-current');
     var psMaxEl = document.getElementById('ps-max');
@@ -886,6 +986,7 @@ KNIGHT.app = (function () {
     _renderHeroisme();
     _renderMotivations();
     _renderVoeux();
+    _renderAvantagesInconvenients();
     _renderContacts();
     _renderQuicklist();
     // Appliquer la transformation des champs si on est en mode lecture seule
@@ -930,6 +1031,7 @@ KNIGHT.app = (function () {
     _initHeroisme();
     _initMotivations();
     _initVoeux();
+    _initAvantagesInconvenients();
     _initContacts();
     _initQuicklist();
     _initScalaires();

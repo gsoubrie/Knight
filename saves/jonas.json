@@ -216,6 +216,10 @@
     "pe": {
       "current": 40,
       "max": 40
+    },
+    "heroisme": {
+      "current": 6,
+      "max": 6
     }
   },
   "gaugeLogs": [
@@ -371,12 +375,29 @@
     "base": 0,
     "entries": []
   },
-  "motivations": [],
+  "motivations": [
+    {
+      "type": "major",
+      "texte": "s"
+    },
+    {
+      "type": "major",
+      "texte": "ss"
+    }
+  ],
   "contacts": [],
   "equipement": "",
   "histoire": "",
   "notes": "",
   "quicklist": [],
-  "avantages": "",
-  "inconvenients": ""
+  "avantagesInconvenients": [
+    {
+      "type": "inconvenient",
+      "texte": "sssss\n"
+    },
+    {
+      "type": "inconvenient",
+      "texte": "sss"
+    }
+  ]
 }
