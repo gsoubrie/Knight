@@ -1,15 +1,15 @@
 {
   "nom": "Jonas",
-  "archetype": "Survivant",
-  "section": "Gargoyle",
-  "blason": "L'ours",
+  "archetype": "",
+  "section": "",
+  "blason": "",
   "voeux": [],
   "aspects": [
     {
-      "score": 3,
+      "score": 2,
       "caras": [
         {
-          "score": 3,
+          "score": 1,
           "od": 0,
           "nv": [
             true,
@@ -20,7 +20,7 @@
           ]
         },
         {
-          "score": 3,
+          "score": 1,
           "od": 0,
           "nv": [
             false,
@@ -31,7 +31,7 @@
           ]
         },
         {
-          "score": 3,
+          "score": 1,
           "od": 0,
           "nv": [
             false,
@@ -44,10 +44,10 @@
       ]
     },
     {
-      "score": 4,
+      "score": 2,
       "caras": [
         {
-          "score": 4,
+          "score": 1,
           "od": 0,
           "nv": [
             false,
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "score": 3,
+          "score": 1,
           "od": 0,
           "nv": [
             true,
@@ -198,7 +198,7 @@
   ],
   "gauges": {
     "ps": {
-      "current": 11,
+      "current": 10,
       "max": 46
     },
     "pes": {
@@ -216,10 +216,6 @@
     "pe": {
       "current": 40,
       "max": 40
-    },
-    "heroisme": {
-      "current": 6,
-      "max": 6
     }
   },
   "gaugeLogs": [
@@ -390,14 +386,5 @@
   "histoire": "",
   "notes": "",
   "quicklist": [],
-  "avantagesInconvenients": [
-    {
-      "type": "inconvenient",
-      "texte": "sssss\n"
-    },
-    {
-      "type": "inconvenient",
-      "texte": "sss"
-    }
-  ]
+  "avantagesInconvenients": []
 }

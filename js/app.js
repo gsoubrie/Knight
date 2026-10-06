@@ -55,8 +55,8 @@ KNIGHT.app = (function () {
   }
 
   function _applyEditMode() {
-    // IDs des champs de combat à garder éditables même en mode Jeu
-    var combatFieldIds = ['ps-current', 'ps-max', 'pa-current', 'pa-max', 'pe-current', 'pe-max', 'cdf-current', 'cdf-max', 'defense', 'reaction', 'initiative', 'gauge-modify-delta', 'gauge-modify-reason'];
+    // IDs des champs de combat et modales à garder éditables même en mode Jeu
+    var combatFieldIds = ['ps-current', 'ps-max', 'pa-current', 'pa-max', 'pe-current', 'pe-max', 'cdf-current', 'cdf-max', 'defense', 'reaction', 'initiative', 'gauge-modify-delta', 'gauge-modify-reason', 'heroism-modify-value', 'heroism-modify-reason'];
     
     var fields = document.querySelectorAll('input, textarea, select');
     fields.forEach(function (field) {
@@ -73,11 +73,25 @@ KNIGHT.app = (function () {
       }
     });
     // Désactiver aussi les boutons d'édition (tous les btn-add, btn-del, etc.)
-    var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, .voeu-del, .ai-del, .contact-del, .quicklist-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
+    var editButtons = document.querySelectorAll('.btn-save, .btn-load, .btn-add, .motivation-del, .voeu-del, .contact-del, .quicklist-del, [id^="btn-add-"], [id*="-del"], [id*="-remove"]');
     editButtons.forEach(function (btn) {
-      // Ne pas cacher le bouton du journal des jauges en mode Jeu
-      if (btn.id !== 'btn-gauge-journal') {
+      // Ne pas cacher les boutons des modales et le journal des jauges en mode Jeu
+      if (btn.id !== 'btn-gauge-journal' && 
+          btn.id !== 'heroism-modify-confirm' && 
+          btn.id !== 'heroism-modify-cancel' &&
+          btn.id !== 'gauge-modify-confirm' && 
+          btn.id !== 'gauge-modify-cancel') {
         btn.style.display = _isEditMode ? '' : 'none';
+      }
+    });
+
+    // Problème 1 : Cacher les éléments non interactifs dans Général en mode JEU
+    var generalNonInteractive = document.querySelectorAll('#page-general .heroism-dot-mini, #page-general .points-value, #page-general .points-group .gauge-track');
+    generalNonInteractive.forEach(function(el) {
+      if (!_isEditMode) {
+        el.style.pointerEvents = 'none';
+      } else {
+        el.style.pointerEvents = '';
       }
     });
     
@@ -147,14 +161,24 @@ KNIGHT.app = (function () {
     for (var i = 1; i <= 6; i++) {
       (function (n) {
         var dot = document.getElementById('h' + n);
-        if (dot) dot.addEventListener('click', function () { _toggleHeroisme(n); });
+        if (dot) dot.addEventListener('click', function () { 
+          // Si c'est un dot de l'onglet Combat (pas mini), ouvrir la modal
+          if (dot.classList.contains('heroism-dot') && !dot.classList.contains('heroism-dot-mini')) {
+            _openHeroismModal(n);
+          } else {
+            _toggleHeroisme(n);
+          }
+        });
         
-        // Ajouter les clics sur les mini-dots
+        // Les mini-dots dans Général ne sont pas cliquables (problème n°1)
         var miniDot = document.getElementById('h' + n + '-mini');
-        if (miniDot) miniDot.addEventListener('click', function () { _toggleHeroisme(n); });
+        if (miniDot) {
+          // Ne pas ajouter d'event listener - les mini-dots ne sont pas interactifs
+        }
       }(i));
     }
     _renderHeroisme();
+    _initHeroismModal();
   }
 
   function _toggleHeroisme(n) {
@@ -165,6 +189,109 @@ KNIGHT.app = (function () {
       _char.heroisme = newValue;
     }
     _renderHeroisme();
+  }
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     MODAL HÉROÏSME
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  
+  var _currentHeroismTarget = 0;
+
+  function _initHeroismModal() {
+    var modal = document.getElementById('heroism-modify-modal');
+    if (!modal) return;
+    
+    var confirmBtn = document.getElementById('heroism-modify-confirm');
+    var cancelBtn = document.getElementById('heroism-modify-cancel');
+    
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', _applyHeroismModal);
+    }
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', _closeHeroismModal);
+    }
+  }
+
+  function _openHeroismModal(targetValue) {
+    _currentHeroismTarget = targetValue;
+    
+    var modal = document.getElementById('heroism-modify-modal');
+    if (!modal) return;
+    
+    var valueEl = document.getElementById('heroism-modify-value');
+    var reasonEl = document.getElementById('heroism-modify-reason');
+    
+    if (valueEl) {
+      valueEl.value = targetValue;
+      valueEl.focus();
+      valueEl.select();
+    }
+    if (reasonEl) reasonEl.value = '';
+    
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function _closeHeroismModal() {
+    var modal = document.getElementById('heroism-modify-modal');
+    if (modal) modal.classList.remove('open');
+    _currentHeroismTarget = 0;
+    document.body.style.overflow = '';
+  }
+
+  function _applyHeroismModal() {
+    var valueEl = document.getElementById('heroism-modify-value');
+    var reasonEl = document.getElementById('heroism-modify-reason');
+    
+    if (!valueEl) return;
+    
+    var newValue = parseInt(valueEl.value) || 0;
+    if (newValue < 1 || newValue > 6) {
+      _showNotif('⚠', 'La valeur doit être entre 1 et 6');
+      return;
+    }
+    
+    var oldValue = _char.gauges.heroisme ? _char.gauges.heroisme.current : (_char.heroisme || 0);
+    var description = reasonEl ? reasonEl.value.trim() : '';
+    
+    // Déterminer si c'est un gain ou une dépense
+    var type = newValue > oldValue ? 'credit' : (newValue < oldValue ? 'debit' : 'neutral');
+    var amount = Math.abs(newValue - oldValue);
+    
+    // Mettre à jour la valeur
+    if (_char.gauges.heroisme) {
+      _char.gauges.heroisme.current = newValue;
+      _char.heroisme = newValue;
+    } else {
+      _char.heroisme = newValue;
+      _char.gauges.heroisme = { current: newValue, max: 6 };
+    }
+    
+    // Ajouter au journal des modifications de jauges
+    if (_char.gaugeLogs) {
+      _char.gaugeLogs.push({
+        gaugeId: 'heroisme',
+        delta: newValue - oldValue,
+        newValue: newValue,
+        reason: description || (type === 'credit' ? 'Gain de points d\'héroïsme' : 'Dépense de points d\'héroïsme'),
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Mettre à jour l'affichage du journal des jauges
+    _renderGaugeJournal();
+    
+    _renderHeroisme();
+    _closeHeroismModal();
+    _showNotif('✓', 'Points d\'héroïsme mis à jour : ' + newValue);
+  }
+
+  function _renderGaugeJournal() {
+    // Cette fonction est gérée par gauges.js via le bouton btn-gauge-journal
+    // On force juste le rafraîchissement si nécessaire
+    if (typeof KNIGHT.ui.gauges !== 'undefined' && KNIGHT.ui.gauges._renderJournal) {
+      KNIGHT.ui.gauges._renderJournal();
+    }
   }
 
   function _renderHeroisme() {
@@ -634,9 +761,50 @@ KNIGHT.app = (function () {
       var overdrivesQuickContainer = document.getElementById('armor-overdrives-quick');
       if (overdrivesQuickContainer) {
         if (_char.warrior && _char.warrior.activeTypes && _char.warrior.activeTypes.length > 0) {
+          var armureName = _char.warrior.nomArmure || 'Warrior';
+          
+          // Définir les OD de base si non déjà définis
+          if (typeof BASE_OVERDRIVES === 'undefined') {
+            BASE_OVERDRIVES = {
+              'Warrior': ['Deplacement', 'Combat', 'Tir', 'Dexterite'],
+              'Barbarian': ['Force', 'Endurance', 'Hargne', 'Combat'],
+              'Bard': ['Deplacement', 'Aura', 'Parole', 'Dexterite'],
+              'Paladin': ['Force', 'Endurance', 'Tir', 'Perception'],
+              'Priest': ['Force', 'Endurance', 'Savoir', 'Technique']
+            };
+          }
+          
+          var baseOverdrives = BASE_OVERDRIVES[armureName] || [];
+          
+          // Définir les descriptions si non déjà définis
+          if (typeof OVERDRIVE_DESCRIPTIONS === 'undefined') {
+            OVERDRIVE_DESCRIPTIONS = {
+              'Force': 'Bonus aux tests de Force',
+              'Endurance': 'Bonus de résistance',
+              'Hargne': 'Bonus au combat',
+              'Combat': 'Bonus aux tests de combat',
+              'Instinct': 'Améliore les réflexes',
+              'Deplacement': 'Améliore la vitesse',
+              'Discretion': 'Permet de se cacher',
+              'Perception': 'Améliore la détection',
+              'Savoir': 'Connaissances générales',
+              'Technique': 'Compétences techniques',
+              'Tir': 'Bonus au combat à distance',
+              'Aura': 'Présence impressionnante',
+              'Parole': 'Éloquence et persuasion',
+              'Sang-froid': 'Résistance au stress',
+              'Dexterite': 'Précision et coordination',
+              'Reaction': 'Vitesse de réaction',
+              'Initiative': 'Capacité à agir rapidement'
+            };
+          }
+          
           var odQuickHtml = '<div class="overdrives-badge">' + _char.warrior.activeTypes.map(function(od) {
-            return '<span class="od-tag">' + _escapeHtml(od) + '</span>';
-          }).join('') + '</div>';
+            var isBase = baseOverdrives.indexOf(od) !== -1;
+            var odClass = isBase ? 'od-tag od-base' : 'od-tag od-added';
+            var description = OVERDRIVE_DESCRIPTIONS[od] || od;
+            return '<span class="' + odClass + '"><strong>' + _escapeHtml(od) + ':</strong> ' + _escapeHtml(description) + '</span>';
+          }).join(' ') + '</div>';
           overdrivesQuickContainer.innerHTML = odQuickHtml;
         } else {
           overdrivesQuickContainer.innerHTML = '<div style="color:var(--text-faint);">Aucune armure ou aucun overdrive actif</div>';

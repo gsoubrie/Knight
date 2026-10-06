@@ -659,6 +659,25 @@
   </div>
 </div>
 
+<!-- Modal pour ajouter une modification de points d'héroïsme -->
+<div class="modal-overlay" id="heroism-modify-modal">
+  <div class="modal" style="width: 400px;">
+    <div class="modal-title">Modifier les Points d'Héroïsme</div>
+    <div class="field">
+      <label>Valeur cible (1-6)</label>
+      <input type="number" id="heroism-modify-value" value="1" min="1" max="6" placeholder="Nombre de points">
+    </div>
+    <div class="field">
+      <label>Description</label>
+      <textarea id="heroism-modify-reason" placeholder="Raison : gain de mission, dépense pour capacité..." style="min-height: 60px;"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-load" id="heroism-modify-cancel">Annuler</button>
+      <button class="btn btn-save" id="heroism-modify-confirm">Valider</button>
+    </div>
+  </div>
+</div>
+
 <!-- NOTIFICATION -->
 <div class="notif" id="notif">
   <span class="notif-icon" id="notif-icon">✓</span>

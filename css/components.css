@@ -1164,7 +1164,7 @@ n/* --- AVANTAGES / INCONVENIENTS --- */
   border-radius: 50%;
   border: 1px solid var(--gold-dim);
   background: transparent;
-  cursor: pointer;
+  cursor: default !important;
   transition: all .2s;
   display: flex;
   align-items: center;
@@ -1174,6 +1174,15 @@ n/* --- AVANTAGES / INCONVENIENTS --- */
   font-weight: 700;
   color: var(--gold-dim);
   user-select: none;
+}
+
+/* Problème 1 : Pas de curseur pointer sur ces éléments dans Général */
+#page-general .heroism-dot-mini,
+#page-general .points-value,
+#page-general .points-value *,
+#page-general .points-group .gauge-track {
+  cursor: default !important;
+  pointer-events: none !important;
 }
 
 .heroism-dot-mini.active {
@@ -1219,7 +1228,8 @@ n/* --- AVANTAGES / INCONVENIENTS --- */
   margin-top: 6px;
   border: 1px solid var(--border);
   border-radius: 3px;
-  cursor: default;
+  cursor: default !important;
+  pointer-events: none !important;
 }
 
 
@@ -1246,6 +1256,11 @@ n/* --- AVANTAGES / INCONVENIENTS --- */
   flex-direction: column;
   gap: 4px;
   flex: 1;
+}
+
+.points-value,
+.points-value * {
+  cursor: default !important;
 }
 
 .points-value {
@@ -1751,10 +1766,6 @@ input[type="number"].gauge-max {
 .mode-play .nv-row:not(.checked) {
   display: none !important;
 }
-/* Ajuster la marge des labels de niveau */
-.mode-play .nv-label {
-  margin-left: 24px;
-}
 
 /* ── SELECT WITH BUTTON CONTAINER ── */
 .field select {
@@ -1815,8 +1826,8 @@ textarea:read-only {
 }
 
 /* Mode jeu - désactiver tous les champs sauf ceux de combat */
-.mode-play input:not(.gauge-current):not(.gauge-max):not(#ps-current):not(#ps-max):not(#pa-current):not(#pa-max):not(#pe-current):not(#pe-max):not(#cdf-current):not(#cdf-max):not(#defense):not(#reaction):not(#initiative):not(#gauge-modify-delta):not(#gauge-modify-reason),
-.mode-play textarea:not(#gauge-modify-reason),
+.mode-play input:not(.gauge-current):not(.gauge-max):not(#ps-current):not(#ps-max):not(#pa-current):not(#pa-max):not(#pe-current):not(#pe-max):not(#cdf-current):not(#cdf-max):not(#defense):not(#reaction):not(#initiative):not(#gauge-modify-delta):not(#gauge-modify-reason):not(#heroism-modify-value):not(#heroism-modify-reason),
+.mode-play textarea:not(#gauge-modify-reason):not(#heroism-modify-reason),
 .mode-play select {
   background: var(--bg-input) !important;
   color: var(--text-dim) !important;
@@ -1824,13 +1835,24 @@ textarea:read-only {
   border-color: var(--border) !important;
 }
 
-/* Champs de la modal de jauge toujours éditables */
+/* Champs de la modal toujours éditables (même en mode JEU) */
 #gauge-modify-delta,
-#gauge-modify-reason {
+#gauge-modify-reason,
+#heroism-modify-value,
+#heroism-modify-reason,
+#heroism-modify-modal input,
+#heroism-modify-modal textarea {
   background: var(--bg-input) !important;
   color: var(--text) !important;
   cursor: text !important;
   border-color: var(--border-hi) !important;
+  read-only: false !important;
+}
+
+/* Modal héroïsme - forcer l'édition */
+.modal-overlay.open #heroism-modify-value,
+.modal-overlay.open #heroism-modify-reason {
+  read-only: false !important;
 }
 
 /* Style pour les champs de combat éditables en mode jeu */
@@ -1966,6 +1988,8 @@ textarea:read-only {
   margin-top: 4px;
 }
 
+
+
 .overdrives-badge {
   display: flex;
   flex-wrap: wrap;
@@ -1982,6 +2006,49 @@ textarea:read-only {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.od-tag.od-base {
+  background: #FFD70040 !important; /* Or transparent */
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+}
+
+.od-tag.od-added {
+  background: #4A9EFF40 !important; /* Bleu transparent */
+  border-color: var(--blue) !important;
+  color: var(--blue) !important;
+}
+
+/* Tooltips pour les overdrives - plus visibles */
+.od-tag {
+  position: relative;
+}
+
+.od-tag::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--text);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 1000;
+  margin-bottom: 8px;
+  max-width: 200px;
+  text-align: center;
+}
+
+.od-tag:hover::after {
+  opacity: 1;
 }
 
 .od-separator {
