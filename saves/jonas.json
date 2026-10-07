@@ -3,7 +3,16 @@
   "archetype": "",
   "section": "",
   "blason": "",
-  "voeux": [],
+  "voeux": [
+    {
+      "type": "voeu",
+      "texte": "dqsdqsd"
+    },
+    {
+      "type": "voeu",
+      "texte": "fdsf"
+    }
+  ],
   "aspects": [
     {
       "score": 2,
@@ -374,11 +383,11 @@
   "motivations": [
     {
       "type": "major",
-      "texte": "s"
+      "texte": "dqsdqsd"
     },
     {
       "type": "major",
-      "texte": "ss"
+      "texte": "sss"
     }
   ],
   "contacts": [],
@@ -386,5 +395,14 @@
   "histoire": "",
   "notes": "",
   "quicklist": [],
-  "avantagesInconvenients": []
+  "avantagesInconvenients": [
+    {
+      "type": "avantage",
+      "texte": "sqdq"
+    },
+    {
+      "type": "inconvenient",
+      "texte": "fdsfsdf"
+    }
+  ]
 }

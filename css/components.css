@@ -705,7 +705,36 @@ select option { background: var(--bg-card); }
   margin-bottom: 8px;
 }
 .voeu-item:last-child { margin-bottom: 0; }
+.voeu-type {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  margin-top: 3px;
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+.voeu-type.voeu {
+  background: rgba(74,158,255,.15);
+  color: var(--blue);
+  border: 1px solid var(--blue-dim);
+}
+.voeu-type.major {
+  background: rgba(255,69,0,.15);
+  color: var(--red);
+  border: 1px solid var(--red-dim);
+}
+.voeu-type.minor {
+  background: rgba(201,168,76,.1);
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+}
+
 .voeu-text {
+  width: 100%;
   flex: 1;
   font-size: 12px;
   color: var(--text);
@@ -730,7 +759,7 @@ select option { background: var(--bg-card); }
   transition: color .2s;
   flex-shrink: 0;
   padding: 0 4px;
-n/* --- AVANTAGES / INCONVENIENTS --- */
+/* --- AVANTAGES / INCONVENIENTS --- */
 .avantage-inconvenient-item {
   display: flex;
   align-items: flex-start;
@@ -765,8 +794,8 @@ n/* --- AVANTAGES / INCONVENIENTS --- */
   border: 1px solid var(--red-dim);
 }
 .ai-text {
+  width: 100%;
   flex: 1;
-  min-width: 0;
   font-size: 12px;
   color: var(--text);
   background: transparent;
