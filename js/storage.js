@@ -20,8 +20,8 @@ KNIGHT.storage = (function () {
   };
 
   var BASE_PATH = _getBasePath();
-  var SAVES_DIR   = BASE_PATH + 'saves/';
-  var INDEX_FILE  = BASE_PATH + 'saves/index.json';
+  var SAVES_DIR   = 'saves/';  // Chemin relatif depuis index.html
+  var INDEX_FILE  = 'saves/index.json';
 
   /* ════════════════════════════════════════
      SAVE — télécharge saves/<nom>.json

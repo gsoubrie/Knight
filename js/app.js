@@ -402,6 +402,10 @@ KNIGHT.app = (function () {
       var div = document.createElement('div');
       div.className = 'voeu-item';
 
+      var badge = document.createElement('span');
+      badge.className = 'voeu-type ' + (v.type || 'voeu');
+      badge.textContent = v.type === 'major' ? 'Majeure' : v.type === 'minor' ? 'Mineure' : 'Vœu';
+
       var ta = document.createElement('textarea');
       ta.className = 'voeu-text';
       ta.rows = 2;
@@ -422,6 +426,7 @@ KNIGHT.app = (function () {
         };
       }(i)));
 
+      div.appendChild(badge);
       div.appendChild(ta);
       div.appendChild(del);
       list.appendChild(div);
@@ -431,7 +436,7 @@ KNIGHT.app = (function () {
   function _initVoeux() {
     var btn = document.getElementById('btn-add-voeu');
     if (btn) btn.addEventListener('click', function () {
-      _char.addVoeu();
+      _char.addVoeu('voeu');
       _renderVoeux();
     });
   }
@@ -445,32 +450,35 @@ KNIGHT.app = (function () {
     if (!list) return;
     list.innerHTML = '';
 
-    // Trier : avantages en premier, puis inconvénients
+    // Trier : avantages en premier, puis inconvénients (même logique que motivations)
     var sorted = _char.avantagesInconvenients.slice().sort(function(a, b) {
       if (a.type === 'avantage' && b.type !== 'avantage') return -1;
       if (a.type !== 'avantage' && b.type === 'avantage') return 1;
       return 0;
     });
 
-    sorted.forEach(function (item) {
+    sorted.forEach(function (item, i) {
       var div = document.createElement('div');
-      div.className = 'avantage-inconvenient-item';
+      div.className = 'motivation-item';
 
       var badge = document.createElement('span');
-      badge.className = 'ai-type ' + item.type;
+      badge.className = 'motivation-type ' + item.type;
       badge.textContent = item.type === 'avantage' ? 'Avantage' : 'Inconvénient';
 
       var ta = document.createElement('textarea');
-      ta.className = 'ai-text';
+      ta.className = 'motivation-text';
       ta.rows = 2;
       ta.placeholder = 'Description…';
       ta.value = item.texte || '';
-      ta.addEventListener('input', (function (ai) {
-        return function (e) { ai.texte = e.target.value; };
-      }(item)));
+      ta.addEventListener('input', (function (idx) {
+        return function (e) { 
+          var originalIdx = _char.avantagesInconvenients.indexOf(item);
+          if (originalIdx !== -1) _char.avantagesInconvenients[originalIdx].texte = e.target.value; 
+        };
+      }(i)));
 
       var del = document.createElement('button');
-      del.className = 'ai-del';
+      del.className = 'motivation-del';
       del.textContent = '×';
       del.title = 'Supprimer';
       del.addEventListener('click', (function (ai) {
@@ -757,58 +765,21 @@ KNIGHT.app = (function () {
         }
       }
       
-      // Afficher les overdrives dans l'onglet Caractéristiques
+      // Afficher les overdrives de Warrior (toujours en dur)
       var overdrivesQuickContainer = document.getElementById('armor-overdrives-quick');
       if (overdrivesQuickContainer) {
-        if (_char.warrior && _char.warrior.activeTypes && _char.warrior.activeTypes.length > 0) {
-          var armureName = _char.warrior.nomArmure || 'Warrior';
-          
-          // Définir les OD de base si non déjà définis
-          if (typeof BASE_OVERDRIVES === 'undefined') {
-            BASE_OVERDRIVES = {
-              'Warrior': ['Deplacement', 'Combat', 'Tir', 'Dexterite'],
-              'Barbarian': ['Force', 'Endurance', 'Hargne', 'Combat'],
-              'Bard': ['Deplacement', 'Aura', 'Parole', 'Dexterite'],
-              'Paladin': ['Force', 'Endurance', 'Tir', 'Perception'],
-              'Priest': ['Force', 'Endurance', 'Savoir', 'Technique']
-            };
-          }
-          
-          var baseOverdrives = BASE_OVERDRIVES[armureName] || [];
-          
-          // Définir les descriptions si non déjà définis
-          if (typeof OVERDRIVE_DESCRIPTIONS === 'undefined') {
-            OVERDRIVE_DESCRIPTIONS = {
-              'Force': 'Bonus aux tests de Force',
-              'Endurance': 'Bonus de résistance',
-              'Hargne': 'Bonus au combat',
-              'Combat': 'Bonus aux tests de combat',
-              'Instinct': 'Améliore les réflexes',
-              'Deplacement': 'Améliore la vitesse',
-              'Discretion': 'Permet de se cacher',
-              'Perception': 'Améliore la détection',
-              'Savoir': 'Connaissances générales',
-              'Technique': 'Compétences techniques',
-              'Tir': 'Bonus au combat à distance',
-              'Aura': 'Présence impressionnante',
-              'Parole': 'Éloquence et persuasion',
-              'Sang-froid': 'Résistance au stress',
-              'Dexterite': 'Précision et coordination',
-              'Reaction': 'Vitesse de réaction',
-              'Initiative': 'Capacité à agir rapidement'
-            };
-          }
-          
-          var odQuickHtml = '<div class="overdrives-badge">' + _char.warrior.activeTypes.map(function(od) {
-            var isBase = baseOverdrives.indexOf(od) !== -1;
-            var odClass = isBase ? 'od-tag od-base' : 'od-tag od-added';
-            var description = OVERDRIVE_DESCRIPTIONS[od] || od;
-            return '<span class="' + odClass + '"><strong>' + _escapeHtml(od) + ':</strong> ' + _escapeHtml(description) + '</span>';
-          }).join(' ') + '</div>';
-          overdrivesQuickContainer.innerHTML = odQuickHtml;
-        } else {
-          overdrivesQuickContainer.innerHTML = '<div style="color:var(--text-faint);">Aucune armure ou aucun overdrive actif</div>';
-        }
+        // Overdrives de base Warrior - TOUJOURS affichés en dur
+        var warriorOverdrives = [
+          { name: 'Deplacement', desc: 'Améliore la vitesse' },
+          { name: 'Combat', desc: 'Bonus aux tests de combat' },
+          { name: 'Tir', desc: 'Bonus au combat à distance' },
+          { name: 'Dexterite', desc: 'Précision et coordination' }
+        ];
+        
+        var odQuickHtml = '<div class="overdrives-badge">' + warriorOverdrives.map(function(od) {
+          return '<span class="od-tag od-base"><strong>' + _escapeHtml(od.name) + ':</strong> ' + _escapeHtml(od.desc) + '</span>';
+        }).join(' ') + '</div>';
+        overdrivesQuickContainer.innerHTML = odQuickHtml;
       }
 
       // Afficher les capacités
@@ -1144,23 +1115,21 @@ KNIGHT.app = (function () {
   }
 
   function _renderAll() {
-    _syncScalaires();
-    KNIGHT.ui.aspects.render(_char);
-    KNIGHT.ui.gauges.render(_char);
-    KNIGHT.ui.arsenal.render(_char);
-    KNIGHT.ui.ledger.render(_char);
-    KNIGHT.ui.armor.render(_char);
-    KNIGHT.ui.catalog.render(_char);
-    _renderHeroisme();
-    _renderMotivations();
-    _renderVoeux();
-    _renderAvantagesInconvenients();
-    _renderContacts();
-    _renderQuicklist();
+    try { _syncScalaires(); } catch(e) { console.error('syncScalaires:', e); }
+    try { if (KNIGHT.ui.aspects) KNIGHT.ui.aspects.render(_char); } catch(e) { console.error('aspects.render:', e); }
+    try { if (KNIGHT.ui.gauges) KNIGHT.ui.gauges.render(_char); } catch(e) { console.error('gauges.render:', e); }
+    try { if (KNIGHT.ui.arsenal) KNIGHT.ui.arsenal.render(_char); } catch(e) { console.error('arsenal.render:', e); }
+    try { if (KNIGHT.ui.ledger) KNIGHT.ui.ledger.render(_char); } catch(e) { console.error('ledger.render:', e); }
+    try { if (KNIGHT.ui.armor) KNIGHT.ui.armor.render(_char); } catch(e) { console.error('armor.render:', e); }
+    try { if (KNIGHT.ui.catalog) KNIGHT.ui.catalog.render(_char); } catch(e) { console.error('catalog.render:', e); }
+    try { _renderHeroisme(); } catch(e) { console.error('renderHeroisme:', e); }
+    try { _renderMotivations(); } catch(e) { console.error('renderMotivations:', e); }
+    try { _renderVoeux(); } catch(e) { console.error('renderVoeux:', e); }
+    try { _renderAvantagesInconvenients(); } catch(e) { console.error('renderAvantagesInconvenients:', e); }
+    try { _renderContacts(); } catch(e) { console.error('renderContacts:', e); }
+    try { _renderQuicklist(); } catch(e) { console.error('renderQuicklist:', e); }
     // Appliquer la transformation des champs si on est en mode lecture seule
-    if (!_isEditMode) {
-      _transformFieldsToLabels(true);
-    }
+    try { if (!_isEditMode) { _transformFieldsToLabels(true); } } catch(e) { console.error('transformFieldsToLabels:', e); }
   }
 
   /* ════════════════════════════════════════
@@ -1230,6 +1199,9 @@ KNIGHT.app = (function () {
     if (btnToggleMode) {
       btnToggleMode.addEventListener('click', _toggleEditMode);
     }
+    
+    // Rendu initial
+    _renderAll();
   }
 
   return {

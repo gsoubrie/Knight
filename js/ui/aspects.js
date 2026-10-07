@@ -121,18 +121,20 @@ KNIGHT.ui.aspects = (function () {
 
     niveaux.forEach(function (texte, n) {
       var nvRow = document.createElement('div');
-      nvRow.className = 'nv-row';
+      nvRow.className = 'nv-row' + (cara.nv[n] ? ' checked' : '') + (hasOverdrive && cara.nv[n] ? ' od-active' : '');
 
       var checkbox = document.createElement('div');
       checkbox.className = 'nv-check' + (cara.nv[n] ? ' checked' : '');
       checkbox.textContent = cara.nv[n] ? '✓' : '';
-      checkbox.addEventListener('click', (function (caraRef, idx) {
+      checkbox.addEventListener('click', (function (caraRef, idx, rowRef, hasOD) {
         return function () {
           caraRef.nv[idx] = !caraRef.nv[idx];
           this.classList.toggle('checked', caraRef.nv[idx]);
+          rowRef.classList.toggle('checked', caraRef.nv[idx]);
+          rowRef.classList.toggle('od-active', caraRef.nv[idx] && hasOD);
           this.textContent = caraRef.nv[idx] ? '✓' : '';
         };
-      }(cara, n)));
+      }(cara, n, nvRow, hasOverdrive)));
 
       var nvLabel = document.createElement('span');
       nvLabel.className = 'nv-label';

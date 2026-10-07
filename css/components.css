@@ -665,6 +665,16 @@ select option { background: var(--bg-card); }
   color: var(--gold);
   border: 1px solid var(--gold-dim);
 }
+.motivation-type.avantage {
+  background: rgba(201,168,76,.1);
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+}
+.motivation-type.inconvenient {
+  background: rgba(255,69,0,.15);
+  color: var(--red);
+  border: 1px solid var(--red-dim);
+}
 .motivation-text {
   flex: 1;
   font-size: 12px;
@@ -678,7 +688,7 @@ select option { background: var(--bg-card); }
   min-height: 24px;
   resize: none;
   line-height: 1.5;
-  width: 100%;
+  display: inline-block;
 }
 .motivation-del {
   background: none;
@@ -734,7 +744,6 @@ select option { background: var(--bg-card); }
 }
 
 .voeu-text {
-  width: 100%;
   flex: 1;
   font-size: 12px;
   color: var(--text);
@@ -747,7 +756,7 @@ select option { background: var(--bg-card); }
   min-height: 24px;
   resize: none;
   line-height: 1.5;
-  width: 100%;
+  display: inline-block;
 }
 .voeu-del {
   background: none;
@@ -759,67 +768,7 @@ select option { background: var(--bg-card); }
   transition: color .2s;
   flex-shrink: 0;
   padding: 0 4px;
-/* --- AVANTAGES / INCONVENIENTS --- */
-.avantage-inconvenient-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px;
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-}
-.avantage-inconvenient-item:last-child { margin-bottom: 0; }
-.ai-type {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 10px;
-  white-space: nowrap;
-  margin-top: 3px;
-  font-family: var(--font-display);
-  flex-shrink: 0;
-}
-.ai-type.avantage {
-  background: rgba(201,168,76,.15);
-  color: var(--gold);
-  border: 1px solid var(--gold-dim);
-}
-.ai-type.inconvenient {
-  background: rgba(255,69,0,.15);
-  color: var(--red);
-  border: 1px solid var(--red-dim);
-}
-.ai-text {
-  width: 100%;
-  flex: 1;
-  font-size: 12px;
-  color: var(--text);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--border);
-  outline: none;
-  padding: 2px 0;
-  font-family: var(--font-body);
-  min-height: 24px;
-  resize: none;
-  line-height: 1.5;
-}
-.ai-del {
-  background: none;
-  border: none;
-  color: var(--text-faint);
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-  transition: color .2s;
-  flex-shrink: 0;
-  padding: 0 4px;
-}
-.ai-del:hover { color: var(--red); }
+
 }
 .voeu-del:hover { color: var(--red); }
 
@@ -1794,6 +1743,19 @@ input[type="number"].gauge-max {
 /* En mode Jeu, masquer les niveaux non cochés */
 .mode-play .nv-row:not(.checked) {
   display: none !important;
+}
+
+/* En mode Jeu, style pour les niveaux avec OD actif */
+.nv-row.od-active .nv-num {
+  color: var(--gold);
+}
+.nv-row.od-active .nv-text {
+  color: var(--gold);
+}
+.nv-row.od-active .nv-check.checked {
+  background: var(--gold-dim);
+  border-color: var(--gold);
+  color: var(--gold);
 }
 
 /* ── SELECT WITH BUTTON CONTAINER ── */

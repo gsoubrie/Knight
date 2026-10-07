@@ -169,8 +169,8 @@ KNIGHT.models.Character.prototype = {
     this.motivations.splice(index, 1);
   },
 
-  addVoeu: function () {
-    this.voeux.push({ texte: '' });
+  addVoeu: function (type) {
+    this.voeux.push({ type: type || 'voeu', texte: '' });
   },
 
   removeVoeu: function (index) {
@@ -435,10 +435,14 @@ KNIGHT.models.Character.prototype = {
     if (data.motivations) self.motivations = data.motivations.slice();
     if (data.contacts)    self.contacts    = data.contacts.slice();
     if (data.quicklist)   self.quicklist   = data.quicklist.slice();
-    if (data.voeux)      self.voeux       = data.voeux.slice();
-    // Migration: si l'ancien champ voeu (string) existe, le convertir en tableau
+    if (data.voeux) {
+      self.voeux = data.voeux.slice();
+      // Migration: ajouter type par défaut
+      self.voeux.forEach(function(v) { if (!v.type) v.type = 'voeu'; });
+    }
+    // Migration: si l'ancien champ voeu (string) existe
     if (data.voeu && !data.voeux) {
-      self.voeux = [{ texte: data.voeu }];
+      self.voeux = [{ type: 'voeu', texte: data.voeu }];
     }
     
     // Avantages / Inconvénients - migration vers tableau unifié

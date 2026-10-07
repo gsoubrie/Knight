@@ -388,6 +388,10 @@
     {
       "type": "major",
       "texte": "sss"
+    },
+    {
+      "type": "minor",
+      "texte": "fdsfsdf"
     }
   ],
   "contacts": [],
@@ -403,6 +407,10 @@
     {
       "type": "inconvenient",
       "texte": "fdsfsdf"
+    },
+    {
+      "type": "inconvenient",
+      "texte": "fsdfsd"
     }
   ]
 }
